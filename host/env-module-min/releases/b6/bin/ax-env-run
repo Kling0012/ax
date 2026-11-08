@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# ax-env-run の B6 最小版（F-18.2）。強制コマンド: ~/.ax-env/bin/ax-env-run --caller launcher
+# サブコマンドは SSH_ORIGINAL_COMMAND から読む（job-start / job-status / job-stop / job-retire / job-list）。
+# 本体は lib/ax_launcher.py。B14b が ENV-MODULE.md の形に広げる（releases/<版> を並べて current を切り替える）。
+set -euo pipefail
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+exec python3 -P "$HERE/../lib/ax_launcher.py" "$@"

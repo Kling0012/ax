@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/todo.schema.json",
+  "title": "ToDo（S-9.1、S-9.2）",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/kebab_or_ulid"
+    },
+    "project": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "subloop": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "state": {
+      "$ref": "common.schema.json#/$defs/todo_state"
+    },
+    "owner": {
+      "enum": [
+        "system",
+        "user"
+      ]
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "check_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "item_id": {
+          "type": "string"
+        },
+        "event_id": {
+          "type": "string"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "goal_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "promise_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "due_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cancel_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resume_ref": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "job_id": {
+              "type": "string"
+            },
+            "workdir_id": {
+              "$ref": "common.schema.json#/$defs/workdir_id"
+            },
+            "model": {
+              "type": "string"
+            },
+            "ended_at": {
+              "$ref": "common.schema.json#/$defs/ts_any"
+            }
+          },
+          "required": [
+            "job_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "user_only": {
+      "type": "boolean"
+    },
+    "card": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "question": {
+              "type": "string"
+            },
+            "options": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "answer": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "notification_state": {
+              "type": "string"
+            },
+            "waiting_reason": {
+              "enum": [
+                "physical",
+                "secret_input",
+                "money",
+                "publish",
+                "irreversible",
+                "preference",
+                "range_review"
+              ]
+            }
+          },
+          "required": [
+            "question"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "title",
+    "state",
+    "owner"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "parked"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "reason",
+          "check_at"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "dropped"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "reason"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "waiting_user"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "card"
+        ],
+        "properties": {
+          "card": {
+            "type": "object",
+            "required": [
+              "question",
+              "waiting_reason"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

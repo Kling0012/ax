@@ -1,0 +1,55 @@
+# Copy this file to targets.yaml and replace the example values.
+{
+  "targets": [
+    {
+      "issue_repo": "example-org/example-dotnet",
+      "implementation_repo": "example-org/example-dotnet",
+      "merge_method": "merge",
+      "ci_sources": [
+        "ci/public"
+      ],
+      "test_recipe": "verification/recipes.yaml#example-dotnet",
+      "priority_labels": [],
+      "execution_cap": 1,
+      "allowed_paths": [
+        "**"
+      ],
+      "untrusted_forbidden_paths": [
+        ".github/**",
+        "scripts/**",
+        "build.sh",
+        "*.bat",
+        "Dockerfile*",
+        "docker-compose*.yml",
+        "compose*.yaml",
+        "*.spec",
+        "pnpm-lock.yaml",
+        "uv.lock",
+        "package.json",
+        "pyproject.toml",
+        "*.csproj",
+        "*.dll",
+        "*.exe",
+        "*.so",
+        ".env*"
+      ],
+      "trusted_authors": [
+        "example-org"
+      ],
+      "outbound_allowlist": [],
+      "state_labels": {
+        "planned": "ax-waiting",
+        "launching": "ax-running",
+        "submitted": "ax-running",
+        "running": "ax-running",
+        "waiting_external": "ax-information",
+        "retry": "ax-retry",
+        "completed": "ax-completed",
+        "parked": "ax-parked",
+        "waiting_user": "ax-user"
+      },
+      "contribution": {},
+      "verify_runner": "verify-dotnet"
+    }
+  ]
+}

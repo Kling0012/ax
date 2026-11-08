@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/focus-state.schema.json",
+  "title": "PUT /v1/focus-state の本文（S-9.5）",
+  "type": "object",
+  "properties": {
+    "state": {
+      "enum": [
+        "away",
+        "play",
+        "focus",
+        "break",
+        "shallow"
+      ]
+    },
+    "since": {
+      "$ref": "common.schema.json#/$defs/ts_any"
+    },
+    "as_of": {
+      "$ref": "common.schema.json#/$defs/ts_any"
+    }
+  },
+  "required": [
+    "state",
+    "since",
+    "as_of"
+  ],
+  "additionalProperties": false
+}

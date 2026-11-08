@@ -1,0 +1,5 @@
+Host *
+    StrictHostKeyChecking yes
+    UserKnownHostsFile /run/ax-tumu-secrets/known_hosts
+    GlobalKnownHostsFile /dev/null
+    UpdateHostKeys no

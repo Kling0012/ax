@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/daily-state.schema.json",
+  "title": "PUT /v1/daily-state/{date} の本文（S-9.5）。segments の件数は S-17 hibi_segments_max、大きさは hibi_body_max_kib で別に検査する",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "tz": {
+      "const": "Asia/Tokyo"
+    },
+    "as_of": {
+      "$ref": "common.schema.json#/$defs/ts_any"
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "$ref": "common.schema.json#/$defs/ts_any"
+          },
+          "end": {
+            "$ref": "common.schema.json#/$defs/ts_any"
+          },
+          "state": {
+            "enum": [
+              "away",
+              "play",
+              "focus",
+              "break",
+              "shallow"
+            ]
+          },
+          "category": {
+            "enum": [
+              "work",
+              "research",
+              "communication",
+              "media",
+              "play",
+              "other"
+            ]
+          },
+          "session_title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "state",
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "date",
+    "tz",
+    "as_of",
+    "segments"
+  ],
+  "additionalProperties": false
+}

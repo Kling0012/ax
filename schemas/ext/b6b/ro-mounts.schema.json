@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/ro-mounts.schema.json",
+  "title": "config/ro-mounts.yaml（F-11.5 の 1）",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "host_path",
+      "container_path",
+      "sensitivity"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]{1,40}$"
+      },
+      "host_path": {
+        "type": "string",
+        "minLength": 1
+      },
+      "container_path": {
+        "type": "string",
+        "pattern": "^/.+"
+      },
+      "sensitivity": {
+        "enum": [
+          "private",
+          "public"
+        ]
+      },
+      "project": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "files": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ax/ext/b16a/conversation-revision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["conversation_id", "version", "text"],
+  "properties": {
+    "conversation_id": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "minLength": 1},
+    "text": {"type": "string"}
+  }
+}

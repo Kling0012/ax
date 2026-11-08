@@ -1,0 +1,65 @@
+# B10a の束: 緊急ボタンの実行体 `emergency`（ax-core。S-12.3、D-11.3）と、他の束のサービスへ足す設定（予備役、通知配送）。
+# 他の束のサービス（intake=b5、observer=b8、hq=b10b）へは、compose の「同じサービスの定義を束ねる」規則で足す
+# （environment は鍵ごと、volumes と secrets は並びを束ねる）。それらの束のファイルが無い間は `docker compose config` が通らない
+# （image などが無い不完全なサービスになる）ので、tools/compose_check.py は全束がそろってから通す。
+# ports は持たない（D-14）。値は書かない（秘密は secrets の名前だけ）。
+services:
+  emergency:
+    extends: {file: docker/base.yaml, service: ax-core-base}
+    command: ["python", "-m", "core.intake.dest.b10a"]
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      archive-init:
+        condition: service_completed_successfully
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_EMERGENCY_DATA: /data
+      AX_REDACT_INDEX: /state/redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+      AX_CORE_TOKENS: /state/core-tokens.sha256
+    volumes:
+      - {type: volume, source: emergency-data, target: /data}
+      # /state は読み取りだけ（hostwatch/registered/、hostwatch.log、core-tokens.sha256）。要求の置き場だけ書ける（S-11.6、F-18.3）
+      - {type: bind, source: "${AX_STATE_DIR}", target: /state, read_only: true}
+      - {type: bind, source: "${AX_STATE_DIR}/host-requests", target: /state/host-requests}
+    secrets:
+      - pii-list
+      - core-token-observer          # worker-pool
+      - control-token-emergency      # issued_by=emergency（S-5.3）。命令の解除に使う
+
+  # --- 予備役（b8 の observer へ足す。S-11.3） ---
+  observer:
+    secrets:
+      - core-token-observer          # 根本原因の ToDo を台帳に作る（台帳の中核の口は core-tokens の資格が要る。F-18.4）
+      - control-token-backup         # 予備役の命令の資格 issued_by=backup（S-5.3）。管理役のモジュールが読む
+
+  # --- 緊急ボタンの呼び先（b5 の intake へ足す） ---
+  intake:
+    secrets:
+      - core-token-intake            # emergency サービスを呼ぶ資格（core-tokens の表で intake と決まる）
+
+  # --- 通知配送（b10b の hq へ足す。S-22.4）。保存先は HQ の 3 つの bind の 1 つ（ソケットのディレクトリ）の下 notify/ ---
+  hq:
+    environment:
+      AX_NTFY_ENDPOINT: ${AX_NTFY_ENDPOINT}
+      AX_NTFY_TOPIC: ${AX_NTFY_TOPIC}
+      AX_HQ_BASE_URL: ${AX_HQ_BASE_URL:-}
+      AX_HQ_DATA: /run/hq/notify
+      AX_HQ_NOTIFY_RUN: "${AX_HQ_NOTIFY_RUN:-1}"
+
+  # --- 緊急のスナップショットを archiver が運ぶ（docs/b1/archive-volumes.md の手順） ---
+  archive-init:
+    volumes:
+      - {type: volume, source: emergency-data, target: /v/emergency-data}
+  archiver:
+    volumes:
+      - {type: volume, source: emergency-data, target: /vol/emergency-data, volume: {subpath: archive}}
+
+volumes:
+  emergency-data: {}
+
+secrets:
+  core-token-intake:
+    file: ${AX_SECRETS_DIR}/core-tokens/intake
+  core-token-observer:
+    file: ${AX_SECRETS_DIR}/core-tokens/observer

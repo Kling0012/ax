@@ -1,0 +1,44 @@
+[
+  {
+    "name": "ledger.complete",
+    "title": "ledger.complete",
+    "schema": "schemas/dest/ledger.complete.json",
+    "handler": "http://ledger:8080/v1/todos/{todo_id}/transition",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_done"
+  },
+  {
+    "name": "ledger.park",
+    "title": "ledger.park",
+    "schema": "schemas/dest/ledger.park.json",
+    "handler": "http://ledger:8080/v1/todos/{todo_id}/transition",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_park"
+  }
+]

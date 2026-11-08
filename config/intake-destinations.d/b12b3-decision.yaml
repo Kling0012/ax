@@ -1,0 +1,23 @@
+[
+  {
+    "name": "decision.record",
+    "title": "decision.record",
+    "schema": "schemas/dest/decision.record.json",
+    "handler": "internal:decision.record",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_decide"
+  }
+]

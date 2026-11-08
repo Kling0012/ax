@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/chat-json-response.schema.json",
+  "title": "work/job-<id>/response.json（F-7.2 の chat-json）。コンテナが書く。終了コード 0=ok、2=request.json の不備、3=ゲートウェイの失敗、4=本文が JSON でない、5=schema に合わない",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ok", "exit_code"],
+  "properties": {
+    "ok": {"type": "boolean"},
+    "exit_code": {"type": "integer"},
+    "text": {"type": "string", "description": "応答の本文（text ブロックの連結）"},
+    "json": {"description": "text を JSON として読んだ値"},
+    "usage": {"type": "object", "properties": {"input_tokens": {"type": "integer"}, "output_tokens": {"type": "integer"}, "cache_read_input_tokens": {"type": "integer"}, "cache_creation_input_tokens": {"type": "integer"}}},
+    "model": {"type": "string"},
+    "stop_reason": {"type": ["string", "null"]},
+    "error": {
+      "type": "object",
+      "required": ["class"],
+      "properties": {
+        "class": {"enum": ["bad_request", "gateway", "rate_limited", "quota", "unauthorized", "server_error", "unavailable", "not_json", "schema_mismatch"]},
+        "status": {"type": ["integer", "null"]},
+        "message": {"type": "string"},
+        "schema_errors": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

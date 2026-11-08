@@ -1,0 +1,46 @@
+{
+  "example-dotnet": {
+    "version": "f6.2-v1",
+    "runner": "verify-dotnet",
+    "timeout_s": 2400,
+    "ro_mounts": [
+      "example-data"
+    ],
+    "dependency": [
+      "dotnet restore Example.sln"
+    ],
+    "checks": [
+      {
+        "kind": "build",
+        "command": "dotnet build src/Example.Mod -c Release \"-p:GameDir=/mnt/example-data/Example Game\" -p:ModDeployDir=/tmp-hdd/moddeploy --no-restore"
+      },
+      {
+        "kind": "generated",
+        "command": "python3 tools/balance/gen_cs.py --check"
+      },
+      {
+        "kind": "changed",
+        "command": "python3 tools/test_changed.py"
+      }
+    ],
+    "all": {
+      "kind": "all",
+      "command": "python3 tools/test_changed.py --all"
+    },
+    "slow": {
+      "kind": "slow",
+      "command": "EXAMPLE_SLOW=1 python3 tools/test_changed.py --all"
+    },
+    "full_paths": [
+      "tools/test_changed.py",
+      "tools/balance/",
+      ".github/workflows/"
+    ],
+    "slow_paths": [
+      "tools/balance/",
+      "tools/star-manifest/",
+      "Content/Balance"
+    ],
+    "unperformed": []
+  }
+}

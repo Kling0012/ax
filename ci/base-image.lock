@@ -1,0 +1,8 @@
+# ax-ci のベース（python:3.12-slim）の固定（F-14.1）。ダイジェストで固定する。
+# 状態: 未確認。B0 では docker pull を実行していない（ネットワークを使うため）。
+# hub-host で `sudo -n docker pull python:3.12-slim` の後、`sudo -n docker image inspect --format '{{index .RepoDigests 0}}' python:3.12-slim` の
+# 出力（python@sha256:…）の sha256 部分を digest に書き、status を verified にする。
+image=python:3.12-slim
+digest=sha256:4840d514c583a4d3d8cad3940e68dee6f0f6f3635c12fcd0a3d74c21a5b93a54
+status=verified
+checked_at=2026-11-07T22:49:24Z

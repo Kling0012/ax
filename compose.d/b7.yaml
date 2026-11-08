@@ -1,0 +1,40 @@
+# B7 のサービス: timer-runner（定期ジョブと期限付きタイマーの実行体）と、サブループ共通イメージのビルド専用サービス（F-18.3、D-6.1）。
+# サブループ本体は compose.d/sl-<id>.yaml（雛形 templates/subloop/compose.sl.yaml.tmpl）。
+# timer-runner は、動かす定期ジョブ（kind=timer のプラグイン）ごとのトークンを secrets で受ける（F-18.4）。ジョブを足す束（例 hibi-state の b16）は、
+# 自分の compose.d/<束>.yaml に `services.timer-runner.secrets: [plugin-token-<id>]` と、secrets の宣言を足す（compose は secrets の並びを束ねる）。
+services:
+  timer-runner:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: ["python", "-m", "runtime.timer_runner"]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: timer-runner
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+    volumes:
+      - timer-runner-data:/data
+    secrets:
+      - control-apply-token
+      - plugin-token-timer-runner
+
+  # ビルド専用（起動しない）。サブループ共通のイメージ ax/runtime。中身は ax/core と同じ Dockerfile（コードは /ax、依存は uv.lock）。
+  # ホストの host/ax-deploy.sh が `docker compose build img-runtime` を行う（B8）。PYTHON_REF と UV_VERSION の渡し方は OPEN.md。
+  img-runtime:
+    profiles: ["build"]
+    image: ax/runtime:${AX_TAG}
+    build:
+      context: ${AX_HOME}
+      dockerfile: docker/Dockerfile.core
+      args:
+        PYTHON_REF: ${AX_PYTHON_REF:-python:3.12-slim}
+        UV_VERSION: ${AX_UV_VERSION:-0.13.0}
+
+volumes:
+  timer-runner-data: {}
+
+secrets:
+  plugin-token-timer-runner:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/timer-runner

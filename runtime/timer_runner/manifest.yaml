@@ -1,0 +1,21 @@
+# timer-runner（D-4.4）。kind=timer のプラグインを全部まとめて動かす 1 つのプラグイン。自分も draining を持つ。
+schema_version: 1
+id: timer-runner
+version: 1.0.0
+kind: timer
+project: multi
+title: 定期ジョブと期限付きタイマーを動かす
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule:
+  kind: interval
+  every_s: 30
+  missed: record_only
+capabilities: [run, collect_only, poll_paused, draining]
+knobs: {}
+health:
+  heartbeat_s: 60
+sensitivity: private
+secrets: []
+outputs: []
+depends_on_plugins: [control, timeline, ledger]

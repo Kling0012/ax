@@ -1,0 +1,42 @@
+# 環境の設定の例（S-16.3）。実際の値は ~/.config/ax/profile/<名前>.yaml に置く（git に置かない）。
+# 角括弧 <…> の値は、実環境で置き換える。秘密の値は書かない（場所と変数名だけ）。
+host: example-host
+bind_addr: 127.0.0.1                         # tailnet のアドレスか 127.0.0.1（0.0.0.0 は不可。D-14）
+secrets_dir: ~/.config/ax/secrets
+tmp_dir: /var/lib/ax/tmp
+archive_target: example-archive
+environments_file: config/environments.yaml
+memory_endpoint: https://<memory-host>/mcp/
+model_gateway: https://model-gateway.example.invalid/  # AX の専用ブリッジのゲートウェイ（F-18.1）
+models_file: config/models.yaml
+ntfy_endpoint: https://<notification-host>/
+ntfy_topic: hub
+commander_unit: <commander の unit 名>.service
+ax_state_dir: ~/.local/state/ax
+commander_socket: ${ax_state_dir}/commander/commander.sock
+seat_user: ax-seat
+seat_socket: ${ax_state_dir}/seat/seat.sock
+seats_file: ${ax_state_dir}/seat/seats.yaml
+seat_gate_path: /usr/local/lib/ax-seat/ax
+gate_port: 8909
+gate_peers_file: ${ax_state_dir}/gate/peers.json
+archive_sources: profile/archive-sources.yaml
+env_ssh_targets:
+  - {id: <環境 ID>, host: <tailnet 名>, port: 22}
+instabox_api_base: https://api.instabox.sh/v1
+instabox_machine_id: ""
+box_machine_name: main
+box_machine_id: ""
+sandbox_gate_port: 8931
+archive_dest: {host: <退避先の tailnet 名>, port: 22, user: <退避用のユーザー>}
+public_proxy_ip: <公開入口の tailnet アドレス>
+hq_access:
+  iss: <発行者>
+  jwks_url: <鍵の取得先>
+  aud_secret: hq-access
+  allowed_users_file: hq-allowed-users
+  email_slot: hq-access-email
+
+# Monitor inputs: ${ax_state_dir}/monitor-inputs/{tumu-targets,security-baselines}.json
+# Tumu SSH files: ${secrets_dir}/tumu-watch/{identity,known_hosts}
+# host/ax-up.sh registers each service only after startup and health verification.

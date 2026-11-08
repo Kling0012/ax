@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/seat.enroll_start.json",
+  "title": "seat.enroll_start",
+  "$comment": "SPEC.md:S-6.14; device identity is established at enrollment, not supplied by this request",
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tier": {
+      "enum": [
+        "read",
+        "operate",
+        "irreversible"
+      ]
+    }
+  },
+  "required": [
+    "label",
+    "tier"
+  ],
+  "additionalProperties": false
+}

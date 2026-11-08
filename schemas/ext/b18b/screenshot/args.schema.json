@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b18b/screenshot/args.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["url"],
+  "properties": {
+    "url": {"type": "string", "minLength": 1},
+    "full_page": {"type": "boolean", "default": true},
+    "width": {"type": "integer", "minimum": 320, "maximum": 2560, "default": 1280},
+    "height": {"type": "integer", "minimum": 320, "maximum": 1600, "default": 800},
+    "wait_s": {"type": "number", "minimum": 0, "maximum": 30, "default": 3},
+    "headed": {"type": "boolean", "default": false}
+  }
+}

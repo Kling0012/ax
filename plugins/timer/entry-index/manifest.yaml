@@ -1,0 +1,17 @@
+schema_version: 1
+id: entry-index
+version: 1.0.0
+kind: timer
+project: multi
+title: Service index
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: interval, every_s: 3600, missed: record_only}
+capabilities: [run, collect_only, poll_paused, draining]
+knobs:
+  every_s: {type: integer, default: 3600, min: 1, effective: next_run, title: interval}
+health: {heartbeat_s: 60}
+sensitivity: private
+secrets: []
+outputs: []
+depends_on_plugins: [timeline]

@@ -1,0 +1,5 @@
+# Copy to plugins/registry.d/<bundle>.yaml and merge with the bundle's entries.
+plugins:
+  - id: example-resource
+    kind: resource
+    path: plugins/resource/example-resource/manifest.yaml

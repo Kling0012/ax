@@ -1,0 +1,5 @@
+# sl-change.yaml owns the service. This fragment only declares the shared secret.
+services: {}
+secrets:
+  github-token:
+    file: ${AX_SECRETS_DIR}/github-token

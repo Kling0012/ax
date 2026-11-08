@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/work.request.json",
+  "title": "work.request",
+  "$comment": "SPEC.md:S-6.4,S-7.10; implementation work maps to a complete work-item",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "body": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptance": {
+      "type": "object",
+      "properties": {
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "boundaries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "examples",
+        "boundaries"
+      ],
+      "additionalProperties": false
+    },
+    "verify": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "enum": [
+        "impl",
+        "impl_hard",
+        "summary",
+        "research",
+        "second_opinion",
+        "screen",
+        "assist"
+      ]
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "attachments": {
+      "type": "array",
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]{1,40}$"
+      }
+    }
+  },
+  "required": [
+    "project",
+    "title"
+  ],
+  "additionalProperties": false,
+  "if": {
+    "properties": {
+      "role": {
+        "enum": [
+          "summary",
+          "research",
+          "second_opinion",
+          "screen",
+          "assist"
+        ]
+      }
+    },
+    "required": [
+      "role"
+    ]
+  },
+  "then": {
+    "required": [
+      "body",
+      "target",
+      "revision"
+    ],
+    "not": {
+      "anyOf": [
+        {
+          "required": [
+            "acceptance"
+          ]
+        },
+        {
+          "required": [
+            "verify"
+          ]
+        }
+      ]
+    }
+  },
+  "else": {
+    "required": [
+      "body",
+      "acceptance"
+    ],
+    "not": {
+      "anyOf": [
+        {
+          "required": [
+            "target"
+          ]
+        },
+        {
+          "required": [
+            "revision"
+          ]
+        },
+        {
+          "required": [
+            "attachments"
+          ]
+        }
+      ]
+    }
+  }
+}

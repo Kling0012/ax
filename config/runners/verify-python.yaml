@@ -1,0 +1,11 @@
+# runner verify-python（F-19.2。example-org/example-python 用）。
+name: verify-python
+kind: verify
+image: ax/verify-python:${AX_TAG}
+command: sh -c '{verify}'
+env:
+  CI: "1"
+  UV_CACHE_DIR: /tmp-hdd/uv-cache
+  PIP_CACHE_DIR: /tmp-hdd/pip-cache
+result:
+  source: exit_code

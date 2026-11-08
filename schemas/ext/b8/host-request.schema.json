@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b8/host-request.schema.json",
+  "title": "ホスト見張りへの要求ファイル（S-11.6、F-18.3。形は b8 が決めた。OPEN.md の b8）",
+  "description": "ファイル名 <ULID>.req、中身は 1 行の JSON。書けるのは restart が observer と emergency、deploy と seat-sync が intake。イメージ名・タグ・パス・サービスの定義は書けない。",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {"op": {"const": "restart"}, "name": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,62}$", "not": {"pattern": "\\n"}}},
+      "required": ["op", "name"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {"op": {"enum": ["deploy", "seat-sync"]}},
+      "required": ["op"],
+      "additionalProperties": false
+    }
+  ]
+}

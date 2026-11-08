@@ -1,0 +1,48 @@
+{
+  "id": "b17-4",
+  "aggregation": "b17-1",
+  "implementation": "complete",
+  "migration_readiness": "waiting_for_verified_manifests",
+  "open_dependency": {
+    "reference": "FACTS.md:F-20; core/archiver/engine.py:Archiver._manifest_path",
+    "reason": "Host sources with remove_original=false produce archive/manifests, while enable requires archive/verified for every registered source, including claude-projects. The gate is not weakened."
+  },
+  "checks": [
+    {
+      "test": "T-78",
+      "scope": "fake-local-copy-and-content-checksum",
+      "status": "passed",
+      "cases": ["matching", "same-size-content-mismatch", "unreachable", "unverifiable", "source-changed-after-verify", "original-retained", "cutover-record", "existing-archiver-failure"]
+    },
+    {
+      "test": "T-78",
+      "scope": "archive-host-restricted-key-transfer-and-rrsync-confinement",
+      "status": "not_run",
+      "reason": "Artifact-only task prohibits real hosts, services and network access."
+    },
+    {
+      "test": "T-125",
+      "scope": "temporary-host-and-existing-host-script-python-payload",
+      "status": "passed",
+      "cases": ["no-marker", "old-active", "old-enabled", "latest-t78-failed", "t2-not-passed", "missing-manifest", "malformed-manifest", "four-sources-only", "claude-projects-retained", "keep-original", "changed-file-retained", "restart-failure", "claim-loss", "old-reactivated", "stage6-adapter"]
+    },
+    {
+      "test": "T-125",
+      "scope": "real-stage4-stop-stage6-enable-and-first-reap",
+      "status": "not_run",
+      "reason": "No real unit, restart, removal flag, live profile or original file is touched."
+    },
+    {
+      "test": "T-154",
+      "scope": "temporary-host-and-common-context-fake-runner",
+      "status": "passed",
+      "cases": ["no-control-route", "no-timer-action", "manifest-copy-before-marker-move", "copy-failure", "claim-required", "normal-round-refused", "stop-during-cycle", "stopped-copy-only", "resume-stat-recheck", "stop-resume-records", "record-failure-not-success", "dry-run-no-writes"]
+    },
+    {
+      "test": "T-154",
+      "scope": "real-hostwatch-cycle-shell-entry-flock-and-container-mount-boundaries",
+      "status": "not_run",
+      "reason": "Real services and host mutation are outside this artifact task."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/life_state.update.json",
+  "title": "life_state.update",
+  "$comment": "SPEC.md:S-9.5,S-22.6; the focus and daily-state shapes are explicit",
+  "type": "object",
+  "properties": {
+    "kind": true, "state": true, "since": true, "as_of": true, "date": true,
+    "tz": true, "segments": true
+  },
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "properties": {
+        "kind": {"const": "focus"}, "state": {"enum": ["away", "play", "focus", "break", "shallow"]},
+        "since": {"type": "string", "minLength": 1}, "as_of": {"type": "string", "minLength": 1}
+      },
+      "required": ["kind", "state", "since", "as_of"],
+      "additionalProperties": false
+    },
+    {
+      "properties": {
+        "kind": {"const": "daily"}, "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"}, "tz": {"const": "Asia/Tokyo"},
+        "as_of": {"type": "string", "minLength": 1},
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start": {"type": "string", "minLength": 1}, "end": {"type": "string", "minLength": 1},
+              "state": {"enum": ["away", "play", "focus", "break", "shallow"]},
+              "category": {"enum": ["work", "research", "communication", "media", "play", "other"]},
+              "session_title": {"type": ["string", "null"], "maxLength": 40}
+            },
+            "required": ["start", "end", "state", "category"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["kind", "date", "tz", "as_of", "segments"],
+      "additionalProperties": false
+    }
+  ]
+}

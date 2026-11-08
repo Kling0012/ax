@@ -1,0 +1,38 @@
+# HQ runtime (F-13.1). No host port; host tailscale serve connects to hq.sock.
+services:
+  hq:
+    extends: {file: docker/base.yaml, service: ax-core-base}
+    user: "${AX_HQ_UID}:${AX_HQ_GID}"
+    command: ["python", "-m", "core.hq"]
+    networks:
+      - ax-core
+      - ax-work
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_HQ_UID: ${AX_HQ_UID}
+      AX_HQ_GID: ${AX_HQ_GID}
+      AX_PUBLIC_PROXY_IP: ${AX_PUBLIC_PROXY_IP}
+      AX_HQ_INTAKE_SOCKET: /run/hq-intake/intake.sock
+    volumes:
+      - {type: bind, source: "${AX_HQ_CONFIG_DIR:-${AX_HOME}/config}/hq-access.yaml", target: /ax/config/hq-access.yaml, read_only: true}
+      - {type: bind, source: "${AX_HQ_CONFIG_DIR:-${AX_HOME}/config}/hq-allowed-users.yaml", target: /ax/config/hq-allowed-users.yaml, read_only: true}
+      - {type: bind, source: "${AX_HQ_CONFIG_DIR:-${AX_HOME}/config}/secret-slots.yaml", target: /ax/config/secret-slots.yaml, read_only: true}
+      - {type: bind, source: "${AX_STATE_DIR}/hq", target: /run/hq}
+      - {type: bind, source: "${AX_SECRETS_DIR}/hq-slots", target: /secrets-in}
+      - {type: bind, source: "${AX_STATE_DIR}/hq-intake", target: /run/hq-intake}
+    secrets:
+      - hq-access
+      - hq-allowed-users
+      - core-token-hq
+      - plugin-token-change
+    healthcheck:
+      test: ["CMD", "python", "-m", "core.hq.healthcheck"]
+secrets:
+  plugin-token-change:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/change
+  core-token-hq:
+    file: ${AX_SECRETS_DIR}/core-tokens/hq
+  hq-access:
+    file: ${AX_HQ_ACCESS_AUD_FILE:-${AX_SECRETS_DIR}/hq-access}
+  hq-allowed-users:
+    file: ${AX_SECRETS_DIR}/hq-allowed-users

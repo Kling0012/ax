@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b3/schedule.schema.json",
+  "title": "予定（S-9.4、S-9.5）。終了は開始以降",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "body": { "type": "string", "minLength": 1 },
+    "start_at": { "type": "string", "minLength": 1 },
+    "end_at": { "type": "string", "minLength": 1 },
+    "state": { "enum": ["planned", "done", "cancelled"] },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "required": ["id", "body", "start_at", "end_at", "state"],
+  "additionalProperties": true
+}

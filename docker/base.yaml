@@ -1,0 +1,61 @@
+# サービスの共通の土台（compose の extends で使う。このファイルは -f に並べない）。
+# 使い方（compose.d/<束>.yaml）:
+#   services:
+#     timeline:
+#       extends: {file: docker/base.yaml, service: ax-core-base}   # file は project directory（${AX_HOME}）からの相対
+#       command: ["python", "-m", "core.timeline"]
+# 土台が決めること（D-14、D-2.2）: TMPDIR=/tmp-hdd と AX_TMP_DIR の bind、healthcheck、ログの大きさ、権限の絞り込み。
+# 網の所属は F-18.4 の表に従って選ぶ。ports は持たない（外への待ち受けは各サービスが ${AX_BIND_ADDR}:… で足す）。
+services:
+  ax-base:
+    image: ax/core:${AX_TAG}
+    init: true
+    restart: unless-stopped
+    environment:
+      AX_CORE_SUBNET: ${AX_CORE_SUBNET:-192.0.2.0/25}
+      AX_WORK_SUBNET: ${AX_WORK_SUBNET:-198.51.100.0/25}
+      AX_PUBLISH_REVIEW_SUBNET: ${AX_PUBLISH_REVIEW_SUBNET:-192.0.2.128/26}
+      TMPDIR: /tmp-hdd
+      AX_STATE_DIR: /state
+      AX_HEALTH_PORT: "8080"
+    volumes:
+      - type: bind
+        source: ${AX_TMP_DIR}
+        target: /tmp-hdd
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+    healthcheck:
+      test: ["CMD", "python", "-m", "axcommon.healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  # 中核だけの網（intake、manager、observer、inspector、hq、archiver、gate）
+  ax-core-base:
+    extends:
+      service: ax-base
+    networks:
+      - ax-core
+
+  # 中核と作業側の両方（timeline、ledger、control、resources、memory-connector、worker-pool）
+  ax-both-base:
+    extends:
+      service: ax-base
+    networks:
+      - ax-core
+      - ax-work
+
+  # 作業側だけ（sl-<id>、timer-runner）
+  ax-work-base:
+    extends:
+      service: ax-base
+    networks:
+      - ax-work

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/intake-destinations.schema.json",
+  "title": "config/intake-destinations.yaml（S-6.3）",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)*$"
+      },
+      "title": {
+        "type": "string"
+      },
+      "schema": {
+        "type": "string"
+      },
+      "handler": {
+        "type": "string"
+      },
+      "allowed_from": {
+        "type": "array",
+        "items": {
+          "enum": [
+            "commander",
+            "hq"
+          ]
+        },
+        "minItems": 1
+      },
+      "via": {
+        "type": "array",
+        "items": {
+          "$ref": "common.schema.json#/$defs/via"
+        },
+        "minItems": 1
+      },
+      "tier": {
+        "$ref": "common.schema.json#/$defs/tier"
+      },
+      "irreversible": {
+        "type": "boolean"
+      },
+      "ack": {
+        "enum": [
+          "sync",
+          "async"
+        ]
+      },
+      "default_expiry_min": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "conflict_key": {
+        "type": "string"
+      },
+      "mcp_tool": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "title",
+      "schema",
+      "handler",
+      "allowed_from",
+      "via",
+      "tier"
+    ],
+    "additionalProperties": false
+  }
+}

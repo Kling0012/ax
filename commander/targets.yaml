@@ -1,0 +1,33 @@
+{
+  "targets": [
+    {
+      "name": "agents",
+      "file": "AGENTS.md",
+      "format": "plain",
+      "harnesses": ["codex", "opencode", "pi", "cursor-cli", "copilot-cli"],
+      "install_hint": "リポジトリの根、または各ハーネスの全体設定の置き場"
+    },
+    {
+      "name": "claude",
+      "file": "CLAUDE.md",
+      "format": "plain",
+      "harnesses": ["claude-code", "pi"],
+      "append": ["@RTK.md"],
+      "install_hint": "~/.claude/CLAUDE.md。導入時に各端末で確認する"
+    },
+    {
+      "name": "gemini",
+      "file": "GEMINI.md",
+      "format": "plain",
+      "harnesses": ["gemini-cli"],
+      "install_hint": "~/.gemini/GEMINI.md、または settings.json の context.fileName で AGENTS.md を指す"
+    },
+    {
+      "name": "cursor",
+      "file": ".cursor/rules/ax-commander.mdc",
+      "format": "mdc",
+      "frontmatter": {"description": "AX 司令塔の手引き", "alwaysApply": true},
+      "harnesses": ["cursor"]
+    }
+  ]
+}

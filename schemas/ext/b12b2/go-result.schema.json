@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b12b2/go-result.schema.json",
+  "title": "approvals.result_json.go (SPEC S-6.22)",
+  "type": "object",
+  "properties": {
+    "kind": {"enum": ["removal", "ratify"]},
+    "scope": {"enum": ["build", "removal", "both"]},
+    "excluded": {"type": "array", "items": {"type": "string"}},
+    "changes": {"oneOf": [{"const": "all"}, {"type": "array", "items": {"type": "integer", "minimum": 1, "maximum": 14}, "uniqueItems": true}]},
+    "ratify_approval_id": {"type": ["string", "null"]},
+    "go_md_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "granted_at": {"type": "string", "format": "date-time"}
+  },
+  "required": ["kind", "scope", "excluded", "changes", "ratify_approval_id", "go_md_sha256", "granted_at"],
+  "additionalProperties": false,
+  "oneOf": [
+    {"properties": {"kind": {"const": "removal"}, "scope": {"enum": ["removal", "both"]}, "go_md_sha256": {"type": "null"}}},
+    {"properties": {"kind": {"const": "ratify"}, "ratify_approval_id": {"type": "null"}, "go_md_sha256": {"type": "string"}}}
+  ]
+}

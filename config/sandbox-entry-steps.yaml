@@ -1,0 +1,7 @@
+screenshot:
+  steps:
+    - {tool: browser_navigate, args: {url: "{url}"}}
+    - {adapter: wait, seconds: "{wait_s}"}
+    - {tool: screenshot, args: {}}
+  collect: {from_step: 3, kind: image, name: page.png}
+  ignored_args: [full_page, width, height, headed]

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/verification/evidence.schema.json",
+  "type": "object",
+  "required": ["repo", "base_sha", "head_sha", "recipe_version", "command", "validation_kind", "attempt", "started_at", "ended_at", "exit_code", "timed_out", "complete", "output_tail", "test_names", "environment", "execution_id", "executed", "output_truncated", "failure_evidence", "revision_role", "diagnostics_redacted"],
+  "additionalProperties": false,
+  "properties": {
+    "repo": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+    "base_sha": {"type": "string", "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"},
+    "head_sha": {"type": "string", "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"},
+    "recipe_version": {"type": "string", "minLength": 1},
+    "command": {"type": "string", "minLength": 1},
+    "validation_kind": {"type": "string", "minLength": 1},
+    "attempt": {"type": "string", "pattern": "^[a-z0-9-]{1,40}$"},
+    "started_at": {"type": ["string", "null"]},
+    "ended_at": {"type": ["string", "null"]},
+    "exit_code": {"type": ["integer", "null"]},
+    "timed_out": {"type": ["boolean", "null"]},
+    "complete": {"type": "boolean"},
+    "output_tail": {"type": ["string", "null"]},
+    "test_names": {"type": ["array", "null"], "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "environment": {"type": "string", "minLength": 1},
+    "execution_id": {"type": ["string", "null"]},
+    "executed": {"type": "boolean"},
+    "output_truncated": {"type": "boolean"},
+    "failure_evidence": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
+    "revision_role": {"enum": ["base", "head"]},
+    "diagnostics_redacted": {"type": "boolean"}
+  },
+  "allOf": [{"if": {"properties": {"complete": {"const": true}}}, "then": {"properties": {
+    "started_at": {"type": "string", "format": "date-time"}, "ended_at": {"type": "string", "format": "date-time"},
+    "exit_code": {"type": "integer"}, "timed_out": {"const": false}, "executed": {"const": true},
+    "output_truncated": {"const": false}, "output_tail": {"type": "string"}, "execution_id": {"type": "string", "minLength": 1}
+  }}}]
+}

@@ -1,0 +1,5 @@
+*
+!axcommon/
+!axcommon/**
+**/__pycache__
+**/*.pyc

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/plugin-status.schema.json",
+  "title": "GET /status（S-4.4）",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "$ref": "common.schema.json#/$defs/mode"
+    },
+    "knobs": {
+      "type": "object"
+    },
+    "running": {
+      "type": "array",
+      "items": {}
+    },
+    "queued": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "last_run": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "mode",
+    "knobs",
+    "running",
+    "queued",
+    "last_run"
+  ]
+}

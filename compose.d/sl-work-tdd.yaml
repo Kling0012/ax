@@ -1,0 +1,40 @@
+# 標準のサブループ work-tdd のサービス（S-7.10、F-18.3）。雛形 templates/subloop/compose.sl.yaml.tmpl に、work.git への push と ax.git の読み取りを足した形。
+# 網は ax-work だけ。`ports:` は持たない。入口からの項目は、制御 API の中継（POST /v1/plugins/work-tdd/items）が POST /items で渡す（S-5.7）。
+# 書けるのは work.git（ステージング）と work（作業置き場）だけ。ax.git は読み取り専用（書けるのは intake だけ。F-18.3）。
+services:
+  sl-work-tdd:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: ["python", "-m", "runtime.subloop"]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: work-tdd
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+      AX_WORK_ROOT: /work
+      AX_REMOTE_WORK_GIT: /git/work.git
+      AX_REPO_AX: /git/ax.git
+    volumes:
+      - sl-work-tdd-data:/data
+      - type: bind
+        source: ${AX_HOME}/../work
+        target: /work
+      - type: bind
+        source: ${AX_HOME}/../work.git
+        target: /git/work.git
+      - type: bind
+        source: ${AX_HOME}/../ax.git
+        target: /git/ax.git
+        read_only: true
+    secrets:
+      - control-apply-token
+      - plugin-token-work-tdd
+
+volumes:
+  sl-work-tdd-data: {}
+
+secrets:
+  plugin-token-work-tdd:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/work-tdd

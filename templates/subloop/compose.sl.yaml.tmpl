@@ -1,0 +1,33 @@
+# サブループ sl-@@ID@@ のサービス定義の雛形（F-18.3、D-6.1）。`@@ID@@` をサブループの ID に置き換えて compose.d/sl-@@ID@@.yaml にする。
+# - イメージは共通の ax/runtime:${AX_TAG}（サブループごとのビルドは無い）。
+# - 網は ax-work だけ。`ports:` は持たない（持つ定義は CI が拒否する）。
+# - 秘密は、このサブループのトークン plugin-token-@@ID@@ と、制御 API からの /apply を受ける control-apply-token だけ。
+#   manifest の secrets にある秘密（例 github-token）は、必要なときだけ下の secrets に足す（compose.yaml の宣言にある名前）。
+services:
+  sl-@@ID@@:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: ["python", "-m", "runtime.subloop"]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: "@@ID@@"
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+      AX_WORK_ROOT: /work
+    volumes:
+      - sl-@@ID@@-data:/data
+      - type: bind
+        source: ${AX_HOME}/../work
+        target: /work
+    secrets:
+      - control-apply-token
+      - plugin-token-@@ID@@
+
+volumes:
+  sl-@@ID@@-data: {}
+
+secrets:
+  plugin-token-@@ID@@:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/@@ID@@

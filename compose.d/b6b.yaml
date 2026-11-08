@@ -1,0 +1,92 @@
+# B6b の束のサービス（F-18.2、F-18.4、F-19）: egress-proxy と、作業用イメージのビルド専用のサービス（profiles: [build]。起動しない）。
+# launcher（ax-env-run の B6 最小版）はホストのスクリプトで、compose のサービスではない（host/env-module-min/）。
+# 実行: docker compose -p ax --project-directory ${AX_HOME} --env-file profile.env --env-file current.env -f compose.yaml -f compose.d/*.yaml …
+
+# ジョブ用コンテナの網。docker run --network ax-job（F-18.2）が引ける名前にする。compose.yaml は name を持たず、そのままだと実体の名前が ax_ax-job になる（OPEN.md）。
+networks:
+  ax-job:
+    name: ax-job
+
+services:
+  # ジョブ用コンテナの外向きを許可先だけに絞る中継（F-18.2）。ax-work（固定アドレス .2）と ax-job の両方に足を持つ唯一のコンテナ（F-18.4）。
+  # ports は持たない。ax-job のコンテナは名前 egress-proxy で届く（3128 プロキシ、3425 モデルの入口）。許可ファイルは launcher が書く ${AX_STATE_DIR}/egress を ro で見る。
+  egress-proxy:
+    extends:
+      file: docker/base.yaml
+      service: ax-base
+    command: ["python", "/ax/core/egress-proxy/egress_proxy.py"]
+    user: "${AX_UID}:${AX_GID}"
+    read_only: true
+    tmpfs:
+      - /tmp
+    environment:
+      EGRESS_ALLOW_DIR: /egress
+      EGRESS_MODEL_GATEWAY: ${AX_MODEL_GATEWAY}
+      # ゲート（resources、固定アドレス .11）への素の HTTP の中継の宛先（F-18.2）。ポートは profile の sandbox_gate_port（F-18.6 の表に変数が無い。OPEN.md）
+      EGRESS_GATE_HOST: ${AX_FW_RESOURCES_IP:-198.51.100.11}
+      EGRESS_GATE_PORT: ${AX_SANDBOX_GATE_PORT:-8931}
+      EGRESS_PROXY_PORT: "3128"
+      EGRESS_GATEWAY_PORT: "3425"
+    volumes:
+      - type: bind
+        source: ${AX_STATE_DIR}/egress
+        target: /egress
+        read_only: true
+    networks:
+      ax-work:
+        ipv4_address: ${AX_EGRESS_PROXY_IP:-198.51.100.2}
+      ax-job: {}
+
+  # --- 作業用イメージのビルド専用（host/ax-deploy.sh が docker compose build する。起動しない。F-19） ---
+  img-verify-node:
+    profiles: ["build"]
+    image: ax/verify-node:${AX_TAG}
+    build:
+      context: runtime/images/verify/node
+  img-verify-python:
+    profiles: ["build"]
+    image: ax/verify-python:${AX_TAG}
+    build:
+      context: runtime/images/verify/python
+  img-verify-dotnet:
+    profiles: ["build"]
+    image: ax/verify-dotnet:${AX_TAG}
+    build:
+      context: runtime/images/verify/dotnet
+  img-agent-cli:
+    profiles: ["build"]
+    image: ax/agent-cli:${AX_TAG}
+    build:
+      context: runtime/images/agent-cli
+  img-agent-cli-node:
+    profiles: ["build"]
+    image: ax/agent-cli-node:${AX_TAG}
+    depends_on: [img-verify-node]
+    build:
+      context: runtime/images/agent-cli
+      args:
+        BASE: ax/verify-node:${AX_TAG}
+  img-agent-cli-python:
+    profiles: ["build"]
+    image: ax/agent-cli-python:${AX_TAG}
+    depends_on: [img-verify-python]
+    build:
+      context: runtime/images/agent-cli
+      args:
+        BASE: ax/verify-python:${AX_TAG}
+  img-agent-cli-dotnet:
+    profiles: ["build"]
+    image: ax/agent-cli-dotnet:${AX_TAG}
+    depends_on: [img-verify-dotnet]
+    build:
+      context: runtime/images/agent-cli
+      args:
+        BASE: ax/verify-dotnet:${AX_TAG}
+  img-chat-json:
+    profiles: ["build"]
+    image: ax/chat-json:${AX_TAG}
+    build:
+      context: .
+      dockerfile: runtime/images/chat-json/Dockerfile
+      args:
+        JSONSCHEMA_VERSION: ${AX_JSONSCHEMA_VERSION:-}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/todo-transition.schema.json",
+  "title": "POST /v1/todos/{id}/transition（S-9.3）",
+  "type": "object",
+  "properties": {
+    "to": {
+      "$ref": "common.schema.json#/$defs/todo_state"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "check_at": {
+      "$ref": "common.schema.json#/$defs/ts_any"
+    },
+    "expected_history_seq": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "to"
+  ],
+  "additionalProperties": false
+}

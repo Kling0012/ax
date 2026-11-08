@@ -1,0 +1,151 @@
+# config/environments.yaml の配備下書き（2026-11-08 作成。prep-config-files.md の調査結果に基づく）。
+# 配備先: AX の設定ディレクトリ（B14b の台帳作成、B17 の実機 compose 起動より前）。
+# スキーマ: environments.example.yaml と同じ（S-25.2）。検査は core/resources/envs/registry/loader.py
+#   （load_environment_file）と schemas/environment.schema.json で通している（prep-config-files.md 参照）。
+# 秘密の値は書かない（loader が値らしい鍵を検知したら拒否する）。接続先の SSH 別名・ポート・ユーザーの
+#   本来の置き場所は profile の env_ssh_targets（FACTS F-2）。example の ${AX_ENV_*} 参照を展開する
+#   コードはリポジトリに無いため、この下書きは実値を書く形にした（要確認 1 を参照）。
+# host の値は FACTS F-2 の tailnet 名（MagicDNS）。コンテナ内で引けることの実測が F-2 にある。
+#   ホスト側 ~/.ssh/config の SSH 別名はコメントに書いた（コンテナからは別名を引けない）。
+contract_supported: "1.0"
+environments:
+  - id: example-local
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "local-host.invalid"
+      user: example-user
+      port: 22
+    conn_credential: {slot: env-ssh-example-local, place: secrets_dir/env-ssh-example-local}
+    os: linux
+    capabilities: [docker, cloudflare-cli, ci-light, hibi-state-read, security-audit]
+    entrypoints:
+      ci-run: {run: entrypoints/bin/ci-run}
+      hibi-state: {run: entrypoints/bin/hibi-state}
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+      cf-read: {run: entrypoints/bin/cf-read}
+    data_classes: [public, private, sensitive]
+    secrets_allowed: false
+    work_credentials:
+      - {slot: hibi-server-url, location: "~/.config/hq-hibi-bridge/env", var: HIBI_SERVER_URL}
+    secret_targets:
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  # 環境 ID は参照元との整合を確認してから変更する。
+  - id: nodec
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "legacy-host.invalid"
+      user: example-user
+      port: 22
+    conn_credential: {slot: tailscale-ssh, place: profile:tailscale-ssh}   # 鍵なしの Tailscale SSH
+    os: linux
+    capabilities: [steam-workshop-upload, x-session]
+    entrypoints:
+      release-both: {run: entrypoints/bin/release-both}
+      x-collect: {run: entrypoints/bin/x-collect}
+      x-user-posts: {run: entrypoints/bin/x-user-posts, enabled: false}
+      x-post: {run: entrypoints/bin/x-post}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: discord-webhook, path: "~/.config/dreamforge/discord-webhook", mode: "600", max_bytes: 4096}
+      - {name: steam-user, path: "~/.config/dreamforge/steam-user", mode: "600", max_bytes: 256}
+      - {name: workshop-item-id, path: "~/.config/dreamforge/workshop-item-id", mode: "600", max_bytes: 256}
+      - {name: x-cookies, path: "~/.xactions/cookies.json", mode: "600", max_bytes: 65536}
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  - id: nodeb
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "archive-host.invalid"
+      user: root
+      port: 2202
+    conn_credential: {slot: env-ssh-nodeb, place: secrets_dir/env-ssh-nodeb}
+    os: linux
+    capabilities: [archive-store, "deploy-target:hibi-server", security-audit]
+    entrypoints:
+      hibi-server-deploy: {run: entrypoints/bin/hibi-server-deploy}
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  - id: noded
+    adapter: ssh-host
+    audit_transport: ssh-readonly
+    connect:
+      kind: ssh
+      host: "compute-host.invalid"
+      user: example-user
+      port: 22
+    conn_credential: {slot: env-ssh-noded, place: secrets_dir/env-ssh-noded}
+    os: linux
+    capabilities: [gpu, ci-heavy, security-audit]
+    entrypoints:
+      ci-run: {run: entrypoints/bin/ci-run}
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: hf-token, path: /srv/example/cache/hf/token, mode: "600", max_bytes: 4096}
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: rental
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  - id: nodee
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "remote-host.invalid"
+      user: example-user
+      port: 22
+    conn_credential: {slot: env-ssh-nodee, place: secrets_dir/env-ssh-nodee}
+    os: linux
+    capabilities: [security-audit]
+    entrypoints:
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial

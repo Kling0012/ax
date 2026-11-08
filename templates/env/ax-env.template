@@ -1,0 +1,74 @@
+# templates/env/ax-env.template
+#
+# このファイルは見本です。実物は ${ax_state_dir}/deploy/profile.env で、
+# host/ax-env.sh が profile から自動で作ります。手で編集しないでください。
+# （実物の先頭にも「host/ax-env.sh が profile から作った。手で直さない」と書いています）
+#
+# この見本が示すのは変数の「名前と形」だけです。値は実環境のものに置き換えます。
+# 一覧は axcommon/profile.py の MAPPING のとおりです。
+#
+# 必須の変数（axcommon/profile.py の REQUIRED に対応。空では通りません）:
+#   AX_HOST, AX_BIND_ADDR, AX_SECRETS_DIR, AX_TMP_DIR, AX_STATE_DIR,
+#   AX_COMMANDER_DIR, AX_ARCHIVE_TARGET, AX_MEMORY_ENDPOINT, AX_MODEL_GATEWAY,
+#   AX_NTFY_ENDPOINT, AX_NTFY_TOPIC, AX_ENVIRONMENTS_FILE, AX_MODELS_FILE
+# 任意の変数:
+#   AX_PUBLIC_PROXY_IP（空でも可）, AX_GATE_PORT（空なら既定 8909）
+#
+# 使い方: docker compose --env-file profile.env --env-file current.env で渡します（host/ax-up.sh が自動で行います）。
+#
+
+# 既定の AX_HOME（axcommon/profile.py の DEFAULT_AX_HOME = ~/.local/share/ax/prod）
+AX_HOME=/home/<user>/.local/share/ax/prod
+
+# 動かすホストの名前
+AX_HOST=host-a
+
+# 待ち受けるアドレス（tailnet か 127.0.0.1。0.0.0.0 は不可）
+AX_BIND_ADDR=127.0.0.1
+
+# ホストの秘密置き場（絶対パス）
+AX_SECRETS_DIR=/home/<user>/.config/ax/secrets
+
+# 一時置き場（絶対パス）
+AX_TMP_DIR=/var/lib/ax/tmp
+
+# ホストの状態置き場（絶対パス。/state の実体）
+AX_STATE_DIR=/home/<user>/.local/state/ax
+
+# commander の受け口のソケットの置き場（commander_socket のディレクトリ）
+AX_COMMANDER_DIR=/home/<user>/.local/state/ax/commander
+
+# 退避先の環境 ID
+AX_ARCHIVE_TARGET=host-b
+
+# agent-memory の接続先
+AX_MEMORY_ENDPOINT=https://memory.example.invalid/mcp/
+
+# モデルを呼ぶ先
+AX_MODEL_GATEWAY=https://model-gateway.example.invalid/
+
+# 通知を送る先
+AX_NTFY_ENDPOINT=https://notifications.example.invalid/
+
+# 通知の topic
+AX_NTFY_TOPIC=hub
+
+# 実行環境の台帳の実ファイル（AX_HOME からの相対パス）
+AX_ENVIRONMENTS_FILE=config/environments.example.yaml
+
+# モデルの登録簿の実ファイル（AX_HOME からの相対パス）
+AX_MODELS_FILE=config/models.example.yaml
+
+# host-b の tailnet アドレス（任意。空でも可）
+AX_PUBLIC_PROXY_IP=100.x.x.x
+
+# tailnet の入口 gate の待ち受けポート（任意。空なら 8909）
+AX_GATE_PORT=8909
+
+# 実行しているユーザーの uid・gid（axcommon/profile.py が自動で入れます）
+AX_UID=1000
+AX_GID=1000
+
+# HQ の uid・gid（ax-hq ユーザーが居なければ空です。host/lib/hostwatch/envfinish.py が入れます）
+AX_HQ_UID=
+AX_HQ_GID=

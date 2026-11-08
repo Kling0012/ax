@@ -1,0 +1,529 @@
+# S-6.22. JSON is a YAML subset. Existing rows in other fragments are not overridden.
+[
+  {
+    "name": "approval.deny",
+    "title": "approval.deny",
+    "schema": "schemas/dest/approval.deny.json",
+    "handler": "internal:approval.deny",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "approval.grant",
+    "title": "approval.grant",
+    "schema": "schemas/dest/approval.grant.json",
+    "handler": "internal:approval.grant",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "approval.withdraw",
+    "title": "approval.withdraw",
+    "schema": "schemas/dest/approval.withdraw.json",
+    "handler": "internal:approval.withdraw",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_approval_withdraw"
+  },
+  {
+    "name": "change.cancel_merge",
+    "title": "change.cancel_merge",
+    "schema": "schemas/dest/change.cancel_merge.json",
+    "handler": "not-implemented:change.cancel_merge",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_change_cancel_merge"
+  },
+  {
+    "name": "change.request",
+    "title": "change.request",
+    "schema": "schemas/dest/change.request.json",
+    "handler": "not-implemented:change.request",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_change_request"
+  },
+  {
+    "name": "claim.op",
+    "title": "claim.op",
+    "schema": "schemas/dest/claim.op.json",
+    "handler": "not-implemented:claim.op",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_claim"
+  },
+  {
+    "name": "commitment.update",
+    "title": "commitment.update",
+    "schema": "schemas/dest/commitment.update.json",
+    "handler": "not-implemented:commitment.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_commitment"
+  },
+  {
+    "name": "core.change",
+    "title": "core.change",
+    "schema": "schemas/dest/core.change.json",
+    "handler": "not-implemented:core.change",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_core_change"
+  },
+  {
+    "name": "decision.record",
+    "title": "decision.record",
+    "schema": "schemas/dest/decision.record.json",
+    "handler": "not-implemented:decision.record",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_decide"
+  },
+  {
+    "name": "go.confirm",
+    "title": "go.confirm",
+    "schema": "schemas/dest/go.confirm.json",
+    "handler": "internal:go.confirm",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_go_confirm"
+  },
+  {
+    "name": "goal.update",
+    "title": "goal.update",
+    "schema": "schemas/dest/goal.update.json",
+    "handler": "not-implemented:goal.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_goal"
+  },
+  {
+    "name": "ledger.complete",
+    "title": "ledger.complete",
+    "schema": "schemas/dest/ledger.complete.json",
+    "handler": "not-implemented:ledger.complete",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_done"
+  },
+  {
+    "name": "ledger.park",
+    "title": "ledger.park",
+    "schema": "schemas/dest/ledger.park.json",
+    "handler": "not-implemented:ledger.park",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_park"
+  },
+  {
+    "name": "life_state.update",
+    "title": "life_state.update",
+    "schema": "schemas/dest/life_state.update.json",
+    "handler": "not-implemented:life_state.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_life"
+  },
+  {
+    "name": "schedule.update",
+    "title": "schedule.update",
+    "schema": "schemas/dest/schedule.update.json",
+    "handler": "not-implemented:schedule.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_schedule"
+  },
+  {
+    "name": "seat.add",
+    "title": "seat.add",
+    "schema": "schemas/dest/seat.add.json",
+    "handler": "not-implemented:seat.add",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.enroll_start",
+    "title": "seat.enroll_start",
+    "schema": "schemas/dest/seat.enroll_start.json",
+    "handler": "not-implemented:seat.enroll_start",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.lock",
+    "title": "seat.lock",
+    "schema": "schemas/dest/seat.lock.json",
+    "handler": "not-implemented:seat.lock",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.revoke",
+    "title": "seat.revoke",
+    "schema": "schemas/dest/seat.revoke.json",
+    "handler": "not-implemented:seat.revoke",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_seat_revoke"
+  },
+  {
+    "name": "seat.tier",
+    "title": "seat.tier",
+    "schema": "schemas/dest/seat.tier.json",
+    "handler": "not-implemented:seat.tier",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.unlock",
+    "title": "seat.unlock",
+    "schema": "schemas/dest/seat.unlock.json",
+    "handler": "not-implemented:seat.unlock",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "secret.push",
+    "title": "secret.push",
+    "schema": "schemas/dest/secret.push.json",
+    "handler": "not-implemented:secret.push",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "subloop.create",
+    "title": "subloop.create",
+    "schema": "schemas/dest/subloop.create.json",
+    "handler": "not-implemented:subloop.create",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_subloop_create"
+  },
+  {
+    "name": "work.cancel",
+    "title": "work.cancel",
+    "schema": "schemas/dest/work.cancel.json",
+    "handler": "not-implemented:work.cancel",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_cancel"
+  },
+  {
+    "name": "work.request",
+    "title": "work.request",
+    "schema": "schemas/dest/work.request.json",
+    "handler": "not-implemented:work.request",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_work"
+  },
+  {
+    "name": "work.resume",
+    "title": "work.resume",
+    "schema": "schemas/dest/work.resume.json",
+    "handler": "not-implemented:work.resume",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_resume"
+  },
+  {
+    "name": "work.stop",
+    "title": "work.stop",
+    "schema": "schemas/dest/work.stop.json",
+    "handler": "not-implemented:work.stop",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_stop"
+  }
+]

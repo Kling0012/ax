@@ -1,0 +1,12 @@
+# runner verify-node（F-19.2。example-org/example-node 用）。command の {verify} は依頼の verify の文字列で、sh -c に渡す（呼び出し元はイメージを指定できない）。
+# モデルを呼ばないので、ANTHROPIC_* は渡さない。依存の取得が要るときは allow_hosts にレジストリの FQDN を入れる。
+name: verify-node
+kind: verify
+image: ax/verify-node:${AX_TAG}
+command: sh -c '{verify}'
+env:
+  CI: "1"
+  npm_config_cache: /tmp-hdd/npm-cache
+  PNPM_HOME: /tmp-hdd/pnpm
+result:
+  source: exit_code

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/outbox-entry.schema.json",
+  "title": "outbox の1行（S-2.2、D-2.2。axcommon.events が書く）",
+  "type": "object",
+  "properties": {
+    "target": {
+      "enum": [
+        "timeline",
+        "ledger",
+        "memory-connector"
+      ]
+    },
+    "path": {
+      "type": "string"
+    },
+    "method": {
+      "enum": [
+        "POST",
+        "PUT"
+      ]
+    },
+    "body": {},
+    "queued_at": {
+      "$ref": "common.schema.json#/$defs/ts"
+    },
+    "attempts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/ulid"
+    }
+  },
+  "required": [
+    "target",
+    "path",
+    "method",
+    "body",
+    "queued_at",
+    "id"
+  ],
+  "additionalProperties": false
+}

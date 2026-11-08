@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/collection/targets.schema.json",
+  "type": "object",
+  "properties": {
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ci_sources": {
+            "type": "array"
+          },
+          "outbound_allowlist": {
+            "type": "array"
+          },
+          "priority_labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowed_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "untrusted_forbidden_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trusted_authors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "issue_repo": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          },
+          "implementation_repo": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          },
+          "merge_method": {
+            "enum": [
+              "merge",
+              "squash",
+              "rebase"
+            ]
+          },
+          "execution_cap": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "test_recipe": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object",
+                "minProperties": 1
+              }
+            ]
+          },
+          "state_labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "contribution": {
+            "type": "object"
+          },
+          "verify_runner": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "ci_sources",
+          "outbound_allowlist",
+          "priority_labels",
+          "allowed_paths",
+          "untrusted_forbidden_paths",
+          "trusted_authors",
+          "issue_repo",
+          "implementation_repo",
+          "merge_method",
+          "execution_cap",
+          "test_recipe"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "targets"
+  ],
+  "additionalProperties": false
+}

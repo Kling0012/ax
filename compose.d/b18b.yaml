@@ -1,0 +1,9 @@
+# B18b は既存の resources の拡張として動く。箱と Windows はプラグインにしない。
+# 接続や資格は b14b1/b18a の組み立てに従う。この断片は新しい待受を持たない。
+services:
+  resources:
+    environment:
+      AX_RESOURCES_EXT_DIR: /ax/core/resources/ext
+  worker-pool:
+    environment:
+      AX_WORKER_POOL_EXT_DIR: /ax/core/resources/ext

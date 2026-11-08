@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/todo-answer.schema.json",
+  "title": "POST /v1/todos/{id}/answer（S-9.3）",
+  "type": "object",
+  "properties": {
+    "answer": {
+      "type": "string"
+    },
+    "answer_source": {
+      "enum": [
+        "hq",
+        "relay"
+      ]
+    },
+    "quote": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "answer"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "answer_source": {
+            "const": "relay"
+          }
+        },
+        "required": [
+          "answer_source"
+        ]
+      },
+      "then": {
+        "required": [
+          "quote"
+        ]
+      }
+    }
+  ]
+}

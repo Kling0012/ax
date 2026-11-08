@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/schedule.update.json",
+  "title": "schedule.update",
+  "$comment": "SPEC.md:S-9.5,S-22.6; mirrors the ledger schedule create, patch, and transition forms",
+  "type": "object",
+  "properties": {
+    "op": true, "id": true, "body": true, "start_at": true, "end_at": true,
+    "state": true, "version": true, "to": true, "reason": true
+  },
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "properties": {
+        "op": {"const": "create"}, "id": {"type": "string", "minLength": 1}, "body": {"type": "string", "minLength": 1},
+        "start_at": {"type": "string", "minLength": 1}, "end_at": {"type": "string", "minLength": 1}, "state": {"enum": ["planned", "done", "cancelled"]}
+      },
+      "required": ["op", "id", "body", "start_at", "end_at", "state"],
+      "additionalProperties": false
+    },
+    {
+      "properties": {
+        "op": {"const": "update"}, "id": {"type": "string", "minLength": 1}, "version": {"type": "integer", "minimum": 1},
+        "body": {"type": "string", "minLength": 1}, "start_at": {"type": "string", "minLength": 1}, "end_at": {"type": "string", "minLength": 1}
+      },
+      "required": ["op", "id", "version"],
+      "anyOf": [{"required": ["body"]}, {"required": ["start_at"]}, {"required": ["end_at"]}],
+      "additionalProperties": false
+    },
+    {
+      "properties": {
+        "op": {"const": "transition"}, "id": {"type": "string", "minLength": 1}, "version": {"type": "integer", "minimum": 1},
+        "to": {"enum": ["planned", "done", "cancelled"]}, "reason": {"type": "string", "minLength": 1}
+      },
+      "required": ["op", "id", "version", "to", "reason"],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+services:
+  sl-x-posts:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: [python, -m, runtime.subloop]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: x-posts
+      AX_PLUGIN_DIR: /ax/plugins/timer/x-posts
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+    volumes:
+      - x-posts-data:/data
+    secrets:
+      - control-apply-token
+      - plugin-token-x-posts
+      - x-session-cookie
+  sl-x-posts-draft:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: [python, -m, runtime.subloop]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: x-posts-draft
+      AX_PLUGIN_DIR: /ax/plugins/timer/x-posts
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+    volumes:
+      - x-posts-draft-data:/data
+    secrets:
+      - control-apply-token
+      - plugin-token-x-posts-draft
+volumes:
+  x-posts-data: {}
+  x-posts-draft-data: {}
+secrets:
+  plugin-token-x-posts:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/x-posts
+  plugin-token-x-posts-draft:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/x-posts-draft
+  x-session-cookie:
+    file: ${AX_SECRETS_DIR}/x-session-cookie

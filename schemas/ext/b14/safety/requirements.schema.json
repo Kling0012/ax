@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/safety/requirements.schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "source", "text", "status", "evidence"],
+    "additionalProperties": false,
+    "properties": {
+      "id": {"type": "string", "minLength": 1},
+      "source": {"type": "string", "minLength": 1},
+      "text": {"type": "string", "minLength": 1},
+      "status": {"enum": ["pending", "done"]},
+      "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}}
+    }
+  }
+}

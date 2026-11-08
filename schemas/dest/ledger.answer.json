@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/ledger.answer.json",
+  "title": "ledger.answer",
+  "$comment": "SPEC.md:S-6.9,S-9.3; relay quote is required by the authenticated ingress policy",
+  "type": "object",
+  "properties": {
+    "todo_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "answer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quote": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "todo_id",
+    "answer"
+  ],
+  "additionalProperties": false
+}

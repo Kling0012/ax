@@ -1,0 +1,24 @@
+# S-23.8。既存の行き先だけを拡張する。
+- name: permission.change
+  title: 継続許可の登録
+  schema: schemas/dest/permission.change.json
+  handler: http://control:8080/v1/permissions
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: irreversible
+  irreversible: true
+  ack: sync
+  default_expiry_min: 60
+- name: control.command
+  title: プラグインの制御
+  schema: schemas/dest/control.command.json
+  handler: http://control:8080/v1/commands
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  # tier_when の判定は b16b/preflight.py が一覧から行う。
+  ack: sync
+  default_expiry_min: 60
+  conflict_key: "control:{target}:{op}:{args.name}"
+  mcp_tool: ax_control

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b3/promise.schema.json",
+  "title": "約束（S-9.4、S-9.5）。関連 ToDo ID と期限は必須",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "body": { "type": "string", "minLength": 1 },
+    "state": { "enum": ["open", "done", "cancelled"] },
+    "todo_id": { "type": "string", "minLength": 1 },
+    "due_at": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "required": ["id", "body", "state", "todo_id", "due_at"],
+  "additionalProperties": true
+}

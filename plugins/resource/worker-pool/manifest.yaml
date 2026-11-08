@@ -1,0 +1,106 @@
+# worker-pool の宣言（S-4.2）。調整項目は S-4.3 の表のとおり。
+schema_version: 1
+id: worker-pool
+version: 0.1.0
+kind: resource
+project: multi
+title: ワーカーのジョブを受けてモデルを選んで実行する
+image: ax/core:${AX_TAG}
+execution: llm
+schedule:
+  kind: interval
+  every_s: 1
+  missed: record_only
+capabilities: [run, collect_only, poll_paused, draining]
+health:
+  heartbeat_s: 60
+sensitivity: private
+roles: [summary, research, second_opinion, screen, assist, test_design, impl, impl_hard, review, review_final, manager, backup_manager]
+secrets: [model-gateway-key, jev-key, launcher-ssh-key]
+outputs: []
+depends_on_plugins: [resources]
+knobs:
+  role_candidates:
+    type: list
+    default: []
+    effective: next_run
+    who: [user]
+    title: 役割ごとの同額時の既定候補の順（S-8.3）。適格候補を制限しない
+  family_cap:
+    type: string
+    default: ""
+    effective: next_run
+    who: [user]
+    title: 系統ごとの同時実行上限（S-8.7）
+  model_cap:
+    type: string
+    default: ""
+    effective: next_run
+    who: [user]
+    title: モデルごとの同時実行上限（S-8.7）
+  jev_enabled:
+    type: boolean
+    default: true
+    effective: next_run
+    who: [user]
+    title: Jev がモデル説明と作業の適合を判定するかを決める（F-7.4）
+  lower_fallback_enabled:
+    type: boolean
+    default: true
+    effective: next_run
+    who: [user]
+    title: 下位候補への切替を許可するか（S-8.4）
+  lower_fallback_wait_s:
+    type: integer
+    default: 300
+    min: 0
+    max: 3600
+    effective: next_run
+    who: [user]
+    title: 下位候補への切り替え前に待つ秒数（S-8.4）
+  model_descriptions:
+    type: string
+    default: ""
+    effective: next_run
+    who: [user, manager]
+    title: 登録モデルの用途・能力と難しい作業向けの説明（S-8.3）
+  promotion_passes:
+    type: integer
+    default: 3
+    min: 1
+    max: 20
+    effective: next_run
+    who: [user]
+    title: 昇格に要る連続合格の回数（S-8.5）
+  demotion_failures:
+    type: integer
+    default: 2
+    min: 1
+    max: 20
+    effective: next_run
+    who: [user]
+    title: 降格に要る連続不合格の回数（S-8.5）
+  free_success_threshold:
+    type: number
+    default: 0.7
+    min: 0.0
+    max: 1.0
+    effective: next_run
+    who: [user]
+    title: 無料モデルの成功率の下限（S-8.5）
+  free_minimum_runs:
+    type: integer
+    default: 3
+    min: 2
+    max: 100
+    effective: next_run
+    who: [user]
+    title: 成功率を判定する最低試行数（S-8.5）
+  free_recent_failure_min:
+    type: integer
+    default: 60
+    min: 0
+    max: 1440
+    effective: next_run
+    who: [user]
+    title: 直近の能力上の失敗で通常候補から外す期間（分）（S-8.5）

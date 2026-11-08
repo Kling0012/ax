@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b18b/box/probe.schema.json",
+  "title": "Box probe result (S-25.31.3)",
+  "type": "object",
+  "required": ["contract", "capabilities_checked", "runner", "machines", "machine_state", "cost_micros_today", "cost_micros_month", "tools_seen", "disk_free_mib", "image", "upgrade_available", "checked_at", "free_ok"],
+  "properties": {
+    "contract": {"type": ["string", "integer"]},
+    "capabilities_checked": {
+      "type": "object",
+      "required": ["linux-sandbox", "web-screenshot", "web-screenshot-full", "web-gui", "sandbox-desktop", "scheduled-publisher-cli", "docker"],
+      "additionalProperties": {"enum": ["ok", "unverified"]}
+    },
+    "runner": {"enum": ["ok", "missing", "unknown", "unverified"]},
+    "runner_version": {"type": "string"},
+    "machines": {"type": ["integer", "null"], "minimum": 0},
+    "machine_state": {"enum": ["running", "hibernated", "unknown"]},
+    "prev_machine_state": {"enum": ["running", "hibernated", "unknown"]},
+    "machine_name": {"type": "string"},
+    "machine_id": {"type": "string"},
+    "cost_micros_today": {"type": ["integer", "null"], "minimum": 0},
+    "cost_micros_month": {"type": ["integer", "null"], "minimum": 0},
+    "tools_seen": {"type": "integer", "minimum": 0},
+    "disk_free_mib": {"type": ["number", "null"], "minimum": 0},
+    "image": {"type": "string"},
+    "upgrade_available": {"type": "boolean"},
+    "last_saved_at_ms": {"type": ["number", "null"], "minimum": 0},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "free_ok": {"type": "boolean"},
+    "billing_not_enabled": {"type": "boolean"},
+    "wallet_balance": {"type": "integer", "minimum": 0},
+    "gui_checked_at": {"type": ["number", "null"]},
+    "stage2_checked": {"type": "object", "additionalProperties": {"enum": ["ok", "unverified"]}},
+    "error": {"type": "string"},
+    "failure": {
+      "type": "object",
+      "required": ["reason", "job_state", "env_state", "exclude_min", "scope", "card", "parked_card", "retry_after"],
+      "properties": {
+        "reason": {"type": "string"},
+        "job_state": {"enum": ["queued", "rejected", "failed", "timed_out", "lost"]},
+        "env_state": {"enum": ["excluded", "degraded", null]},
+        "exclude_min": {"type": ["number", "null"], "minimum": 0},
+        "scope": {"enum": ["J", "provider"]},
+        "card": {"type": "boolean"},
+        "parked_card": {"const": false},
+        "retry_after": {"type": ["number", "null"], "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

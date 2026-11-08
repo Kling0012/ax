@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/change.request.json",
+  "title": "change.request",
+  "$comment": "SPEC.md:S-6.4,S-19",
+  "type": "object",
+  "properties": {
+    "issue_repo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "minLength": 1
+    },
+    "number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "dry_run": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "issue_repo",
+    "kind",
+    "number",
+    "dry_run"
+  ],
+  "additionalProperties": false
+}

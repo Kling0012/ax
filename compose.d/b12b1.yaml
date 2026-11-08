@@ -1,0 +1,49 @@
+# B12b-1 の tailnet gate。S-6.14、D-5.3、F-9.4、F-18.1 に従う。
+# intake:8082 の中継資格の HTTP 上の表現は OPEN.md を参照する。gate 自身は正常に起動し、healthz は使える。
+secrets:
+  core-token-gate:
+    file: ${AX_SECRETS_DIR}/core-tokens/gate
+  hq-allowed-users:
+    file: ${AX_SECRETS_DIR}/hq-allowed-users
+
+services:
+  gate:
+    extends:
+      file: docker/base.yaml
+      service: ax-core-base
+    user: "${AX_UID}:${AX_GID}"
+    command: ["python", "-m", "core.gate"]
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_BIND_ADDR: ${AX_BIND_ADDR}
+      AX_GATE_PORT: ${AX_GATE_PORT}
+      AX_CONFIG_DIR: /config
+      AX_GATE_STATE_DIR: /run/gate
+      AX_SEATS_FILE: /run/seat/seats.yaml
+      AX_GATE_CORE_TOKEN_FILE: /run/secrets/core-token-gate
+      AX_GATE_ALLOWED_USERS_FILE: /run/secrets/hq-allowed-users
+    ports:
+      - "${AX_BIND_ADDR}:${AX_GATE_PORT}:8080"
+    networks:
+      ax-core:
+        ipv4_address: ${AX_GATE_IP:-192.0.2.13}
+    secrets:
+      - source: core-token-gate
+        target: core-token-gate
+        mode: 0400
+      - source: hq-allowed-users
+        target: hq-allowed-users
+        mode: 0400
+    volumes:
+      - type: bind
+        source: ${AX_STATE_DIR}/gate
+        target: /run/gate
+        read_only: true
+      - type: bind
+        source: ${AX_STATE_DIR}/seat/seats.yaml
+        target: /run/seat/seats.yaml
+        read_only: true
+      - type: bind
+        source: ${AX_HOME}/config
+        target: /config
+        read_only: true

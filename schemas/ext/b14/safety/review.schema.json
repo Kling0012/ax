@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/safety/review.schema.json",
+  "$defs": {
+    "verdict": {
+      "type": "object",
+      "required": ["verdict", "concerns", "summary"],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {"enum": ["safe", "unsafe", "unknown"]},
+        "concerns": {"type": "array", "uniqueItems": true, "items": {"enum": ["malicious", "security", "quality"]}},
+        "summary": {"type": "string", "minLength": 1}
+      }
+    },
+    "classification": {
+      "type": "object",
+      "required": ["classification"],
+      "additionalProperties": false,
+      "properties": {"classification": {"enum": ["relevant", "spam", "unrelated", "unknown"]}}
+    }
+  },
+  "$ref": "#/$defs/verdict"
+}

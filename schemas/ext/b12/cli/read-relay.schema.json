@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b12/cli/read-relay.schema.json",
+  "title": "S-6.7 読み取り中継の応答",
+  "type": "object",
+  "minProperties": 1,
+  "properties": {
+    "control": {"$ref": "#/$defs/component"},
+    "timeline": {"$ref": "#/$defs/component"},
+    "ledger": {"$ref": "#/$defs/component"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "component": {
+      "oneOf": [
+        {"type": "object", "properties": {"ok": {"const": true}, "data": {}}, "required": ["ok", "data"], "additionalProperties": false},
+        {"type": "object", "properties": {"ok": {"const": false}, "error": {"const": "unavailable"}}, "required": ["ok", "error"], "additionalProperties": false}
+      ]
+    }
+  }
+}

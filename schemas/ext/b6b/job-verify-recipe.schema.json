@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/job-verify-recipe.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project",
+    "target",
+    "recipe_id"
+  ],
+  "properties": {
+    "project": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "recipe_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    }
+  }
+}

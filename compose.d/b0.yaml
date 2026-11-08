@@ -1,0 +1,12 @@
+# B0 の束のサービス。axcommon の自己点検だけ（プロファイル b0。通常の up では起動しない）。
+# 他の束は compose.d/<束の ID>.yaml に自分のサービスを書く。
+services:
+  axcommon-selfcheck:
+    extends:
+      file: docker/base.yaml
+      service: ax-core-base
+    profiles: ["b0"]
+    command: ["python", "-m", "axcommon.selfcheck"]
+    healthcheck:
+      disable: true
+    restart: "no"

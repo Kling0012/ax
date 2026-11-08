@@ -1,0 +1,11 @@
+# runner verify-ax-ci（F-14.1、F-19.2。AX 自身の試験用）。ax-ci イメージは ci/build-ax-ci.sh（b0）が組み立てる。ここは使うだけ。
+# docker のデーモンにも sudo にも触れない（compose の検査は docker compose config だけ。T-119）。
+name: verify-ax-ci
+kind: verify
+image: ax-ci:${AX_TAG}
+command: sh -c '{verify}'
+env:
+  CI: "1"
+  AX_CI_IN_JOB: "1"
+result:
+  source: exit_code

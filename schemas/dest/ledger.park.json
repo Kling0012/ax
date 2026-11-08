@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/ledger.park.json",
+  "title": "ledger.park",
+  "$comment": "SPEC.md:S-6.4,S-9.2,S-9.3; parked requires reason and check_at",
+  "type": "object",
+  "properties": {
+    "todo_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "check_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "todo_id",
+    "reason",
+    "check_at"
+  ],
+  "additionalProperties": false
+}

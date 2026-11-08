@@ -1,0 +1,108 @@
+# B3/B4 の束のサービス（台帳と制御 API。F-18.4 の表: ledger と control は ax-core と ax-work の両方に入る）。
+# 口は2つ（F-18.4）: 中核の口 8080（全 API）と作業側の口 8081（許可した API だけ。F-18.4 の表）。
+# 1つのプロセスで両方を開く（core/ledger/__main__.py、core/control/__main__.py）。
+services:
+  b3-volume-init:
+    image: ax/core:${AX_TAG}
+    restart: "no"
+    user: "0:0"
+    network_mode: none
+    cap_drop: [ALL]
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER]
+    security_opt: [no-new-privileges:true]
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        for v in /v/ledger /v/control; do
+          mkdir -p "$$v/outbox" "$$v/archive"
+          chown ${AX_UID}:${AX_GID} "$$v" "$$v/outbox" "$$v/archive"
+          chmod 0770 "$$v" "$$v/outbox" "$$v/archive"
+        done
+    volumes:
+      - ledger-data:/v/ledger
+      - control-data:/v/control
+
+  ledger:
+    extends:
+      file: docker/base.yaml
+      service: ax-both-base
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      b3-volume-init:
+        condition: service_completed_successfully
+    command: ["python", "-m", "core.ledger"]
+    environment:
+      AX_WORK_PORT: "8081"
+      AX_HOST: ${AX_HOST}
+      AX_REDACT_INDEX: /redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+      AX_PLUGIN_TOKENS: /state/plugin-tokens.sha256
+      AX_CORE_TOKENS: /state/core-tokens.sha256
+    volumes:
+      - ledger-data:/state/ledger
+      - {type: bind, source: "${AX_STATE_DIR}/redact", target: /redact, read_only: true}
+      - type: bind
+        source: ${AX_STATE_DIR}/core-tokens.sha256
+        target: /state/core-tokens.sha256
+        read_only: true
+      # プラグインのトークンのハッシュ一覧（F-18.4。ホスト側のファイル名は文書で伏せ字のため既定を
+      # plugin-tokens.sha256 とし、AX_PLUGIN_TOKENS_FILE で替えられる。OPEN.md の b0/b3 の項）
+      - type: bind
+        source: ${AX_PLUGIN_TOKENS_FILE:-${AX_STATE_DIR}/plugin-tokens.sha256}
+        target: /state/plugin-tokens.sha256
+        read_only: true
+    secrets: [pii-list]
+
+  control:
+    env_file:
+      - path: ${AX_HOME}/config/launcher.env
+        required: false
+    extends:
+      file: docker/base.yaml
+      service: ax-both-base
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      b3-volume-init:
+        condition: service_completed_successfully
+    command: ["python", "-m", "core.control"]
+    environment:
+      AX_WORK_PORT: "8081"
+      AX_HOST: ${AX_HOST}
+      AX_REDACT_INDEX: /redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+      AX_REGISTRY: /ax/plugins/registry.yaml
+      AX_PLUGIN_TOKENS: /state/plugin-tokens.sha256
+      AX_CORE_TOKENS: /state/core-tokens.sha256
+    volumes:
+      - control-data:/state/control
+      - {type: bind, source: "${AX_STATE_DIR}/redact", target: /redact, read_only: true}
+      - type: bind
+        source: ${AX_STATE_DIR}/core-tokens.sha256
+        target: /state/core-tokens.sha256
+        read_only: true
+      - type: bind
+        source: ${AX_PLUGIN_TOKENS_FILE:-${AX_STATE_DIR}/plugin-tokens.sha256}
+        target: /state/plugin-tokens.sha256
+        read_only: true
+    secrets:
+      - pii-list
+      - core-token-control
+      - control-apply-token          # /apply でサブループに資格を示す（F-18.4）
+      - control-token-manager        # issued_by を決める4つの専用トークン（S-5.3）
+      - control-token-backup
+      - control-token-inspection
+      - control-token-emergency
+
+volumes:
+  ledger-data:
+  control-data:
+
+
+secrets:
+  pii-list:
+    file: ${AX_SECRETS_DIR}/pii-list
+
+  core-token-control:
+    file: ${AX_SECRETS_DIR}/core-tokens/control

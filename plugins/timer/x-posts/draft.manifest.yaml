@@ -1,0 +1,19 @@
+schema_version: 1
+id: x-posts-draft
+version: 1.0.0
+kind: subloop
+project: multi
+title: X の統計と投稿案を作る
+image: ax/runtime:1.0.0
+execution: llm
+schedule: {kind: cron, cron: '0 22 * * *', missed: record_only}
+graph: draft.graph.yaml
+capabilities: [run, collect_only, poll_paused, draining]
+knobs:
+  u_x_draft_time: {type: string, default: '07:00', effective: restart, title: 投稿案の時刻（Asia/Tokyo）, who: [user]}
+  enabled: {type: boolean, default: true, effective: immediate, title: 自動実行, who: [user]}
+health: {heartbeat_s: 60}
+sensitivity: public
+roles: [summary]
+secrets: []
+outputs: []

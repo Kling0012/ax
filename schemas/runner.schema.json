@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/runner.schema.json",
+  "title": "config/runners/<名前>.yaml（F-7.2）",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "agent-cli",
+        "chat-json"
+      ]
+    },
+    "image": {
+      "type": "string"
+    },
+    "command": {
+      "type": "string"
+    },
+    "env": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "timeout_s": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "idle_timeout_s": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "result": {
+      "type": [
+        "object",
+        "string"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "kind",
+    "image",
+    "command"
+  ]
+}

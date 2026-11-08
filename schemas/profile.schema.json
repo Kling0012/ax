@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/profile.schema.json",
+  "title": "profile/<名前>.yaml（S-16.3、F-18.6）",
+  "type": "object",
+  "properties": {
+    "host": {
+      "type": "string"
+    },
+    "bind_addr": {
+      "type": "string"
+    },
+    "secrets_dir": {
+      "type": "string"
+    },
+    "tmp_dir": {
+      "type": "string"
+    },
+    "archive_target": {
+      "type": "string"
+    },
+    "environments_file": {
+      "type": "string"
+    },
+    "memory_endpoint": {
+      "type": "string"
+    },
+    "model_gateway": {
+      "type": "string"
+    },
+    "models_file": {
+      "type": "string"
+    },
+    "ntfy_endpoint": {
+      "type": "string"
+    },
+    "ntfy_topic": {
+      "type": "string"
+    },
+    "commander_unit": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "ax_state_dir": {
+      "type": "string"
+    },
+    "commander_socket": {
+      "type": "string"
+    },
+    "seat_user": {
+      "type": "string"
+    },
+    "seat_socket": {
+      "type": "string"
+    },
+    "seats_file": {
+      "type": "string"
+    },
+    "seat_gate_path": {
+      "type": "string"
+    },
+    "gate_port": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "gate_peers_file": {
+      "type": "string"
+    },
+    "archive_sources": {
+      "type": "string"
+    },
+    "env_ssh_targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "host",
+          "port"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "instabox_api_base": {
+      "type": "string"
+    },
+    "instabox_machine_id": {
+      "type": "string"
+    },
+    "box_machine_name": {
+      "type": "string"
+    },
+    "box_machine_id": {
+      "type": "string"
+    },
+    "sandbox_gate_port": {
+      "type": "integer"
+    },
+    "archive_dest": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "host",
+        "port",
+        "user"
+      ],
+      "additionalProperties": false
+    },
+    "public_proxy_ip": {
+      "type": "string"
+    },
+    "hq_access": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "host",
+    "bind_addr",
+    "secrets_dir",
+    "tmp_dir",
+    "ax_state_dir",
+    "commander_socket"
+  ]
+}

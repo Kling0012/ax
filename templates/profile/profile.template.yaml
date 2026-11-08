@@ -1,0 +1,131 @@
+# AX の profile の雛形（templates/profile/profile.template.yaml）。
+# このファイルは見本です。実物は ~/.config/ax/profile/<名前>.yaml のように、リポジトリの外に置きます（git に置かない）。
+# 項目の一覧と意味は profile/example.yaml と docs/manual/getting-started.md の §4 を参照してください。
+# 値を実環境のものに置き換えてください。秘密の値は書かないでください（${secrets_dir} の下のファイルに置く）。
+# ${ax_state_dir} のように、他の項目を参照できます。~ は展開できます。
+# 必須の項目（axcommon/profile.py の REQUIRED）を満たさないと host/ax-env.sh はエラーで終わります。
+# 空を許す項目は public_proxy_ip と gate_port だけです（gate_port は空でも既定 8909 が入ります）。
+
+# --- 基本 ---
+
+# host: 動かすホストの名前（文字列。必須）
+host: host-a
+
+# bind_addr: 待ち受けるアドレス（必須）。tailnet のアドレス（tailscale ip -4 の出力）か 127.0.0.1。
+# 0.0.0.0 は不可です。host/lib/hostwatch/envfinish.py が検査します。
+bind_addr: 127.0.0.1
+
+# secrets_dir: ホストの秘密置き場（必須。絶対パス。~ は展開できます）。権限 700 を推奨します。
+secrets_dir: ~/.config/ax/secrets
+
+# tmp_dir: 一時置き場（必須。絶対パス）。コンテナの TMPDIR は /tmp-hdd に bind されます（docker/base.yaml）。
+tmp_dir: /var/lib/ax/tmp
+
+# archive_target: 退避先の環境 ID（必須）。能力 archive-store を持つ環境。既定は host-b。
+archive_target: host-b
+
+# ax_state_dir: ホストの状態置き場（必須。絶対パス）。/state の実体。既定は ~/.local/state/ax。
+ax_state_dir: ~/.local/state/ax
+
+# --- 接続先 ---
+
+# memory_endpoint: agent-memory の接続先（必須）。参照環境での既定は tailnet の名前の http://<memory-host>:8377/mcp/。
+memory_endpoint: https://memory.example.invalid/mcp/
+
+# model_gateway: モデルを呼ぶ先（必須）。既定は https://model-gateway.example.invalid/（AX の専用ブリッジのゲートウェイ）です。
+# 資格は secrets_dir/model-gateway-key（caller の鍵）です。
+model_gateway: https://model-gateway.example.invalid/
+
+# ntfy_endpoint: 通知を送る先（必須）。AX が使うツールとしての ntfy サーバー。
+ntfy_endpoint: https://notifications.example.invalid/
+
+# ntfy_topic: 通知の topic（必須）。既定は hub。
+ntfy_topic: hub
+
+# public_proxy_ip: host-b の tailnet アドレス（任意。空でも可）。S-22.7 の公開入口の判定に使います。
+public_proxy_ip: 100.x.x.x
+
+# --- 台帳の実ファイル（AX_HOME からの相対パス。絶対パスは不可） ---
+
+# environments_file: 実行環境の台帳の実ファイル（必須。相対パス）。例は config/environments.example.yaml です。
+environments_file: config/environments.example.yaml
+
+# models_file: モデルの登録簿の実ファイル（必須。相対パス）。例は config/models.example.yaml です。
+models_file: config/models.example.yaml
+
+# --- commander と席 ---
+
+# commander_unit: 触れてはいけない司令塔の unit 名（文字か文字の配列）。ホスト見張りが除外するために使います。
+# 例: example-commander.service
+commander_unit: example-commander.service
+
+# commander_socket: commander の受け口の Unix ソケット（必須。絶対パス）。
+# 既定は ${ax_state_dir}/commander/commander.sock です。/run/user の tmpfs には置かないでください。
+commander_socket: ${ax_state_dir}/commander/commander.sock
+
+# seat_user: SSH の席の OS ユーザー名（文字列）。既定は ax-seat です。
+seat_user: ax-seat
+
+# seat_socket: 席の受け口の Unix ソケット（絶対パス）。
+seat_socket: ${ax_state_dir}/seat/seat.sock
+
+# seats_file: 席の台帳（絶対パス。権限 0600 を想定します）。
+seats_file: ${ax_state_dir}/seat/seats.yaml
+
+# seat_gate_path: SSH のゲートの置き場（絶対パス）。root 所有で 0755 を想定します。
+seat_gate_path: /usr/local/lib/ax-seat/ax
+
+# --- gate ---
+
+# gate_port: tailnet の入口 gate の待ち受けポート（任意。1〜65535 の整数）。既定は 8909 です。
+# ${bind_addr} にだけ結び付きます（0.0.0.0 は不可）。
+gate_port: 8909
+
+# gate_peers_file: 端末の対応表 peers.json の置き場（絶対パス）。
+gate_peers_file: ${ax_state_dir}/gate/peers.json
+
+# --- 退避 ---
+
+# archive_sources: 退避元の一覧のファイル名（文字列）。例は profile/archive-sources.yaml です。
+archive_sources: profile/archive-sources.yaml
+
+# archive_dest: 退避コネクタ archiver の転送先（{host, port, user}。host は tailnet 名。アドレスと鍵は書かない）。
+archive_dest: {host: example-archive.tailnet, port: 22, user: archive-user}
+
+# --- 環境と箱 ---
+
+# env_ssh_targets: 環境への SSH の宛先の一覧（各 {id, host（tailnet 名）, port}）。
+# host/ax-fw.sh が DOCKER-USER の許可を作る入力です。アドレスは書かないでください。
+env_ssh_targets:
+  - {id: example-env, host: example-env.tailnet, port: 22}
+
+# instabox_api_base: Instabox の API の宛先（文字列）。既定は https://api.instabox.sh/v1 です。
+instabox_api_base: https://api.instabox.sh/v1
+
+# instabox_machine_id: Instabox の箱の ID（文字列。任意。空なら先頭の 1 台を使います）。
+instabox_machine_id: ""
+
+# box_machine_name: 使う箱の名前（文字列）。既定は main です。
+box_machine_name: main
+
+# box_machine_id: box の箱の ID（文字列。任意。空なら名前だけで照合します）。
+box_machine_id: ""
+
+# sandbox_gate_port: 箱のゲートの待ち受けポート（1〜65535 の整数）。既定は 8931 です。
+# ax-work の網の固定アドレス（198.51.100.11）で ax-work の中だけで待ち受けます。ports は持ちません。
+sandbox_gate_port: 8931
+
+# --- HQ の公開入口 ---
+
+# hq_access: HQ の公開入口の検証の設定（マッピング。書く場合は 5 項目すべて必須です）
+hq_access:
+  # iss: 発行者の名前
+  iss: example-issuer
+  # jwks_url: 鍵の取得先
+  jwks_url: https://example.invalid/jwks
+  # aud_secret: aud を置いた秘密のファイル名（${secrets_dir} の下。値は書かない）
+  aud_secret: hq-access
+  # allowed_users_file: 許可利用者の一覧のファイル名（${secrets_dir} の下。値は書かない）
+  allowed_users_file: hq-allowed-users
+  # email_slot: 公開入口のログイン名を足すスロット名
+  email_slot: hq-access-email

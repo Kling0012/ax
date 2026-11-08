@@ -1,0 +1,22 @@
+# S-6.8、S-22.7、F-13.1。既存 intake/hq の設定を束ねる。
+# HQ のサービス本体は b10b。新しいサービス、ポート、種の共有は足さない。
+services:
+  intake:
+    environment:
+      AX_HQ_UID: ${AX_HQ_UID:-}
+    volumes:
+      - type: bind
+        source: ${AX_STATE_DIR}/hq-intake
+        target: /run/hq-intake
+  hq:
+    user: "${AX_HQ_UID}:${AX_HQ_GID}"
+    volumes:
+      - type: bind
+        source: ${AX_STATE_DIR}/hq
+        target: /run/hq
+      - type: bind
+        source: ${AX_SECRETS_DIR}/hq-slots
+        target: /secrets-in
+      - type: bind
+        source: ${AX_STATE_DIR}/hq-intake
+        target: /run/hq-intake

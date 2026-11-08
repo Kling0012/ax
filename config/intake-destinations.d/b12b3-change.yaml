@@ -1,0 +1,22 @@
+- name: change.request
+  title: change.request
+  schema: schemas/dest/change.request.json
+  handler: b12b3:change.request
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  mcp_tool: ax_change_request
+- name: change.cancel_merge
+  title: change.cancel_merge
+  schema: schemas/dest/change.cancel_merge.json
+  handler: b12b3:change.cancel_merge
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  mcp_tool: ax_change_cancel_merge

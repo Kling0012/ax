@@ -1,0 +1,13 @@
+.git
+.github
+tests
+docs
+profile
+ci
+tools/ci-fixtures
+**/__pycache__
+**/*.pyc
+.venv
+secrets
+*.env
+outbox

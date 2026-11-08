@@ -1,0 +1,43 @@
+schema_version: 1
+entry: collect
+item_source: collect
+max_parallel_items: "{{knobs.max_parallel_items}}"
+nodes:
+  - {id: collect, type: change.collect, needs_mode: [run, collect_only], limits: {timeout_s: 300, retries: 0}, on_fail: eject}
+  - {id: prepare, type: change.prepare, limits: {timeout_s: 300, retries: 0}, on_fail: eject}
+  - id: input_scan
+    type: gate.secret_scan
+    with: {texts: ["{{nodes.prepare.data.publication_text}}"]}
+    limits: {timeout_s: 60, retries: 0}
+    on_fail: eject
+  - {id: route, type: change.route, limits: {timeout_s: 60, retries: 0}, on_fail: eject}
+  - {id: answer, type: change.answer, limits: {timeout_s: 300, retries: 0}, on_fail: eject}
+  - {id: investigate, type: change.investigate, limits: {timeout_s: 300, retries: 0}, on_fail: eject}
+  - include: tdd-change
+    as: tdd-change
+    with:
+      base_ref: "{{nodes.prepare.data.base_ref}}"
+      branch: "{{nodes.prepare.data.branch}}"
+      role_impl: impl
+      verify: "{{nodes.prepare.data.verify}}"
+      answer: "{{nodes.prepare.data.answer}}"
+      resume_ref: "{{nodes.prepare.data.resume_ref}}"
+      test_cases_max: "{{knobs.test_cases_max}}"
+  - {id: verify, type: change.verify, limits: {timeout_s: 2400, retries: 0}, on_fail: eject}
+  - {id: publish, type: change.publish, limits: {timeout_s: 300, retries: 0}, on_fail: eject}
+  - {id: merge, type: change.merge, limits: {timeout_s: 300, retries: 0}, on_fail: eject}
+  - {id: record, type: change.record, limits: {timeout_s: 60, retries: 0}, on_fail: eject}
+edges:
+  - {from: collect, to: prepare}
+  - {from: prepare, to: input_scan}
+  - {from: input_scan, to: route}
+  - {from: route, to: answer, when: 'outcome:question'}
+  - {from: route, to: investigate, when: 'outcome:bug'}
+  - {from: route, to: verify, when: 'outcome:pr'}
+  - {from: route, to: tdd-change, when: 'outcome:change'}
+  - {from: investigate, to: tdd-change, when: 'outcome:change'}
+  - {from: answer, to: record}
+  - {from: tdd-change, to: verify}
+  - {from: verify, to: publish}
+  - {from: publish, to: merge}
+  - {from: merge, to: record}

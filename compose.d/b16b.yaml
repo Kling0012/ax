@@ -1,0 +1,13 @@
+# S-23.8 の検証を既存の制御 API に足す。待受、網、資格の新設はしない。
+services:
+  control:
+    command: [python, -m, core.intake.dest.b16b.control_entry]
+    environment:
+      AX_AUTOMATION_TARGETS: /state/control/automation-targets.json
+  intake:
+    secrets:
+      - core-token-intake
+
+secrets:
+  core-token-intake:
+    file: ${AX_SECRETS_DIR}/core-tokens/intake

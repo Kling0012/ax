@@ -1,0 +1,102 @@
+[
+  {
+    "name": "seat.add",
+    "title": "seat.add",
+    "schema": "schemas/dest/seat.add.json",
+    "handler": "internal:seat.add",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.enroll_start",
+    "title": "seat.enroll_start",
+    "schema": "schemas/dest/seat.enroll_start.json",
+    "handler": "internal:seat.enroll_start",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.lock",
+    "title": "seat.lock",
+    "schema": "schemas/dest/seat.lock.json",
+    "handler": "internal:seat.lock",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.revoke",
+    "title": "seat.revoke",
+    "schema": "schemas/dest/seat.revoke.json",
+    "handler": "internal:seat.revoke",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_seat_revoke"
+  },
+  {
+    "name": "seat.tier",
+    "title": "seat.tier",
+    "schema": "schemas/dest/seat.tier.json",
+    "handler": "internal:seat.tier",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  },
+  {
+    "name": "seat.unlock",
+    "title": "seat.unlock",
+    "schema": "schemas/dest/seat.unlock.json",
+    "handler": "internal:seat.unlock",
+    "allowed_from": [
+      "hq"
+    ],
+    "via": [
+      "hq"
+    ],
+    "tier": "irreversible",
+    "irreversible": true,
+    "ack": "sync",
+    "default_expiry_min": 60
+  }
+]

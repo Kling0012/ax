@@ -1,0 +1,2 @@
+plugins:
+  - {id: hibi-state, kind: timer, path: plugins/timer/hibi-state/manifest.yaml}

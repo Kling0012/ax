@@ -1,0 +1,32 @@
+# エラーの分類表（S-2.3）。axcommon.errors が読む。上から順に当たりを探し、最初に当たった規則を使う。
+# 点検で足してよい（S-2.3）。足す場合も class は system.expected / artifact.bug / unknown のどれか。
+# match の鍵: http_status（一覧のどれか）、http_status_range（[下, 上]）、body_regex（大文字小文字を区別しない検索）、
+#             exception（例外の型名の一覧）、exit_code（終了コードの一覧）、hint（出した場所が付ける code の指定）。
+# 1つの規則の中の鍵は、書いた物がすべて当たったときに当たる（AND）。別の書き方で当てたいときは規則を分ける（OR）。
+schema_version: 1
+rules:
+  # --- artifact.bug: 出した場所が hint で code を指す（テスト・検証・関門・出力の形の不合格）---
+  - {class: artifact.bug, code: test_fail,   match: {hint: [test_fail]},   action: 項目を外へ出し、修正の項目を次の実行に入れる, counts_as_failure: "yes"}
+  - {class: artifact.bug, code: verify_fail, match: {hint: [verify_fail]}, action: 項目を外へ出し、修正の項目を次の実行に入れる, counts_as_failure: "yes"}
+  - {class: artifact.bug, code: gate_fail,   match: {hint: [gate_fail]},   action: 項目を外へ出し、修正の項目を次の実行に入れる, counts_as_failure: "yes"}
+  - {class: artifact.bug, code: bad_output,  match: {hint: [bad_output]},  action: 項目を外へ出す。無料モデルなら成績に記録する, counts_as_failure: "yes"}
+  # --- system.expected ---
+  - {class: system.expected, code: quota, match: {body_regex: "(insufficient[_ ]quota|quota (exceeded|exhausted)|usage limit|out of (credits|quota)|利用枠)"},
+     action: 尽きた系統を枠回復まで外し、該当ジョブだけカードで待たせる, counts_as_failure: "no"}
+  - {class: system.expected, code: rate_limit, match: {http_status: [429]},
+     action: 待って再試行する。モデルなら exclude_rate_limit_min 分だけ外す, counts_as_failure: "no"}
+  - {class: system.expected, code: rate_limit, match: {body_regex: "rate[ _-]?limit"},
+     action: 待って再試行する。モデルなら exclude_rate_limit_min 分だけ外す, counts_as_failure: "no"}
+  - {class: system.expected, code: timeout, match: {http_status: [408]},
+     action: system_retries 回まで指数的に待って再試行する, counts_as_failure: "no"}
+  - {class: system.expected, code: timeout, match: {exception: [TimeoutError, TimeoutException, ReadTimeout, ConnectTimeout, WriteTimeout, PoolTimeout, asyncio.TimeoutError]},
+     action: system_retries 回まで指数的に待って再試行する, counts_as_failure: "no"}
+  - {class: system.expected, code: provider_down, match: {http_status_range: [500, 599]},
+     action: 次の候補へ切り替える, counts_as_failure: "no"}
+  - {class: system.expected, code: provider_down, match: {exception: [ConnectionRefusedError]},
+     action: 次の候補へ切り替える, counts_as_failure: "no"}
+  - {class: system.expected, code: network, match: {exception: [gaierror, ConnectError, ConnectionError, ConnectionResetError, ConnectionAbortedError, NetworkError, RemoteProtocolError]},
+     action: 待って再試行する, counts_as_failure: "no"}
+  - {class: system.expected, code: network, match: {body_regex: "(name or service not known|temporary failure in name resolution|network is unreachable|no route to host)"},
+     action: 待って再試行する, counts_as_failure: "no"}
+  # --- 上のどれにも当たらない物は axcommon.errors が unknown / unclassified にする（規則は書かない）---

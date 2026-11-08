@@ -1,0 +1,86 @@
+[
+  {
+    "name": "commitment.update",
+    "title": "commitment.update",
+    "schema": "schemas/dest/commitment.update.json",
+    "handler": "b12b3:commitment.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_commitment"
+  },
+  {
+    "name": "goal.update",
+    "title": "goal.update",
+    "schema": "schemas/dest/goal.update.json",
+    "handler": "b12b3:goal.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_goal"
+  },
+  {
+    "name": "life_state.update",
+    "title": "life_state.update",
+    "schema": "schemas/dest/life_state.update.json",
+    "handler": "b12b3:life_state.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_life"
+  },
+  {
+    "name": "schedule.update",
+    "title": "schedule.update",
+    "schema": "schemas/dest/schedule.update.json",
+    "handler": "b12b3:schedule.update",
+    "allowed_from": [
+      "commander",
+      "hq"
+    ],
+    "via": [
+      "local",
+      "ssh",
+      "tailnet",
+      "hq"
+    ],
+    "tier": "operate",
+    "irreversible": false,
+    "ack": "sync",
+    "default_expiry_min": 60,
+    "mcp_tool": "ax_update_schedule"
+  }
+]

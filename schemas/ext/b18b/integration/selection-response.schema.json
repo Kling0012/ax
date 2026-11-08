@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b18b/integration/selection-response.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["path", "selected", "candidates", "excluded", "recorded"],
+  "properties": {
+    "path": {"enum": ["J", "G"]},
+    "selected": {"type": ["string", "null"]},
+    "recorded": {"type": "boolean"},
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["env_id", "order", "day_use_s", "slot_free"],
+        "properties": {
+          "env_id": {"type": "string"},
+          "order": {"type": "integer", "minimum": 1},
+          "day_use_s": {"type": "number", "minimum": 0},
+          "slot_free": {"type": "boolean"},
+          "impl": {"enum": ["run", "expand"]}
+        }
+      }
+    },
+    "excluded": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["env_id", "reason"],
+        "properties": {
+          "env_id": {"type": "string"},
+          "reason": {"enum": ["state_not_available", "gate_state_not_available", "capability_unverified", "sensitivity_denied", "role_denied", "gate_not_ready", "slot_busy", "entry_unsupported", "trial_excluded"]}
+        }
+      }
+    }
+  }
+}

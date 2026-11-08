@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/go.confirm.json",
+  "title": "go.confirm",
+  "$comment": "SPEC.md:S-6.22; UTF-8 byte limit, hash, parse and effective-ratification checks belong to go_confirm.validate, not JSON Schema",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "enum": [
+        "removal",
+        "ratify"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "scope": {
+      "enum": [
+        "removal",
+        "both"
+      ]
+    },
+    "excluded": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    },
+    "changes": {
+      "oneOf": [
+        {
+          "const": "all"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 14
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "ratify_approval_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "go_md_text": {
+      "type": "string",
+      "pattern": "^[^\\r]*$"
+    },
+    "go_md_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "properties": {
+        "kind": {
+          "const": "removal"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "excluded",
+        "changes",
+        "ratify_approval_id"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "go_md_text"
+            ]
+          },
+          {
+            "required": [
+              "go_md_sha256"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "properties": {
+        "kind": {
+          "const": "ratify"
+        }
+      },
+      "required": [
+        "kind",
+        "go_md_text",
+        "go_md_sha256"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "scope"
+            ]
+          },
+          {
+            "required": [
+              "excluded"
+            ]
+          },
+          {
+            "required": [
+              "changes"
+            ]
+          },
+          {
+            "required": [
+              "ratify_approval_id"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

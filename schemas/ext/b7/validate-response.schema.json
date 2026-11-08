@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b7/validate-response.schema.json",
+  "title": "POST /v1/validate の応答の本体（S-5.7、F-14.3）。runtime.subloop.graphcheck.validate_body の戻り",
+  "type": "object",
+  "properties": {
+    "ok": {"type": "boolean"},
+    "errors": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "warnings": {"type": "array", "items": {"$ref": "#/$defs/finding"}}
+  },
+  "required": ["ok", "errors"],
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "properties": {"code": {"type": "string"}, "message": {"type": "string"}, "node": {"type": "string"}, "severity": {"enum": ["error", "warning"]}},
+      "required": ["code", "message"]
+    }
+  }
+}

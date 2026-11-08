@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b10a/emergency.payload.schema.json",
+  "title": "入口の行き先 emergency の payload（S-12.3、S-6.4）",
+  "type": "object",
+  "properties": {
+    "scope": {
+      "type": "string",
+      "description": "all、commanders、またはプラグインの ID（kebab-case）",
+      "pattern": "^(all|commanders|[a-z0-9][a-z0-9-]{0,62})$"
+    }
+  },
+  "required": ["scope"],
+  "additionalProperties": false
+}

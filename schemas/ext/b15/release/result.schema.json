@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b15/release/result.schema.json",
+  "title": "公開結果（S-20.2）",
+  "type": "object",
+  "properties": {
+    "batch_id": {"type": "string"},
+    "repo": {"type": "string"},
+    "mode": {"type": "string"},
+    "target_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "version": {"type": ["string", "null"]},
+    "outcome": {"enum": ["success", "failed", "held", "skipped", "disabled"]},
+    "reason": {"type": "string"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "at": {"type": "string"}
+  },
+  "required": ["batch_id", "repo", "mode", "target_sha", "version", "outcome", "reason", "evidence_refs", "at"],
+  "additionalProperties": false
+}

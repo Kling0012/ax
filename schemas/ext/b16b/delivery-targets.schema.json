@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b16b/delivery-targets.schema.json",
+  "type": "object",
+  "properties": {
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "plugin_id": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "const": "*"
+            }
+          },
+          "project": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "const": "*"
+            }
+          },
+          "repo": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "const": "*"
+            }
+          },
+          "destination": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "const": "*"
+            }
+          },
+          "operations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "not": {
+                "const": "*"
+              }
+            }
+          }
+        },
+        "required": [
+          "plugin_id",
+          "project",
+          "repo",
+          "destination",
+          "operations"
+        ],
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "targets"
+  ],
+  "additionalProperties": false
+}

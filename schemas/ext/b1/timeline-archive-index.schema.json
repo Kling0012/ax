@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b1/timeline-archive-index.schema.json",
+  "title": "書き出した区間の索引（archive/timeline/index.json。S-14.3、D-3）",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "updated_at": {
+      "$ref": "../../common.schema.json#/$defs/ts"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "pattern": "^timeline-\\d{4}-\\d{2}-\\d{2}-\\d{12}\\.jsonl$"
+          },
+          "date": {
+            "type": "string"
+          },
+          "first_seq": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "last_seq": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "file",
+          "date",
+          "first_seq",
+          "last_seq",
+          "count",
+          "sha256",
+          "bytes"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "version",
+    "files"
+  ],
+  "additionalProperties": false
+}

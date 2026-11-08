@@ -1,0 +1,21 @@
+schema_version: 1
+id: hibi-state
+version: 1.0.0
+kind: timer
+project: multi
+title: Hibi state
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: interval, every_s: 60, missed: record_only}
+capabilities: [run, collect_only, poll_paused, draining]
+knobs:
+  every_s: {type: integer, default: 60, min: 1, effective: next_run, title: interval}
+health: {heartbeat_s: 60}
+sensitivity: private
+secrets: []
+outputs: []
+depends_on_plugins: [resources, ledger, timeline]
+env_jobs:
+  operations: [submit, get]
+  entrypoints: [hibi-state]
+  requires: [hibi-state-read]

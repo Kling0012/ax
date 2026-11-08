@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/job-launcher.schema.json",
+  "title": "launcher の job-start の依頼（F-18.2、S-8.11）",
+  "type": "object",
+  "properties": {
+    "safety_profile": {"const": "tool-free-chat-v1"},
+    "job_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "runner": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "model": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "allow_hosts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9.-]+$"
+      },
+      "maxItems": 64
+    },
+    "budget_min": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1440
+    },
+    "env_names": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{0,63}$"
+      },
+      "maxItems": 16
+    },
+    "target_ro": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "ro_mounts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]{1,40}$"
+      },
+      "maxItems": 3
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f-]{36}$"
+    },
+    "resume_from": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "workdir_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "verify": {
+      "type": "string",
+      "maxLength": 8192
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "sandbox-desktop",
+          "web-gui",
+          "web-screenshot",
+          "linux-sandbox"
+        ]
+      },
+      "maxItems": 4
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 131072
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    }
+  },
+  "required": [
+    "job_id",
+    "runner",
+    "allow_hosts",
+    "budget_min",
+    "prompt"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,26 @@
+services:
+  sl-scheduled-publisher:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: [python, -m, runtime.subloop]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: scheduled-publisher
+      AX_PLUGIN_DIR: /ax/plugins/timer/scheduled_publisher
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+      AX_SCHEDULED_PUBLISHER_URL_PREFIXES: "${AX_SCHEDULED_PUBLISHER_URL_PREFIXES-https://github.com/example-owner/,https://example.invalid/}"
+    volumes:
+      - scheduled-publisher-data:/data
+    secrets:
+      - control-apply-token
+      - plugin-token-scheduled-publisher
+
+volumes:
+  scheduled-publisher-data: {}
+
+secrets:
+  plugin-token-scheduled-publisher:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/scheduled-publisher

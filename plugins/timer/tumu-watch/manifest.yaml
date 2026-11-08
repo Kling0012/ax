@@ -1,0 +1,19 @@
+schema_version: 1
+id: tumu-watch
+version: 1.0.0
+kind: timer
+project: multi
+title: Tumu watch
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: interval, every_s: 900, missed: record_only}
+capabilities: [run, collect_only, draining]
+default_mode: collect_only
+skip_observation_target: tumu
+knobs:
+  every_s: {type: integer, default: 900, min: 1, effective: next_run, title: interval}
+health: {heartbeat_s: 60}
+sensitivity: private
+secrets: []
+outputs: []
+depends_on_plugins: [timeline]

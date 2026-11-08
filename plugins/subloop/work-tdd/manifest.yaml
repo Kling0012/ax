@@ -1,0 +1,29 @@
+# 標準のサブループ work-tdd（S-7.10）。入口の work.request（impl、impl_hard）、subloop.create、core.change の実装は、すべてこれで tdd-change を通る。
+schema_version: 1
+id: work-tdd
+version: 1.0.0
+kind: subloop
+project: multi
+title: 実装の依頼を tdd-change で進めてブランチを用意する
+image: ax/runtime:1.0.0
+execution: llm
+accepts_items: true
+schedule:
+  kind: interval
+  every_s: 300            # 受け取り待ちの取りこぼしを拾う網（項目は受け取りの直後にも走る）
+  missed: record_only
+graph: graph.yaml
+capabilities: [run, collect_only, poll_paused, draining]
+knobs:
+  max_parallel_items: {type: integer, default: 1, min: 1, max: 2, effective: next_run, title: 同時に進める項目の数, who: [inspection, user]}
+  inbox_max: {type: integer, default: 50, min: 1, max: 200, effective: immediate, title: 受け取り待ちの上限, who: [inspection, user]}
+  every_s: {type: integer, default: 300, min: 60, max: 3600, effective: next_run, title: 受け取り待ちを拾う間隔（秒）, who: [inspection, user]}
+  max_hops: {type: integer, default: 20, min: 2, max: 20, effective: next_run, title: 1 項目の再入場の合計の上限, who: [inspection, user]}
+  test_cases_max: {type: integer, default: 12, min: 3, max: 30, effective: next_run, title: テストの件数の上限（1 件の変更あたり）, who: [inspection, user]}
+health:
+  heartbeat_s: 60
+sensitivity: private
+roles: [test_design, impl, impl_hard, review]
+secrets: []
+outputs: [git.push]
+depends_on_plugins: [worker-pool]

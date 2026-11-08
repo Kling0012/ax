@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/defaults.schema.json",
+  "title": "config/defaults.yaml（S-17）",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "default": {},
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "used_in": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "range_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "default"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "defaults"
+  ],
+  "additionalProperties": false
+}

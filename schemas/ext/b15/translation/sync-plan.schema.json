@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b15/translation/sync-plan.schema.json",
+  "title": "B15 翻訳同期計画（S-20.8）",
+  "type": "object",
+  "properties": {
+    "status": {"enum": ["ready", "parked", "rejected"]},
+    "reason": {"type": "string"},
+    "sync_pr": {"type": "object"},
+    "fragment": {"type": "object"}
+  },
+  "required": ["status"],
+  "additionalProperties": false
+}

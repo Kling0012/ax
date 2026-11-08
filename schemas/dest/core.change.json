@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/core.change.json",
+  "title": "core.change",
+  "$comment": "SPEC.md:S-6.4,S-7.10,D-5; an approved request becomes core/<name> work-item",
+  "type": "object",
+  "properties": {
+    "name": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"},
+    "project": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "body": {"type": "string", "minLength": 1},
+    "acceptance": {
+      "type": "object",
+      "properties": {
+        "examples": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "boundaries": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1}
+      },
+      "required": ["examples", "boundaries"],
+      "additionalProperties": false
+    },
+    "verify": {"type": "string", "minLength": 1}
+  },
+  "required": ["name", "project", "title", "body", "acceptance"],
+  "additionalProperties": false
+}

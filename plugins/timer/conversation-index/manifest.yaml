@@ -1,0 +1,18 @@
+schema_version: 1
+id: conversation-index
+version: 1.0.0
+kind: timer
+project: multi
+title: 会話索引
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: cron, cron: "41 19 * * *", missed: record_only}
+capabilities: [run, collect_only, draining]
+knobs:
+  u_index_time: {type: string, default: "04:41", effective: next_run, title: 索引時刻, who: [user]}
+  enabled: {type: boolean, default: false, effective: next_run, title: 自動実行, who: [user]}
+health: {heartbeat_s: 60}
+sensitivity: private
+secrets: []
+outputs: []
+depends_on_plugins: [resources]

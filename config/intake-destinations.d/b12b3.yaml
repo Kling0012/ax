@@ -1,0 +1,35 @@
+# B12b3 の行き先。名前順で b12b2.yaml の後に読まれ、同名の行を後勝ちで置き換える（registry.build_registry）。
+- name: claim.op
+  title: 保持の取得・延長・解除
+  schema: schemas/dest/claim.op.json
+  handler: b12b3:claim.op
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  mcp_tool: ax_claim
+
+- name: work.cancel
+  title: work.cancel
+  schema: schemas/dest/work.cancel.json
+  handler: b12b3:work.cancel
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  mcp_tool: ax_cancel
+- name: work.stop
+  title: work.stop
+  schema: schemas/dest/work.stop.json
+  handler: b12b3:work.stop
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  mcp_tool: ax_stop

@@ -1,0 +1,137 @@
+# b6a のサービス（S-8.2、S-8.8、F-18.4）。この束は core/resources と plugins/resource/worker-pool を持つ。
+# 網: resources は ax-core と ax-work、worker-pool も両方。固定アドレスは F-18.1 のとおり
+#   ax-work 上: worker-pool AX_FW_WORKER_POOL_IP、resources AX_FW_RESOURCES_IP、egress-proxy AX_EGRESS_PROXY_IP。
+# journal 風に secrets はこの compose.d に宣言する（compose.yaml の secrets に主の宣言があるため補完しない）。
+# launcher-ssh-key と core-tokens/worker-pool の実体は ${AX_SECRETS_DIR}/launcher-ssh-key と
+# ${AX_SECRETS_DIR}/core-tokens/worker-pool（F-18.2、F-18.4）。値は書かない。
+
+services:
+  resources-volume-init:
+    image: ax/core:${AX_TAG}
+    restart: "no"
+    user: "0:0"
+    network_mode: none
+    security_opt: [no-new-privileges:true]
+    command: ["chown", "${AX_UID:-1000}:${AX_GID:-1000}", "/data", "/launch-locks"]
+    volumes:
+      - resources-data:/data
+      - worker-pool-locks:/launch-locks
+
+  resources:
+    depends_on:
+      resources-volume-init:
+        condition: service_completed_successfully
+    env_file:
+      - path: ${AX_HOME}/config/launcher.env
+        required: false
+    # Deployment still needs the environment SSH key, known-host configuration,
+    # slot read permissions and registered slot/target settings; this overlay
+    # does not install them.
+    extends:
+      file: docker/base.yaml
+      service: ax-both-base
+    # File-backed secrets retain the host ownership and mode.
+    user: "${AX_UID:-1000}:${AX_GID:-1000}"
+    command: ["python", "-m", "core.resources"]
+    environment:
+      AX_HOST: "${AX_HOST}"
+      AX_RESOURCES_DB: /data/resources.sqlite
+      AX_ENVIRONMENTS_FILE: /ax/config/environments.yaml
+      AX_WORKER_POOL_LOCK_DB: /launch-locks/worker-pool.sqlite
+      AX_PUBLISH_REVIEW_GRACE_S: "${AX_PUBLISH_REVIEW_GRACE_S:-60}"
+      AX_PLUGIN_TOKENS: /state/plugin-tokens.sha256
+      AX_MODEL_GATEWAY: "${AX_MODEL_GATEWAY}"
+    volumes:
+      - type: bind
+        source: ${AX_SECRETS_DIR}/hq-slots
+        target: /secrets-in
+        read_only: true
+      - type: bind
+        source: ${AX_PLUGIN_TOKENS_FILE:-${AX_STATE_DIR}/plugin-tokens.sha256}
+        target: /state/plugin-tokens.sha256
+        read_only: true
+      - type: volume
+        source: resources-data
+        target: /data
+      - type: volume
+        source: worker-pool-locks
+        target: /launch-locks
+      - type: bind
+        source: ${AX_STATE_DIR}/core-tokens.sha256
+        target: /state/core-tokens.sha256
+        read_only: true
+    networks:
+      ax-core:
+        aliases: [resources]
+      ax-work:
+        ipv4_address: ${AX_FW_RESOURCES_IP:-198.51.100.11}
+      ax-publish-review:
+        ipv4_address: ${AX_PUBLISH_REVIEW_RESOURCES_IP:-192.0.2.139}
+        aliases: [resources-review]
+    secrets:
+      - jev-key
+      - model-gateway-key
+
+  worker-pool:
+    user: "${AX_UID:-1000}:${AX_GID:-1000}"
+    depends_on:
+      resources-volume-init:
+        condition: service_completed_successfully
+    extends:
+      file: docker/base.yaml
+      service: ax-both-base
+    command: ["python", "-m", "plugins.resource.worker-pool"]
+    env_file:
+      - path: ${AX_HOME}/config/launcher.env
+        required: false
+    environment:
+      AX_HOST: "${AX_HOST}"
+      AX_WORKER_POOL_DB: /data/worker-pool.sqlite
+      AX_CORE_TOKENS: /state/core-tokens.sha256
+      AX_PLUGIN_TOKENS: /state/plugin-tokens.sha256
+      AX_WORKER_POOL_LOCK_DB: /launch-locks/worker-pool.sqlite
+      AX_RESOURCES_URL: http://resources:8080
+    volumes:
+      - type: volume
+        source: worker-pool-data
+        target: /data
+      - type: bind
+        source: ${AX_STATE_DIR}/core-tokens.sha256
+        target: /state/core-tokens.sha256
+        read_only: true
+      - type: bind
+        source: ${AX_PLUGIN_TOKENS_FILE:-${AX_STATE_DIR}/plugin-tokens.sha256}
+        target: /state/plugin-tokens.sha256
+        read_only: true
+      - type: volume
+        source: worker-pool-locks
+        target: /launch-locks
+    networks:
+      ax-core:
+        aliases: [worker-pool]
+      ax-work:
+        ipv4_address: ${AX_FW_WORKER_POOL_IP:-198.51.100.10}
+    secrets:
+      - control-apply-token
+      - source: launcher-ssh-key
+        target: launcher-ssh-key
+      - source: launcher-known-hosts
+        target: launcher-known-hosts
+      - source: core-token-worker-pool
+        target: core-token-worker-pool
+
+volumes:
+  worker-pool-locks:
+    name: ax-worker-pool-locks
+  resources-data:
+    name: ax-resources-data
+  worker-pool-data:
+    name: ax-worker-pool-data
+
+secrets:
+  launcher-ssh-key:
+    file: ${AX_SECRETS_DIR}/launcher-ssh-key
+  core-token-worker-pool:
+    file: ${AX_SECRETS_DIR}/core-tokens/worker-pool
+  launcher-known-hosts:
+    file: ${AX_SECRETS_DIR}/launcher-known-hosts

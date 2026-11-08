@@ -1,0 +1,11 @@
+- name: work.request
+  title: work.request
+  schema: schemas/dest/work.request.json
+  handler: b12:work.request
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  mcp_tool: ax_work

@@ -1,0 +1,33 @@
+# 実行環境の定義の雛形（docs/ENV-MODULE.md §4 の形）
+# 複製して <環境ID>.yaml にし、<環境ID> の実値で埋めます。
+# 値は例です。実在の値は構築時に現物で確かめて記入します。
+#
+# 台帳（config/environments.yaml）と値を合わせます。
+# 秘密の値は書けません。資格は名前と置き場所だけを書きます。
+
+env_id: example-env # 英小文字・数字・ハイフン
+module_version: 1.0.0 # VERSION と同じ
+contract: "1.0" # CONTRACT と同じ（互換の判定に使う）
+kind: ssh-host # ssh-host | container
+transport: ssh # ssh | relay | local。relay のときは relay_route を書く
+os: linux # 例: linux
+capabilities: [security-audit] # 能力の一覧。入口の名前や環境の ID を能力名にしない
+# 例: [gpu, ci-heavy, security-audit]（host-e 型）
+entrypoints: [audit-readonly] # 入口の名前の一覧。定義は entrypoints/<名前>.yaml
+data_classes: [public, private] # public | private | sensitive
+secrets_allowed: false # 本体から秘密を渡してよいか。既定は false
+work_credentials: [] # 環境の中にある作業用の資格。{slot, location, var}
+# 例: [{slot: model_gateway, location: "環境内の資格ファイル（パスは導入時に記入）", var: MODEL_GATEWAY_KEY}]
+secret_targets: # 遠隔の秘密投入を受ける場所。値は書かない。書かなければ空で、secret-put は拒否される
+  - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+max_concurrent: 1 # 同時実行の上限
+cost: fixed # free | fixed | metered
+lifetime: permanent # permanent | rental | ephemeral。借り物は rental
+owner_use: false # 利用者の普段使いの機なら true
+model_family: [] # 環境の中で LLM を使うときに起動できる系統。使わなければ空
+# worker: {runners: [runner-x], isolation: container, egress: [model-gateway]}
+# ↑ entry.kind: worker を受ける環境だけ書く
+constraints:
+  no_resident: false # rental は true（終了時にジョブが起動した物が 0。元からある物は数えない）
+  archive_dir: archive/
+  # stop_files: [STEAM_PAUSE] # 存在すると入口が動かない印の名前

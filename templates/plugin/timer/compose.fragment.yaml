@@ -1,0 +1,9 @@
+# Merge into compose.d/<bundle>.yaml. timer-runner owns timer execution.
+services:
+  timer-runner:
+    secrets:
+      - plugin-token-example-timer
+
+secrets:
+  plugin-token-example-timer:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/example-timer

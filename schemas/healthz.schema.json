@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/healthz.schema.json",
+  "title": "GET /healthz の応答（S-2.1）",
+  "type": "object",
+  "properties": {
+    "ok": {
+      "const": true
+    },
+    "component": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "projection_skipped": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "ok",
+    "component",
+    "version"
+  ]
+}

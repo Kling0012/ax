@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b1/events-list-response.schema.json",
+  "title": "GET /v1/events の応答（S-3.5。形は B1 が決めた。DECISIONS.md）",
+  "type": "object",
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "../../event.schema.json"
+      }
+    },
+    "next_after": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "events",
+    "next_after"
+  ],
+  "additionalProperties": false
+}

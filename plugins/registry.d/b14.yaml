@@ -1,0 +1,2 @@
+plugins:
+  - {id: change, kind: subloop, path: plugins/subloop/change/manifest.yaml}

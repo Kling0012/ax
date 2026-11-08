@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b16b/control-command.payload.schema.json",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "op": {
+      "enum": [
+        "set_mode",
+        "set_knob",
+        "exclude_resource",
+        "include_resource",
+        "cancel",
+        "run_now"
+      ]
+    },
+    "args": {
+      "type": "object"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "corr": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "on_expiry": {
+      "enum": [
+        "ask_issuer",
+        "release"
+      ]
+    }
+  },
+  "required": [
+    "target",
+    "op",
+    "args",
+    "reason"
+  ],
+  "additionalProperties": false
+}

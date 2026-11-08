@@ -1,0 +1,21 @@
+schema_version: 1
+id: security-watch
+version: 1.0.0
+kind: timer
+project: multi
+title: Security watch
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: cron, cron: "20 21 * * *", missed: record_only}
+capabilities: [run, collect_only, draining]
+knobs:
+  u_security_time: {type: string, default: "06:20", effective: next_run, title: Audit time}
+health: {heartbeat_s: 60}
+sensitivity: private
+secrets: []
+outputs: []
+depends_on_plugins: [resources, timeline]
+env_jobs:
+  operations: [submit, get]
+  entrypoints: [audit-readonly]
+  requires: [security-audit]

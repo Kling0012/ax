@@ -1,0 +1,16 @@
+# F-9.5 initial examples. Changes require irreversible user approval.
+# These rows grant no operate tier until an exact-model exam is approved.
+models:
+  - match: "claude-"
+    provider: anthropic
+    exams: []
+    max_class: sensitive
+    max_tier: operate
+  - match: "codex/"
+    provider: openai
+    exams: []
+    max_class: sensitive
+    max_tier: operate
+default:
+  max_class: public
+  max_tier: read

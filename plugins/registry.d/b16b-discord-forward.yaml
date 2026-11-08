@@ -1,0 +1,2 @@
+plugins:
+  - {id: discord-forward, kind: timer, path: plugins/timer/discord-forward/manifest.yaml}

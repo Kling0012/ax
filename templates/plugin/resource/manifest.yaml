@@ -1,0 +1,18 @@
+# Copy to plugins/resource/example-resource/manifest.yaml.
+schema_version: 1
+id: example-resource
+version: 0.1.0
+kind: resource
+project: multi
+title: 例の resource
+image: ax/core:${AX_TAG}
+execution: mechanical
+schedule: {kind: interval, every_s: 300, missed: record_only}
+capabilities: [run, draining]
+knobs: {}
+health: {heartbeat_s: 60}
+sensitivity: private
+roles: []
+secrets: []
+outputs: []
+depends_on_plugins: []

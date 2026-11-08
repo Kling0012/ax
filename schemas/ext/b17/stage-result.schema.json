@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ax:ext:b17:stage-result",
+  "title": "Local operator stage result (not a control API)",
+  "type": "object",
+  "required": ["stage", "result", "actions", "blocked", "dry_run"],
+  "additionalProperties": false,
+  "properties": {
+    "stage": {"type": "integer", "minimum": 1, "maximum": 6},
+    "result": {"enum": ["ok", "waiting", "planned"]},
+    "actions": {"type": "array", "items": {"type": "string"}},
+    "blocked": {"type": "array", "items": {"type": "string"}},
+    "dry_run": {"type": "boolean"}
+  },
+  "allOf": [{"if": {"properties": {"result": {"const": "planned"}}}, "then": {"properties": {"dry_run": {"const": true}}}}]
+}

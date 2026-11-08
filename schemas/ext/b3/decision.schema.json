@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b3/decision.schema.json",
+  "title": "判断の記録（S-9.6）",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$", "description": "ULID（S-9.6）" },
+    "kind": { "enum": ["decision", "preference", "handoff"] },
+    "project": { "type": ["string", "null"] },
+    "title": { "type": "string", "maxLength": 80, "minLength": 1 },
+    "body": { "type": "string", "maxLength": 600, "minLength": 1 },
+    "reason": { "type": "string", "maxLength": 300 },
+    "basis": { "enum": ["user_said", "commander", "design"] },
+    "quote": { "type": ["string", "null"], "maxLength": 200 },
+    "supersedes": { "type": ["string", "null"] },
+    "recorded_by": { "type": "object" },
+    "attested": { "type": "boolean" },
+    "status": { "enum": ["active", "superseded"] },
+    "ts": { "type": "string" }
+  },
+  "required": ["id", "kind", "title", "body", "basis", "ts"],
+  "additionalProperties": false
+}

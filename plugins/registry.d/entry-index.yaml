@@ -1,0 +1,2 @@
+plugins:
+  - {id: entry-index, kind: timer, path: plugins/timer/entry-index/manifest.yaml}

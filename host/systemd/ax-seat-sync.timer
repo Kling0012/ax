@@ -1,0 +1,11 @@
+[Unit]
+Description=AX SSH seat synchronization interval
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=30s
+AccuracySec=1s
+Unit=ax-seat-sync.service
+
+[Install]
+WantedBy=timers.target

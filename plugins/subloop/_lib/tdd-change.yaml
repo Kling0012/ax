@@ -1,0 +1,120 @@
+# 標準の部分グラフ tdd-change（S-7.6、D-6.6。R-Q1〜R-Q5）。実装を伴うサブループは、これを include して使う（必須）。
+#   git.worktree → worker.run(test_design) → gate.red → worker.run(impl) → gate.tests_unchanged → verify.cmd
+#     → gate.coverage_changed → gate.lint → gate.types → [gate.mutation] → worker.run(review) → 次の段（取り込み側の辺）
+# bug の辺: verify.cmd / gate.* → worker.run(impl)。gate.red → worker.run(test_design)。
+# 同じ項目のすべてのジョブと検証は、git.worktree が返した workdir_id を渡して 1 つの worktree を共有する（会話は共有しない）。
+# max_loops: impl への差し戻しは S-17 tdd_impl_loops の既定 3、test_design への差し戻しは 2。全部を使い切ると 20（S-17 max_hops の上限）。
+# 取り込み側で include するときのノード ID は `<as>.<局所の ID>`（as を省くと tdd-change）。
+schema_version: 1
+params:
+  test_cases_max: 12
+  base_ref: main
+  branch: "ai/{{item.item_id}}"
+  role_impl: impl
+  verify: ""
+  coverage_cmd: ""      # 変更行のカバレッジを `NN%` で出すコマンド（空なら gate.coverage_changed は skip）
+  lint_cmd: ""
+  types_cmd: ""
+  mutation_cmd: ""      # 対象に合うときだけ（空なら gate.mutation は skip）
+  answer: ""
+  resume_ref: ""
+entry: worktree
+exits:
+  ok: review
+nodes:
+  - id: worktree
+    type: git.worktree
+    with: {repo: "{{item.project}}", base_ref: "{{params.base_ref}}", branch: "{{params.branch}}"}
+    limits: {timeout_s: 600, retries: 2}
+    on_fail: eject
+  - id: test_design
+    type: worker.run
+    with:
+      role: test_design
+      prompt: prompts/tdd-change/test_design.md
+      workdir_id: "{{nodes.worktree.data.workdir_id}}"
+      resume_ref: "{{params.resume_ref}}"
+      answer: "{{params.answer}}"
+      test_cases_max: "{{params.test_cases_max}}"
+      tests_dir: "tests/ax_generated/{{item.item_id}}"
+    limits: {timeout_s: 3600, retries: 1, continuations: 2}
+    on_fail: eject
+  - id: red
+    type: gate.red
+    with: {cmd: "{{params.verify}}", workdir_id: "{{nodes.worktree.data.workdir_id}}", tests_dir: "tests/ax_generated/{{item.item_id}}"}
+    limits: {timeout_s: 1800, retries: 1}
+    on_fail: eject
+  - id: impl
+    type: worker.run
+    with:
+      role: "{{params.role_impl}}"
+      prompt: prompts/tdd-change/impl.md
+      workdir_id: "{{nodes.worktree.data.workdir_id}}"
+      resume_ref: "{{params.resume_ref}}"
+      answer: "{{params.answer}}"
+      verify: "{{params.verify}}"
+    limits: {timeout_s: 3600, retries: 1, continuations: 2}
+    on_fail: eject
+  - id: tests_unchanged
+    type: gate.tests_unchanged
+    with: {workdir_id: "{{nodes.worktree.data.workdir_id}}", tests_dir: "tests/ax_generated/{{item.item_id}}", snapshot: "{{nodes.red.data.snapshot}}"}
+    limits: {timeout_s: 120, retries: 1}
+    on_fail: eject
+  - id: verify
+    type: verify.cmd
+    with: {cmd: "{{params.verify}}", workdir_id: "{{nodes.worktree.data.workdir_id}}"}
+    limits: {timeout_s: 1800, retries: 1}
+    on_fail: eject
+  - id: coverage
+    type: gate.coverage_changed
+    with: {cmd: "{{params.coverage_cmd}}", workdir_id: "{{nodes.worktree.data.workdir_id}}"}
+    limits: {timeout_s: 1800, retries: 1}
+    on_fail: eject
+  - id: lint
+    type: gate.lint
+    with: {cmd: "{{params.lint_cmd}}", workdir_id: "{{nodes.worktree.data.workdir_id}}"}
+    limits: {timeout_s: 1800, retries: 1}
+    on_fail: eject
+  - id: types
+    type: gate.types
+    with: {cmd: "{{params.types_cmd}}", workdir_id: "{{nodes.worktree.data.workdir_id}}"}
+    limits: {timeout_s: 1800, retries: 1}
+    on_fail: eject
+  - id: mutation
+    type: gate.mutation
+    with: {cmd: "{{params.mutation_cmd}}", workdir_id: "{{nodes.worktree.data.workdir_id}}", applies: "{{params.mutation_cmd}}"}
+    limits: {timeout_s: 3600, retries: 0}
+    on_fail: eject
+  - id: review
+    type: worker.run
+    with:
+      role: review
+      prompt: prompts/tdd-change/review.md
+      workdir_id: "{{nodes.worktree.data.workdir_id}}"
+      resume_ref: "{{params.resume_ref}}"
+    limits: {timeout_s: 1800, retries: 1}
+    on_fail: eject
+edges:
+  - {from: worktree, to: test_design, when: ok}
+  - {from: test_design, to: red, when: ok}
+  - {from: red, to: impl, when: ok}
+  - {from: red, to: impl, when: skip}
+  - {from: red, to: test_design, when: bug, max_loops: 2}
+  - {from: impl, to: tests_unchanged, when: ok}
+  - {from: tests_unchanged, to: verify, when: ok}
+  - {from: tests_unchanged, to: impl, when: bug, max_loops: 3}
+  - {from: verify, to: coverage, when: ok}
+  - {from: verify, to: coverage, when: skip}
+  - {from: verify, to: impl, when: bug, max_loops: 3}
+  - {from: coverage, to: lint, when: ok}
+  - {from: coverage, to: lint, when: skip}
+  - {from: coverage, to: impl, when: bug, max_loops: 3}
+  - {from: lint, to: types, when: ok}
+  - {from: lint, to: types, when: skip}
+  - {from: lint, to: impl, when: bug, max_loops: 3}
+  - {from: types, to: mutation, when: ok}
+  - {from: types, to: mutation, when: skip}
+  - {from: types, to: impl, when: bug, max_loops: 3}
+  - {from: mutation, to: review, when: ok}
+  - {from: mutation, to: review, when: skip}
+  - {from: mutation, to: impl, when: bug, max_loops: 3}

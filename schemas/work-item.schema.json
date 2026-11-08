@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/work-item.schema.json",
+  "title": "work-tdd の項目（S-7.10）",
+  "type": "object",
+  "properties": {
+    "item_key": {
+      "type": "string"
+    },
+    "todo_id": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "work",
+        "subloop_create",
+        "core_change"
+      ]
+    },
+    "project": {
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "impl",
+        "impl_hard"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "acceptance": {
+      "type": "object",
+      "properties": {
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "boundaries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "examples",
+        "boundaries"
+      ],
+      "additionalProperties": false
+    },
+    "base_ref": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "verify": {
+      "type": "string"
+    },
+    "template": {
+      "type": "string"
+    },
+    "answer": {
+      "type": "string"
+    },
+    "resume_ref": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "job_id": {
+              "type": "string"
+            },
+            "workdir_id": {
+              "$ref": "common.schema.json#/$defs/workdir_id"
+            },
+            "model": {
+              "type": "string"
+            },
+            "ended_at": {
+              "$ref": "common.schema.json#/$defs/ts_any"
+            }
+          },
+          "required": [
+            "job_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "item_key",
+    "todo_id",
+    "kind",
+    "project",
+    "role",
+    "title",
+    "body",
+    "acceptance"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "subloop_create"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "template"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/collection/item-key.schema.json",
+  "type": "object",
+  "properties": {
+    "provider": {
+      "const": "github"
+    },
+    "issue_repo": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    },
+    "kind": {
+      "enum": [
+        "issue",
+        "pr"
+      ]
+    },
+    "number": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "provider",
+    "issue_repo",
+    "kind",
+    "number"
+  ],
+  "additionalProperties": false
+}

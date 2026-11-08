@@ -1,0 +1,4 @@
+plugins:
+  - id: scheduled-publisher
+    kind: subloop
+    path: plugins/timer/scheduled_publisher/manifest.yaml

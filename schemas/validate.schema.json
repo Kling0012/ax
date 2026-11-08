@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/validate.schema.json",
+  "title": "POST /v1/validate（S-5.7）",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "manifest",
+            "graph"
+          ]
+        },
+        "body": {}
+      },
+      "required": [
+        "kind",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "ok",
+        "errors"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

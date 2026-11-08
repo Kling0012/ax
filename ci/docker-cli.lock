@@ -1,0 +1,10 @@
+# ax-ci の docker の CLI と compose プラグインの取得元（docker:29.1.3-cli）の固定（F-14.1）。ダイジェストで固定する。
+# 状態: 未確認。B0 では docker pull を実行していない。
+# hub-host で `sudo -n docker pull docker:29.1.3-cli` の後、RepoDigests の sha256 を digest に書く。
+# あわせて次を実行し、出力を compose_version に残す: `sudo -n docker run --rm docker:29.1.3-cli docker compose version`
+# （F-14.1 の期待は Docker Compose 2.40.3 前後。hub-host のホストの値）。コピー元の path の確認（Dockerfile.ax-ci の注）もここで行う。
+image=docker:29.1.3-cli
+digest=sha256:4fa0ee1f3a7e4354c4ea34558b6d4ee32859baf4973d4c8ccc8e7fe3dd730c04
+status=verified
+compose_version=Docker Compose version v5.0.0
+checked_at=2026-11-07T22:49:24Z

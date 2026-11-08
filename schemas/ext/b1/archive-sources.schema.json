@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b1/archive-sources.schema.json",
+  "title": "退避元の一覧 archive-sources.yaml（F-20、S-16.3）",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^(/|~)"
+          },
+          "min_age_days": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclude": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "keep_original": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "remove_original": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "sources"
+  ],
+  "additionalProperties": true,
+  "description": "schema_version は省いてよい（F-20 は項目だけを定める）"
+}

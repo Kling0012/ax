@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/goal.update.json",
+  "title": "goal.update",
+  "$comment": "SPEC.md:S-9.5,S-22.5; mirrors the ledger goal create, patch, and transition forms",
+  "type": "object",
+  "properties": {
+    "op": true, "id": true, "body": true, "state": true, "version": true,
+    "to": true, "reason": true
+  },
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "properties": {"op": {"const": "create"}, "id": {"type": "string", "minLength": 1}, "body": {"type": "string", "minLength": 1}, "state": {"enum": ["active", "done", "dropped"]}},
+      "required": ["op", "id", "body", "state"],
+      "additionalProperties": false
+    },
+    {
+      "properties": {"op": {"const": "update"}, "id": {"type": "string", "minLength": 1}, "version": {"type": "integer", "minimum": 1}, "body": {"type": "string", "minLength": 1}},
+      "required": ["op", "id", "version", "body"],
+      "additionalProperties": false
+    },
+    {
+      "properties": {"op": {"const": "transition"}, "id": {"type": "string", "minLength": 1}, "version": {"type": "integer", "minimum": 1}, "to": {"enum": ["active", "done", "dropped"]}, "reason": {"type": "string", "minLength": 1}},
+      "required": ["op", "id", "version", "to", "reason"],
+      "additionalProperties": false
+    }
+  ]
+}

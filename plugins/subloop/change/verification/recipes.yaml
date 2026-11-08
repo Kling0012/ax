@@ -1,0 +1,109 @@
+{
+  "dreamforge": {
+    "version": "f6.2-v1",
+    "runner": "verify-dotnet",
+    "timeout_s": 2400,
+    "ro_mounts": [
+      "sod-gamedata"
+    ],
+    "dependency": [
+      "dotnet restore SodRpg.sln"
+    ],
+    "checks": [
+      {
+        "kind": "build",
+        "command": "dotnet build src/SodRpg.Mod -c Release \"-p:GameDir=/mnt/sod-gamedata/Shape of Dreams\" -p:ModDeployDir=/tmp-hdd/moddeploy --no-restore"
+      },
+      {
+        "kind": "generated",
+        "command": "python3 tools/balance/gen_cs.py --check"
+      },
+      {
+        "kind": "changed",
+        "command": "python3 tools/test_changed.py"
+      }
+    ],
+    "all": {
+      "kind": "all",
+      "command": "python3 tools/test_changed.py --all"
+    },
+    "slow": {
+      "kind": "slow",
+      "command": "SODRPG_SLOW=1 python3 tools/test_changed.py --all"
+    },
+    "full_paths": [
+      "tools/test_changed.py",
+      "tools/balance/",
+      ".github/workflows/"
+    ],
+    "slow_paths": [
+      "tools/balance/",
+      "tools/star-manifest/",
+      "Content/Balance"
+    ],
+    "unperformed": []
+  },
+  "hibi": {
+    "version": "f6.2-v1",
+    "runner": "verify-node",
+    "timeout_s": 2400,
+    "dependency": [
+      "pnpm -C frontend install --frozen-lockfile",
+      "cd backend && uv sync"
+    ],
+    "checks": [
+      {
+        "kind": "type",
+        "command": "pnpm -C frontend typecheck"
+      },
+      {
+        "kind": "lint",
+        "command": "pnpm -C frontend lint"
+      },
+      {
+        "kind": "import",
+        "command": "cd backend && uv run --offline --no-sync python -c \"import opencontext\""
+      },
+      {
+        "kind": "privacy",
+        "command": "{privacy_check}"
+      }
+    ],
+    "unperformed": [
+      "unit",
+      "e2e"
+    ]
+  },
+  "hibi-server": {
+    "version": "f18.5-v1",
+    "runner": "env:example-local:hibi-server-e2e",
+    "timeout_s": 2400,
+    "dependency": [],
+    "checks": [
+      {
+        "kind": "e2e",
+        "command": "sudo -n ./scripts/e2e.sh"
+      }
+    ],
+    "unperformed": []
+  },
+  "hibi-memory": {
+    "version": "f6.2-v1",
+    "runner": "verify-python",
+    "timeout_s": 2400,
+    "dependency": [
+      "uv sync --extra dev"
+    ],
+    "checks": [
+      {
+        "kind": "all",
+        "command": "uv run --offline --no-sync pytest -q"
+      }
+    ],
+    "all": {
+      "kind": "all",
+      "command": "uv run --offline --no-sync pytest -q"
+    },
+    "unperformed": []
+  }
+}

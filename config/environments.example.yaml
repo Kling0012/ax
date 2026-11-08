@@ -1,0 +1,140 @@
+# S-25.2 の初期台帳。実在の宛先は profile の変数から読む。資格の値は書かない。
+contract_supported: "1.0"
+environments:
+  - id: hub-host-local
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "${AX_ENV_HUB_HOST_LOCAL_HOST}"
+      user: "${AX_ENV_HUB_HOST_LOCAL_USER}"
+      port: "${AX_ENV_HUB_HOST_LOCAL_PORT}"
+    conn_credential: {slot: env-ssh-hub-host-local, place: secrets_dir/env-ssh-hub-host-local}
+    os: linux
+    capabilities: [docker, cloudflare-cli, ci-light, hibi-state-read, security-audit]
+    entrypoints:
+      ci-run: {run: entrypoints/bin/ci-run}
+      hibi-state: {run: entrypoints/bin/hibi-state}
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+      cf-read: {run: entrypoints/bin/cf-read}
+    data_classes: [public, private, sensitive]
+    secrets_allowed: false
+    work_credentials:
+      - {slot: hibi-server-url, location: "~/.config/hq-hibi-bridge/env", var: HIBI_SERVER_URL}
+    secret_targets:
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  - id: legacy-host
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "${AX_ENV_LEGACY_HOST_HOST}"
+      user: "${AX_ENV_LEGACY_HOST_USER}"
+      port: "${AX_ENV_LEGACY_HOST_PORT}"
+    conn_credential: {slot: tailscale-ssh, place: profile:tailscale-ssh}
+    os: linux
+    capabilities: [steam-workshop-upload, x-session]
+    entrypoints:
+      release-both: {run: entrypoints/bin/release-both}
+      x-collect: {run: entrypoints/bin/x-collect}
+      x-post: {run: entrypoints/bin/x-post}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: discord-webhook, path: "~/.config/dreamforge/discord-webhook", mode: "600", max_bytes: 4096}
+      - {name: steam-user, path: "~/.config/dreamforge/steam-user", mode: "600", max_bytes: 256}
+      - {name: workshop-item-id, path: "~/.config/dreamforge/workshop-item-id", mode: "600", max_bytes: 256}
+      - {name: x-cookies, path: "~/.xactions/cookies.json", mode: "600", max_bytes: 65536}
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  - id: archive-host
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "${AX_ENV_ARCHIVE_HOST_HOST}"
+      user: "${AX_ENV_ARCHIVE_HOST_USER}"
+      port: "${AX_ENV_ARCHIVE_HOST_PORT}"
+    conn_credential: {slot: env-ssh-archive-host, place: secrets_dir/env-ssh-archive-host}
+    os: linux
+    capabilities: [archive-store, "deploy-target:hibi-server", security-audit]
+    entrypoints:
+      hibi-server-deploy: {run: entrypoints/bin/hibi-server-deploy}
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  - id: compute-host
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "${AX_ENV_COMPUTE_HOST_HOST}"
+      user: "${AX_ENV_COMPUTE_HOST_USER}"
+      port: "${AX_ENV_COMPUTE_HOST_PORT}"
+    conn_credential: {slot: env-ssh-compute-host, place: secrets_dir/env-ssh-compute-host}
+    os: linux
+    capabilities: [gpu, ci-heavy, security-audit]
+    entrypoints:
+      ci-run: {run: entrypoints/bin/ci-run}
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: hf-token, path: "~/.cache/example/hf/token", mode: "600", max_bytes: 4096}
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: rental
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial
+
+  - id: remote-host
+    adapter: ssh-host
+    connect:
+      kind: ssh
+      host: "${AX_ENV_REMOTE_HOST_HOST}"
+      user: "${AX_ENV_REMOTE_HOST_USER}"
+      port: "${AX_ENV_REMOTE_HOST_PORT}"
+    conn_credential: {slot: env-ssh-remote-host, place: secrets_dir/env-ssh-remote-host}
+    os: linux
+    capabilities: [security-audit]
+    entrypoints:
+      audit-readonly: {run: entrypoints/bin/audit-readonly}
+    data_classes: [public, private]
+    secrets_allowed: false
+    work_credentials: []
+    secret_targets:
+      - {name: selftest, path: "~/.ax-env/run/secret-selftest", mode: "600", max_bytes: 64}
+    max_concurrent: 1
+    cost: {kind: fixed}
+    lifetime: permanent
+    owner_use: false
+    rank: 100
+    registered_at: "2026-11-07"
+    state: trial

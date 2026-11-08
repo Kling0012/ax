@@ -1,0 +1,17 @@
+# 強制コマンドの authorized_keys の行の雛形
+# プレースホルダの値を、足すホストの現物に合わせて埋めます。
+# 足す前に ~/.ssh/authorized_keys の控えを作ります（cp -p）。
+# 既にある行は書き換えません。1 行を足すだけです。
+#
+# 1 行の形:
+#   restrict,from="<送信元アドレス>",command="<ホーム>/.ax-env/bin/ax-env-run --caller env" ssh-ed25519 <公開鍵> ax-env-<環境ID>
+#
+# 例（プレースホルダ。実在の値は書きません）:
+restrict,from="<送信元のアドレス>",command="<ホーム>/.ax-env/bin/ax-env-run --caller env" ssh-ed25519 AAAA... ax-env-<環境ID>
+# host-a-local の 2 行目（worker-pool 用）:
+# restrict,from="<ax-work のアドレス>",command="<ホーム>/.ax-env/bin/ax-env-run --caller launcher" ssh-ed25519 AAAA... ax-launcher
+
+# 置き方の注意:
+#   - command= は絶対パスで書きます。--caller は強制コマンドが固定するので、接続した側は変えられません。
+#   - host-a-local だけ、送信元も固定します（worker-pool 用は from="<ax-work のアドレス>"、resources 用は from="<固定アドレス>"）。
+#   - 秘密鍵は ssh-keygen -t ed25519 -N "" -f "$SECRETS_DIR/env-ssh-<環境ID>" -C ax-env-<環境ID> で作ります（権限 600）。

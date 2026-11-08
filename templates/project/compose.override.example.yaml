@@ -1,0 +1,10 @@
+# Illustrative only; set EXAMPLE_REPO_PATH to an absolute host path.
+services:
+  sl-work-tdd:
+    environment:
+      AX_REPO_EXAMPLE_PROJECT: /git/example-project.git
+    volumes:
+      - type: bind
+        source: ${EXAMPLE_REPO_PATH}
+        target: /git/example-project.git
+        read_only: true

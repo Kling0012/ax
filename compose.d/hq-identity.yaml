@@ -1,0 +1,19 @@
+# HQ assertions share only the signing key; the TOTP seed stays in HQ.
+services:
+  intake:
+    environment:
+      AX_HQ_GID: ${AX_HQ_GID:-}
+      AX_HQ_PROOF_KEY_FILE: /run/hq-proof/key
+    volumes:
+      - type: bind
+        source: ${AX_SECRETS_DIR}/hq-proof
+        target: /run/hq-proof
+        read_only: true
+  hq:
+    environment:
+      AX_HQ_PROOF_KEY_FILE: /run/hq-proof/key
+    volumes:
+      - type: bind
+        source: ${AX_SECRETS_DIR}/hq-proof
+        target: /run/hq-proof
+        read_only: true

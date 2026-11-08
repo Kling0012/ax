@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/error-rules.schema.json",
+  "title": "config/error-rules.yaml（S-2.3）",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "$ref": "common.schema.json#/$defs/error_class"
+          },
+          "code": {
+            "type": "string"
+          },
+          "match": {
+            "type": "object",
+            "properties": {
+              "http_status": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "http_status_range": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "body_regex": {
+                "type": "string"
+              },
+              "exception": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "exit_code": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "hint": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "action": {
+            "type": "string"
+          },
+          "counts_as_failure": {
+            "enum": [
+              "yes",
+              "no",
+              "hold"
+            ]
+          }
+        },
+        "required": [
+          "class",
+          "code",
+          "match",
+          "counts_as_failure"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "rules"
+  ],
+  "additionalProperties": false
+}

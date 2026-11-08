@@ -1,0 +1,42 @@
+name: 機能の提案 (Feature request)
+description: 新しい機能や変更の提案。日本語でも英語でも書けます。
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        設計の正本は `docs/` の文書です。提案が `docs/SPEC.md` の既存の節と重なっていないか、先に検索してください。
+        設計文書を変える提案は、関連する節（S-*、D-*）を書いていただけると助かります。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 解決したい問題
+      description: 何ができなくて困るかを書いてください。背景や動機も添えてください。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 提案する解決
+      description: どう動くとよいかを具体的に書いてください。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 代替案
+      description: 考えた別の方法があれば書いてください。無ければ「無し」で構いません。
+  - type: textarea
+    id: context
+    attributes:
+      label: 追加情報
+      description: 関連する設計文書の節、試したこと、参照した資料など。秘密・個人情報は含めないでください。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 確認
+      options:
+        - label: 秘密・トークン・個人情報をこの提案に含めていない
+          required: true
+        - label: docs/ の設計文書を検索し、既存の節と重なっていないことを確認した
+          required: true

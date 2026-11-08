@@ -1,0 +1,21 @@
+# agent-cli の runner の形（F-7.2）。実物の runner の定義は config/runners/*.yaml が持つ。
+# このファイルは、その形を schemas/runner.schema.json に合う見本として置く。
+name: agent-cli
+kind: agent-cli
+image: ax/agent-cli:${AX_TAG}
+command: >-
+  claude --model {model} -p --output-format json --dangerously-skip-permissions {session_arg}
+env:
+  ANTHROPIC_BASE_URL: "{model_gateway}"
+  ANTHROPIC_DEFAULT_OPUS_MODEL: "{model}"
+  ANTHROPIC_DEFAULT_SONNET_MODEL: "{model}"
+  ANTHROPIC_DEFAULT_HAIKU_MODEL: "{model}"
+  ANTHROPIC_SMALL_FAST_MODEL: "{model}"
+  CLAUDE_CODE_SUBAGENT_MODEL: "{model}"
+  TMPDIR: /tmp-hdd
+timeout_s: 3600
+idle_timeout_s: 900
+result:
+  source: stdout_json
+  fields: [result, is_error, api_error_status]
+  rate_limited_when: {api_error_status: 429}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b10b/api/hibi-now.schema.json",
+  "title": "GET /v1/hibi/now response (S-22.6, F-25)",
+  "type": "object",
+  "properties": {
+    "state": {"enum": ["away", "play", "focus", "break", "shallow", "unknown"]},
+    "since": {"anyOf": [{"$ref": "../../../common.schema.json#/$defs/ts_any"}, {"type": "null"}]},
+    "category": {"anyOf": [{"enum": ["work", "research", "communication", "media", "play", "other"]}, {"type": "null"}]},
+    "session_title": {"anyOf": [{"type": "string", "maxLength": 40}, {"type": "null"}]},
+    "as_of": {"anyOf": [{"$ref": "../../../common.schema.json#/$defs/ts_any"}, {"type": "null"}]}
+  },
+  "required": ["state", "since", "category", "session_title", "as_of"],
+  "additionalProperties": false
+}

@@ -1,0 +1,14 @@
+# ホスト見張りの 1 周期（systemd --user。operator として動く）。置き場: ~/.config/systemd/user/ax-hostwatch.service
+# 入れ方と有効化は docs/b8/hostwatch.md（この束は入れない。go の後に実施者が行う）。
+# 特権操作は sudo -n（S-11.6）。NoNewPrivileges などの絞り込みは sudo と衝突するので付けない。
+[Unit]
+Description=AX host watch (one cycle)
+Documentation=file://%h/.local/share/ax/prod/docs/b8/hostwatch.md
+
+[Service]
+Type=oneshot
+Environment=AX_HOME=%h/.local/share/ax/prod
+ExecStart=%h/.local/share/ax/prod/host/ax-hostwatch.sh
+# deploy（docker compose build を含む）を 1 周期の中で行うことがあるため長くする
+TimeoutStartSec=4200
+Nice=10

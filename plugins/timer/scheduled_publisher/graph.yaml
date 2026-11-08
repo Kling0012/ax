@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "entry": "preflight",
+  "max_parallel_items": 1,
+  "nodes": [
+    {"id": "preflight", "type": "eigen.preflight", "limits": {"timeout_s": 60}, "needs_mode": ["run", "collect_only"]},
+    {"id": "collect", "type": "env.run", "with": {"requires": ["linux-sandbox", "scheduled-publisher-cli"], "sensitivity": "public", "entry": {"kind": "entrypoint", "name": "eigen-collect", "args": {}}, "outputs": ["plan.json", "rules/*", "stages/*", "searches/*", "messages.json", "relations.json", "skipped.json"], "secrets": [], "budget_min": 15, "stall_min": 5, "irreversible": false, "scope": "one"}, "limits": {"timeout_s": 900}, "needs_mode": ["run"], "on_fail": "eject"},
+    {"id": "decide", "type": "worker.run", "with": {"role": "eigen-decide", "prompt": "prompts/decide.md", "budget_min": 40, "resume": "off"}, "limits": {"timeout_s": 2400}, "needs_mode": ["run"], "on_fail": "eject"},
+    {"id": "outbox_check", "type": "eigen.outbox_check", "limits": {"timeout_s": 120}, "needs_mode": ["run"]},
+    {"id": "send", "type": "env.run", "with": {"requires": ["linux-sandbox", "scheduled-publisher-cli"], "sensitivity": "public", "entry": {"kind": "entrypoint", "name": "eigen-send", "args": {}}, "outputs": ["sent.jsonl"], "secrets": [], "budget_min": 10, "stall_min": 5, "irreversible": true, "scope": "one"}, "limits": {"timeout_s": 600}, "needs_mode": ["run"], "on_fail": "eject"},
+    {"id": "record", "type": "eigen.record", "limits": {"timeout_s": 60}, "needs_mode": ["run", "collect_only"]}
+  ],
+  "edges": [
+    {"from": "preflight", "to": "collect", "when": "ok"},
+    {"from": "preflight", "to": "record", "when": "skip"},
+    {"from": "collect", "to": "decide", "when": "ok"},
+    {"from": "decide", "to": "outbox_check", "when": "ok"},
+    {"from": "outbox_check", "to": "send", "when": "ok"},
+    {"from": "send", "to": "record", "when": "ok"}
+  ]
+}

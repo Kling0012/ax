@@ -1,0 +1,51 @@
+# B8 の束のサービス: オブザーバー（S-11.1、D-10.1、F-18.4）。
+# 網は ax-core だけ（F-18.4 の表）。ports は持たない（D-14）。healthcheck は docker/base.yaml の /healthz（8080）。
+# ホスト見張り（host/ax-hostwatch.sh）は compose のサービスではなく、ホストの systemd の timer が動かす（host/ax-hostwatch.timer）。
+# コンテナに Docker のソケットも sudo も渡さない（S-11.6）。特権操作はホスト側のスクリプトだけが sudo -n で行う。
+#
+# /state は読み取り専用。要求の置き場 host-requests/ と observer.beat だけ書ける（S-11.6）。
+# observer.beat はホストの起動手順で通常ファイルとして用意する。inode を変えずに書く。
+# cutover/ は読み取り専用で別に bind する（D-10.1）。
+# observer-data: 重複除去の表、読み位置、取り込み済みの行数、outbox（D-4）。
+# pii-list は b1 の compose.d/b1.yaml が宣言した secrets を使う（取り込む切り替えの記録の秘密検査 S-15.3）。
+services:
+  observer:
+    extends:
+      file: docker/base.yaml
+      service: ax-core-base
+    command: ["python", "-m", "core.observer"]
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      archive-init: {condition: service_completed_successfully}
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_STATE_DIR: /state
+      AX_OBSERVER_DATA: /data
+      AX_TIMELINE_URL: http://timeline:8080
+      AX_LEDGER_URL: http://ledger:8080
+      AX_REDACT_INDEX: /state/redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+    volumes:
+      - {type: volume, source: observer-data, target: /data}
+      - {type: bind, source: "${AX_STATE_DIR}", target: /state, read_only: true}
+      - {type: bind, source: "${AX_STATE_DIR}/host-requests", target: /state/host-requests}
+      - type: bind
+        source: "${AX_STATE_DIR}/observer.beat"
+        target: /state/observer.beat
+        bind: {create_host_path: false}
+      - {type: bind, source: "${AX_STATE_DIR}/cutover", target: /state/cutover, read_only: true}
+    secrets:
+      - source: pii-list
+        target: pii-list
+      - core-token-observer
+
+  archive-init:
+    volumes:
+      - {type: volume, source: observer-data, target: /v/observer-data}
+
+volumes:
+  observer-data: {}
+
+secrets:
+  core-token-observer:
+    file: ${AX_SECRETS_DIR}/core-tokens/observer

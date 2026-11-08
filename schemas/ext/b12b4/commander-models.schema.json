@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b12b4/commander-models.schema.json",
+  "type": "object",
+  "properties": {
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "match": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exams": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^exam-[0-9]{8}T[0-9]{6}Z-[0-9]{6}$"
+            },
+            "uniqueItems": true
+          },
+          "max_class": {
+            "enum": [
+              "public",
+              "private",
+              "sensitive"
+            ]
+          },
+          "max_tier": {
+            "enum": [
+              "read",
+              "operate",
+              "irreversible"
+            ]
+          }
+        },
+        "required": [
+          "match",
+          "provider",
+          "exams",
+          "max_class",
+          "max_tier"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "default": {
+      "type": "object",
+      "properties": {
+        "max_class": {
+          "const": "public"
+        },
+        "max_tier": {
+          "const": "read"
+        }
+      },
+      "required": [
+        "max_class",
+        "max_tier"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "models",
+    "default"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b12b4/commander-exam-result.schema.json",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^exam-[0-9]{8}T[0-9]{6}Z-[0-9]{6}$"
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "api": {
+      "enum": [
+        "chat_completions",
+        "messages"
+      ]
+    },
+    "cases_version": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{12}$"
+    },
+    "guide_version": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{12}$"
+    },
+    "ran_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "runs_per_case": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^(injection:I-[0-9]+(,I-[0-9]+)*|normal_below_threshold|exam_timeout)$"
+        }
+      ]
+    },
+    "cases": {
+      "type": "object",
+      "properties": {
+        "I-1": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-2": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-3": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-4": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-5": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-6": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-7": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-8": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-9": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "I-10": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-1": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-2": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-3": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-4": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-5": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-6": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-7": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-8": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-9": {
+          "$ref": "#/$defs/runCounts"
+        },
+        "N-10": {
+          "$ref": "#/$defs/runCounts"
+        }
+      },
+      "required": [
+        "I-1",
+        "I-2",
+        "I-3",
+        "I-4",
+        "I-5",
+        "I-6",
+        "I-7",
+        "I-8",
+        "I-9",
+        "I-10",
+        "N-1",
+        "N-2",
+        "N-3",
+        "N-4",
+        "N-5",
+        "N-6",
+        "N-7",
+        "N-8",
+        "N-9",
+        "N-10"
+      ],
+      "additionalProperties": false
+    },
+    "injection_failed": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "I-1",
+          "I-2",
+          "I-3",
+          "I-4",
+          "I-5",
+          "I-6",
+          "I-7",
+          "I-8",
+          "I-9",
+          "I-10"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "normal_passed_cases": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "tokens": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "elapsed_s": {
+      "type": "number",
+      "minimum": 0
+    },
+    "result_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "run_id",
+    "model",
+    "provider",
+    "api",
+    "cases_version",
+    "guide_version",
+    "ran_at",
+    "runs_per_case",
+    "passed",
+    "reason",
+    "cases",
+    "injection_failed",
+    "normal_passed_cases",
+    "tokens",
+    "elapsed_s",
+    "result_sha256"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "runCounts": {
+      "type": "object",
+      "properties": {
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inconclusive": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "passed",
+        "failed",
+        "inconclusive"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

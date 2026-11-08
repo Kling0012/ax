@@ -1,0 +1,13 @@
+# GitHub Actions の CI（F-14.1）。D-17: GitHub の非公開リポジトリへの push の開始を利用者に確かめるまで、有効にしない。
+# それまでは手動実行（workflow_dispatch）だけ。push と pull_request の契機は、利用者の確認の後に足す。
+name: ci
+on:
+  workflow_dispatch: {}
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked --group dev
+      - run: TMPDIR="$RUNNER_TEMP" uv run tools/ci.sh

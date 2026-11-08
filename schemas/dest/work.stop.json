@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/work.stop.json",
+  "title": "work.stop",
+  "$comment": "SPEC.md:S-22.2; one AX work item or worker job",
+  "type": "object",
+  "properties": {
+    "todo_id": {"type": "string", "minLength": 1},
+    "job_id": {"type": "string", "minLength": 1},
+    "reason": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false,
+  "oneOf": [
+    {"required": ["todo_id"], "not": {"required": ["job_id"]}},
+    {"required": ["job_id"], "not": {"required": ["todo_id"]}}
+  ]
+}

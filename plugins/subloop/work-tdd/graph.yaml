@@ -1,0 +1,29 @@
+# work-tdd のグラフ（S-7.10）。take → tdd-change → push。
+# S-7.10 の例との違い: push に workdir_id を渡す（git.push が worktree を知るため）。
+schema_version: 1
+entry: take
+item_source: take
+max_parallel_items: "{{knobs.max_parallel_items}}"
+nodes:
+  - {id: take, type: inbox.take, with: {max: "{{knobs.max_parallel_items}}"}, limits: {timeout_s: 30, retries: 2}}
+  - include: tdd-change
+    as: tdd-change
+    with:
+      base_ref: "{{item.base_ref}}"
+      branch: "{{item.branch}}"
+      role_impl: "{{item.role}}"
+      verify: "{{item.verify}}"
+      answer: "{{item.answer}}"
+      resume_ref: "{{item.resume_ref}}"
+      test_cases_max: "{{knobs.test_cases_max}}"
+  - id: push
+    type: git.push
+    with:
+      remote: work.git
+      branch: "{{nodes.tdd-change.worktree.data.branch}}"
+      workdir_id: "{{nodes.tdd-change.worktree.data.workdir_id}}"
+      commit_message: "ax: {{item.title}}"
+    limits: {timeout_s: 300, retries: 2}
+edges:
+  - {from: take, to: tdd-change}
+  - {from: tdd-change, to: push, when: ok}

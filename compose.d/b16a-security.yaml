@@ -1,0 +1,17 @@
+# Monitoring inputs are provisioned outside the repository. Missing files do not
+# prevent timer-runner from starting; the affected monitor reports unavailable.
+services:
+  timer-runner:
+    volumes:
+      - type: bind
+        source: ${AX_STATE_DIR}/monitor-inputs
+        target: /run/ax-monitor-inputs
+        read_only: true
+      - type: bind
+        source: ${AX_SECRETS_DIR}/tumu-watch
+        target: /run/ax-tumu-secrets
+        read_only: true
+      - type: bind
+        source: ${AX_HOME}/plugins/timer/tumu-watch/ssh_config
+        target: /etc/ssh/ssh_config
+        read_only: true

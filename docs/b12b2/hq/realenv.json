@@ -1,0 +1,15 @@
+{
+  "package": "b12b2-3",
+  "executed": false,
+  "reason": "成果物づくりの間は、実機操作、サービスの起動、ポートの待受、ブラウザによる描画が禁止されている。",
+  "checks": [
+    {"test": "T-189", "check": "HQ の実画面で、保存済み内容を読み、第二要素を入れて承認する。", "status": "未実行"},
+    {"test": "T-190", "check": "tailscale serve が転送元を上書きし、公開の全経路で承認と登録が 404 になることを確認する。", "status": "未実行"},
+    {"test": "T-211(a)", "check": "ax-hq の uid で hq/ と private/ が 0700、approval-totp と hq.sock が 0600 であり、operator はグループ経由でも読めないことを確認する。", "status": "未実行"},
+    {"test": "T-211(a)", "check": "hq-intake/ が 2710、intake.sock が 0660 であり、接続元 uid の検査が operator と他の uid を拒否することを確認する。", "status": "未実行"},
+    {"test": "T-211(b)(c)", "check": "他担当の ax-seat.sh と ax-hq-enroll --reset が事象と通知を出し、信頼するアダプタ経由で HQ の 24 時間の警告に届くことを確認する。", "status": "未実行"},
+    {"test": "T-211(d)", "check": "他担当が所有する seats.yaml の改ざん検知を実機で確認する。HQ はファイルを書かない。", "status": "未実行"},
+    {"test": "S-22.10", "check": "実画面で全操作と表示の Alt+N の番号、狭い画面のレイアウト、キーボードの操作を確認する。", "status": "未実行"},
+    {"test": "F-13.5", "check": "認証アプリが表示された QR を読み、実際のコードで初回登録と取り替えができることを確認する。", "status": "未実行"}
+  ]
+}

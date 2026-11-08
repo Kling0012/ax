@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/job-start-request.schema.json",
+  "title": "ax-env-run job-start の標準入力（F-18.2）。イメージ・マウントのパス・ネットワーク・コマンドは持てない",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "runner",
+    "allow_hosts",
+    "budget_min",
+    "prompt"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "runner": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "model": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/@+-]{1,120}$",
+      "description": "agent-cli と chat-json は必須。verify-* は不要"
+    },
+    "allow_hosts": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9.-]+$",
+        "maxLength": 253
+      },
+      "description": "FQDN だけ。IP アドレスと * は拒否（launcher が数字だけの形も拒否する）"
+    },
+    "budget_min": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1440
+    },
+    "env_names": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{0,63}$"
+      }
+    },
+    "target_ro": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "ro_mounts": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]{1,40}$"
+      }
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f-]{36}$"
+    },
+    "resume_from": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "workdir_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "verify": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192,
+      "description": "verify-* の runner だけ。command の {verify} に入る（F-18.2 の verify の項）。F-18.2 の依頼 JSON の列挙に無い（OPEN.md）"
+    },
+    "tools": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "enum": [
+          "sandbox-desktop",
+          "web-gui",
+          "web-screenshot",
+          "linux-sandbox"
+        ]
+      },
+      "description": "空でなければ許可ファイルに @gate の行を足す（F-18.2）。列挙に無い（OPEN.md）"
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 131072
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+# resources（資源台帳）の宣言（S-4.2）。core/resources の manifest。
+schema_version: 1
+id: resources
+version: 0.1.0
+kind: resource
+project: multi
+title: モデルの登録簿と状態を持つ
+image: ax/core:${AX_TAG}
+execution: mechanical
+schedule:
+  kind: interval
+  every_s: 300
+  missed: record_only
+capabilities: [run, draining]
+health:
+  heartbeat_s: 60
+sensitivity: private
+roles: []
+secrets: [jev-key]
+outputs: []

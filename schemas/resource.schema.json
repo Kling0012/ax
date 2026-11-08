@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/resource.schema.json",
+  "title": "資源台帳の登録（モデル。S-8.2、F-7.3）",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "model",
+        "environment"
+      ]
+    },
+    "family": {
+      "type": "string"
+    },
+    "tier": {
+      "enum": [
+        "free",
+        "flash",
+        "standard",
+        "last_resort"
+      ]
+    },
+    "level": {
+      "enum": [
+        "L1",
+        "L2",
+        "L3",
+        "L4"
+      ]
+    },
+    "billing": {
+      "enum": [
+        "metered",
+        "flat"
+      ]
+    },
+    "vision": {
+      "type": "boolean"
+    },
+    "supported_runners": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9-]{1,40}$"}},
+    "runner": {
+      "type": "string"
+    },
+    "embedding_endpoint": {
+      "type": "string"
+    },
+    "cap": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "prefix_cache": {
+      "enum": [
+        "on",
+        "off",
+        "unknown"
+      ]
+    },
+    "status": {
+      "enum": [
+        "active",
+        "degraded",
+        "excluded",
+        "retired"
+      ]
+    },
+    "trains_on_input": {
+      "enum": [
+        "no_train",
+        "train",
+        "unknown"
+      ]
+    },
+    "stats": {
+      "type": "object"
+    },
+    "description": {
+      "type": "string"
+    },
+    "pricing": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string"
+        },
+        "input": {
+          "type": "number"
+        },
+        "output": {
+          "type": "number"
+        },
+        "fetched_at": {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "family",
+    "tier",
+    "status"
+  ]
+}

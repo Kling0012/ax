@@ -1,0 +1,3 @@
+# B3/B4 の束の登録の断片。台帳と制御 API は中核の部品でプラグインではない（F-18.4 の網の表）ため、
+# 登録する物は無い。plugins/registry.yaml は tools/build_registry.py がこの断片から作る。
+plugins: []

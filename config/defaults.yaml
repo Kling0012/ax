@@ -1,0 +1,812 @@
+# S-17 既定値。公開してよい値だけ。範囲の変更は利用者（S-17）。
+# 生成: docs/b0/gen_defaults.py が SPEC.md の S-17 の表から作る。範囲 min/max が無い物は「登録簿で検証」などの文言を range_text に残す。
+schema_version: 1
+defaults:
+  heartbeat_s:
+    default: 60
+    min: 15
+    max: 300
+    used_in: S-2.1
+  longpoll_s:
+    default: 30
+    min: 5
+    max: 60
+    used_in: S-3.5
+  control_poll_s:
+    default: 30
+    min: 10
+    max: 120
+    used_in: S-4.4
+  control_max_lease_min:
+    default: 60
+    min: 10
+    max: 240
+    used_in: S-5.4
+  control_max_renewals:
+    default: 3
+    min: 0
+    max: 10
+    used_in: S-5.6
+  expired_grace_min:
+    default: 15
+    min: 5
+    max: 60
+    used_in: S-5.6, S-11.2
+  system_retries:
+    default: 3
+    min: 0
+    max: 6
+    used_in: S-2.3, S-7.2
+  exclude_rate_limit_min:
+    default: 60
+    min: 10
+    max: 240
+    used_in: S-2.3
+  repeat_threshold:
+    default: 5
+    note: 5（1時間あたり）
+    min: 2
+    max: 20
+    used_in: S-2.3, S-11.2
+  max_hops:
+    default: 8
+    min: 2
+    max: 20
+    used_in: S-7.5
+  dependency_wait_h:
+    default: 24
+    min: 1
+    max: 72
+    used_in: S-7.5
+  tdd_impl_loops:
+    default: 3
+    min: 1
+    max: 5
+    used_in: S-7.6
+  test_cases_max:
+    default: 12
+    note: 12（1件の変更あたり）
+    min: 3
+    max: 30
+    used_in: S-7.6
+  gate_changed_coverage:
+    default: 0.8
+    min: 0.5
+    max: 1.0
+    used_in: S-7.4
+  timer_max_days:
+    default: 7
+    min: 1
+    max: 30
+    used_in: S-7.8
+  timer_max_count:
+    default: 20
+    min: 1
+    max: 100
+    used_in: S-7.8
+  loopify_min_days:
+    default: 5
+    min: 3
+    max: 14
+    used_in: S-7.9
+  role_queue_max:
+    default: 5
+    min: 1
+    max: 50
+    used_in: S-8.4
+  promote_after:
+    default: 3
+    min: 2
+    max: 10
+    used_in: S-8.5
+  demote_after:
+    default: 2
+    min: 1
+    max: 5
+    used_in: S-8.5
+  free_min_success:
+    default: 0.7
+    min: 0.3
+    max: 0.9
+    used_in: S-8.5
+  free_min_runs:
+    default: 3
+    min: 2
+    max: 20
+    used_in: S-8.5
+  promotion_share:
+    default: 0.3
+    min: 0
+    max: 0.5
+    used_in: S-8.5
+  stall_min:
+    default: 15
+    min: 5
+    max: 60
+    used_in: S-8.6
+  manager_tick_min:
+    default: 10
+    min: 2
+    max: 60
+    used_in: S-10.1
+  manager_decision_s:
+    default: 300
+    min: 60
+    max: 900
+    used_in: S-10.3
+  observe_s:
+    default: 60
+    min: 15
+    max: 300
+    used_in: S-11.1
+  stale_beats:
+    default: 3
+    min: 2
+    max: 10
+    used_in: S-11.2
+  lag_alert_s:
+    default: 300
+    min: 60
+    max: 1800
+    used_in: S-11.2
+  starve_min:
+    default: 60
+    min: 15
+    max: 240
+    used_in: S-11.2
+  manager_silent_min:
+    default: 30
+    note: 30（`manager_tick_min` の3倍）
+    min: 6
+    max: 180
+    used_in: S-11.2
+  manager_bad_streak:
+    default: 3
+    min: 2
+    max: 10
+    used_in: S-11.2
+  unknown_unhandled_min:
+    default: 30
+    min: 10
+    max: 120
+    used_in: S-11.2
+  drain_silent_min:
+    default: 10
+    min: 5
+    max: 60
+    used_in: S-11.2, S-13.3
+  alert_dedup_min:
+    default: 30
+    min: 5
+    max: 240
+    used_in: S-11.2
+  backup_window_days:
+    default: 7
+    min: 1
+    max: 30
+    used_in: S-11.4
+  backup_limit:
+    default: 2
+    min: 1
+    max: 10
+    used_in: S-11.4
+  host_watch_s:
+    default: 60
+    min: 30
+    max: 300
+    used_in: S-11.5
+  observer_stale_s:
+    default: 180
+    min: 60
+    max: 900
+    used_in: S-11.5
+  inspection_interval_h:
+    default: 24
+    min: 24
+    max: 168
+    used_in: S-13.1
+  inspection_quiet_count:
+    default: 3
+    min: 1
+    max: 10
+    used_in: S-13.1
+  inspection_stretch:
+    default: 1.5
+    min: 1.1
+    max: 3.0
+    used_in: S-13.1
+  inspection_notice_min:
+    default: 30
+    min: 5
+    max: 120
+    used_in: S-13.2
+  drain_wait_h:
+    default: 2
+    min: 0.5
+    max: 12
+    used_in: S-13.2
+  drain_max_h:
+    default: 6
+    min: 1
+    max: 24
+    used_in: S-13.2
+  archive_after_days:
+    default: 14
+    min: 1
+    max: 90
+    used_in: S-14.3
+  full_read_max_bytes:
+    default: 8192
+    range_text: 点検で見直す
+    used_in: S-8.10
+  timeline_hot_days:
+    default: 30
+    min: 7
+    max: 365
+    used_in: S-14.3
+  change_starts_per_cycle:
+    default: 4
+    range_text: 登録簿で検証
+    used_in: 1巡で起動する項目の上限
+  change_model_calls_per_cycle:
+    default: 30
+    range_text: 登録簿で検証
+    used_in: 1巡のモデル呼び出し上限
+  change_cycle_seconds:
+    default: 300
+    range_text: 登録簿で検証
+    used_in: 1巡の収集・起動予算の秒数
+  change_input_max_bytes:
+    default: 65536
+    range_text: 登録簿で検証
+    used_in: 未信頼の本文・差分・コメント各々の上限
+  change_author_items_per_day:
+    default: 3
+    range_text: 登録簿で検証
+    used_in: 作者別の Issue・PR の24時間上限
+  change_author_comments_per_day:
+    default: 10
+    range_text: 登録簿で検証
+    used_in: 作者別コメントの24時間上限
+  change_items_per_day:
+    default: 10
+    range_text: 登録簿で検証
+    used_in: 全体の新規処理の24時間上限
+  change_fix_rounds:
+    default: 3
+    range_text: 登録簿で検証
+    used_in: 重要問題の修正ラウンド上限
+  release_quiet_min:
+    default: 20
+    range_text: 登録簿で検証
+    used_in: 製品登録簿の `quiet_min` の既定（最終マージ後の静穏時間）
+  release_max_wait_min:
+    default: 90
+    range_text: 登録簿で検証
+    used_in: 製品登録簿の `max_wait_min` の既定（最初の待ちからバッチ確定までの上限）
+  release_lock_wait_min:
+    default: 40
+    range_text: 登録簿で検証
+    used_in: 同一 repo・公開モードの排他待ち上限
+  build_wait_min:
+    default: 40
+    range_text: 登録簿で検証
+    used_in: 製品登録簿の公開ビルドの待ち上限の既定
+  publish_review_attempts:
+    default: 3
+    range_text: 登録簿で検証
+    used_in: 初回を含む公開検査の試行上限
+  contribution_max_files:
+    default: 3
+    range_text: 登録簿で検証
+    used_in: 外部からの貢献の型のファイル数上限の既定
+  contribution_max_bytes:
+    default: 2000000
+    range_text: 登録簿で検証
+    used_in: 外部からの貢献の型のファイル1件のバイト数上限の既定
+  worker_lower_wait_s:
+    default: 300
+    range_text: 登録簿で検証
+    used_in: 下位候補への切り替え前に待つ秒数
+  worker_recent_failure_min:
+    default: 60
+    range_text: 登録簿で検証
+    used_in: 無料モデルの直近の能力上の失敗による除外期間
+  question_renotify_h:
+    default: 48
+    range_text: 登録簿で検証
+    used_in: 同じ未回答質問の成功通知から再通知までの時間
+  morning_digest_time_jst:
+    default: 07:00 JST
+    range_text: 登録簿で検証
+    used_in: 朝の要約を配信する日本時間の初期値
+  u_index_time:
+    default: 04:41 Asia/Tokyo
+    range_text: 登録簿で検証
+    used_in: 会話索引の日次実行
+  u_digest_time:
+    default: 23:50 Asia/Tokyo
+    range_text: 登録簿で検証
+    used_in: 記憶要約の日次実行
+  u_entry_start_delay_s:
+    default: 300
+    range_text: 登録簿で検証
+    used_in: 入口一覧の起動後の初回待ち
+  u_entry_interval_s:
+    default: 3600
+    range_text: 登録簿で検証
+    used_in: 入口一覧の更新間隔
+  u_hibi_interval_s:
+    default: 60
+    range_text: 登録簿で検証
+    used_in: Hibi 状態の更新間隔
+  hibi_segments_max:
+    default: 288
+    min: 96
+    max: 1440
+    used_in: 日次状態の書き込みの `segments` の件数の上限（S-9.5）。5分刻みの24時間が288件。旧橋の1日分の実際の件数は B16 で確かめる
+  hibi_body_max_kib:
+    default: 64
+    min: 16
+    max: 256
+    used_in: 集中状態・日次状態の書き込みの本文の大きさの上限（KiB。S-9.5）
+  hibi_future_skew_min:
+    default: 5
+    min: 1
+    max: 30
+    used_in: 書き込みの `as_of` が現在時刻より先でよい幅（分。S-9.5）。時計のずれの許容
+  hibi_fail_streak:
+    default: 5
+    min: 2
+    max: 20
+    used_in: Hibi の取り込みが連続で失敗して ToDo を1件出す回数（S-23.3）。間隔60秒なら5分間の失敗
+  u_eigen_interval_s:
+    default: 3600
+    range_text: 登録簿で検証
+    used_in: scheduled-publisher の巡回間隔
+  u_x_draft_time:
+    default: 07:00 Asia/Tokyo
+    range_text: 登録簿で検証
+    used_in: X 統計と投稿案の実行時刻
+  u_x_queue_interval_s:
+    default: 600
+    range_text: 登録簿で検証
+    used_in: 投稿キューの確認間隔
+  u_forward_start_delay_s:
+    default: 120
+    range_text: 登録簿で検証
+    used_in: 転送の起動後の初回待ち
+  u_forward_interval_s:
+    default: 300
+    range_text: 登録簿で検証
+    used_in: 転送元の巡回間隔
+  u_tumu_interval_s:
+    default: 900
+    range_text: 登録簿で検証
+    used_in: Tumu 監視の間隔
+  u_security_time:
+    default: 06:20 Asia/Tokyo
+    range_text: 登録簿で検証
+    used_in: セキュリティ監視の実行時刻
+  ntfy_rate_per_min:
+    default: 60
+    note: 60（設計者の提案値。旧運用の現物値ではない。構築時に実測して範囲内で調整してよい）
+    range_text: 登録簿で検証
+    used_in: ntfy の配送枠（1分あたりの件数）。超えた通知は未配送として保持する
+  env_probe_s:
+    default: 300
+    range_text: 登録簿で検証
+    used_in: 実行環境の到達と空きの確認の間隔（S-25.5）
+  gate_probe_max_age_s:
+    default: 900
+    min: 300
+    max: 3600
+    used_in: ゲートの確認（`gate_key`）の結果を、トークンの発行に使ってよい時間。`env_probe_s` の 3 倍を既定にする。超えたら発行の前に 1 回確認する（S-25.32）
+  env_exclude_min:
+    default: 30
+    range_text: 登録簿で検証
+    used_in: 失敗した実行環境を新しい選択から外す時間（S-25.5）
+  env_job_budget_min:
+    default: 60
+    range_text: 登録簿で検証
+    used_in: 環境ジョブの依頼に `budget_min` がないときの時間の上限（S-25.8）
+  env_artifact_max_bytes:
+    default: 1073741824
+    range_text: 登録簿で検証
+    used_in: 環境ジョブの成果物1件の大きさの上限（S-25.8）
+  box_wake_wait_s:
+    default: 120
+    min: 30
+    max: 600
+    used_in: 休止した box を起こした後に待つ時間。台帳の `limits.ready_wait_s` の box の初期値（Instabox は `sbx_ready_wait_s`。S-25.19、S-25.22）
+  box_call_timeout_s:
+    default: 120
+    min: 10
+    max: 600
+    used_in: box の MCP の 1 回の呼び出しの上限。台帳の `limits.call_timeout_s` の box の初期値（Instabox は `sbx_exec_timeout_s`。S-25.17、S-25.19）
+  box_run_max_min:
+    default: 30
+    min: 1
+    max: 480
+    used_in: 'box の 1 回の実行時間の仮の上限（台帳の `limits.run_max_kind: soft`）。提供元が止める値が読めたら `hard` の値に直す（B18 で実測。S-25.22、S-25.23）'
+  sandbox_gate_idle_s:
+    default: 600
+    min: 60
+    max: 3600
+    used_in: ゲートのトークンが無操作で失効するまでの時間。失効で枠を返す（S-25.16）
+  sandbox_gate_calls_max:
+    default: 200
+    min: 10
+    max: 2000
+    used_in: 1ジョブがゲートを通して箱を呼べる回数（S-25.19）
+  sandbox_gate_token_max_min:
+    default: 180
+    min: 10
+    max: 720
+    used_in: ゲートのトークンの有効期間の上限（分）。実際の期限は `min(依頼の budget_min + 5, この値)`（S-25.27）
+  sandbox_response_max_bytes:
+    default: 4194304
+    min: 65536
+    max: 33554432
+    used_in: ゲートが1回の応答として通す大きさの上限（S-25.19）
+  sandbox_steps_max:
+    default: 50
+    min: 1
+    max: 200
+    used_in: '`entry.kind: steps` の `args.steps` の最大件数（S-25.3）'
+  sbx_poll_s:
+    default: 30
+    min: 5
+    max: 300
+    used_in: 箱のジョブの状態を読む間隔。box も Instabox も同じ（S-25.22）
+  sbx_exec_timeout_s:
+    default: 600
+    min: 30
+    max: 600
+    used_in: Instabox への `exec` 1 回の上限。台帳の `limits.call_timeout_s` の Instabox の初期値（S-25.22。旧の `IBOX_TIMEOUT` と同じ値）。box の同じ上限は `box_call_timeout_s`
+  sbx_ready_wait_s:
+    default: 180
+    min: 30
+    max: 600
+    used_in: Instabox の再開・起動・起こしのあとの準備待ちの上限（旧の 3 秒×60 回）。box の同じ待ちは `box_wake_wait_s`
+  sbx_queue_wait_min:
+    default: 120
+    min: 1
+    max: 1440
+    used_in: 依頼に期限が無いときの、枠待ちの上限（S-25.23）
+  sbx_run_margin_min:
+    default: 15
+    min: 5
+    max: 60
+    used_in: '提供元が止める実行時間の上限（台帳の `limits.run_max_kind: hard`）から引く余裕。作業の `budget_min` の上限は、その上限からこの値を引いた分。`soft` の上限からは引かない（S-25.22、S-25.23）'
+  sbx_idle_suspend_min:
+    default: 0
+    min: 0
+    max: 30
+    used_in: 待ちが空いてから自分で保留するまでの分。0 なら呼ばず、提供元の自動保留に任せる（既定。2026-11-07 に 5 から 0 に変更。S-25.23）
+  sbx_chunk_bytes:
+    default: 12288
+    min: 1024
+    max: 65536
+    used_in: 成果物の回収の1回の長さ（旧 `fetch.sh` の実測値。S-25.22）
+  sbx_artifact_max_bytes:
+    default: 8388608
+    range_text: '`env_artifact_max_bytes` 以下'
+    used_in: 箱から回収する成果物1件の上限（設計者の提案値。1往復に60〜90秒かかる実測があるため。T-140 で調整）
+  sbx_usage_event_min:
+    default: 60
+    min: 5
+    max: 1440
+    used_in: '`env.usage` を、変化が無くても出す間隔（S-25.24）'
+  env_use_day_tz:
+    default: Asia/Tokyo
+    range_text: IANA の時間帯名
+    used_in: 「その日の利用時間」を数える日の境目の時間帯。0 時から 24 時までを 1 日とする。選び方の手順 6 が使う（S-25.4、S-25.30）
+  sbx_job_dir_keep_days:
+    default: 7
+    min: 1
+    max: 90
+    used_in: 箱の `jobs/` を `ax/archive/` へ移すまでの日数（削除しない。S-25.22）
+  sbx_archive_warn_gib:
+    default: 15
+    min: 1
+    max: 19
+    used_in: 箱の `archive/` の大きさの警告。Instabox の `/data` は 20 GiB。box の容量は B18 で測り、空きの 3/4 を超えない値に直す（S-25.22）
+  sbx_disk_min_gib:
+    default: 1
+    note: 1（推奨。B18 で実測）
+    min: 0.1
+    max: 50
+    used_in: 箱の永続の置き場（box は `/workspace`、Instabox は `/data`）の空きがこれを下回ったら新しいジョブを出さず、環境を `degraded` にしてカードを出す
+  box_probe_shell_timeout_s:
+    default: 30
+    min: 5
+    max: 120
+    used_in: probe が箱の中で `ax-sbx-run version` と `selfcheck` を呼ぶ `shell` の `timeout_s`
+  box_machine_name:
+    default: main
+    note: '`main`'
+    range_text: 文字列
+    used_in: 使う箱の名前。`box_list` が返す台数が1で、この名前と一致することを無料の検査の一部にする（S-25.29）。`box_machine_id` が入っていれば ID も照合する
+  box_machine_id:
+    default: ''
+    note: 空
+    range_text: 文字列
+    used_in: box の箱の ID（任意）。空なら名前だけで照合する。値が入っていれば ID も照合する（S-25.29）。名前と ID が両方空のときは `box_list` の1台と一致すれば足りる
+  sbx_shot_max_height_px:
+    default: 16384
+    min: 1024
+    max: 32768
+    used_in: 画面取得の1ページの高さの上限（S-25.26）
+  sbx_gui_check_h:
+    default: 24
+    min: 1
+    max: 168
+    used_in: box の段2の `gui_snapshot`（公開ページ `https://example.com` を開く確認）を走らせる間隔（時間）。起こした後の最初の `probe` と試行の準備では、間隔によらず走らせる（S-25.28）。推奨の既定値。B18 で実測して直す
+  sbx_shot_timeout_s:
+    default: 60
+    min: 10
+    max: 300
+    used_in: 画面取得の全体の上限
+  u_eigen_collect_budget_min:
+    default: 15
+    min: 5
+    max: 40
+    used_in: scheduled-publisher の収集ジョブの `budget_min`（S-23.7）
+  u_eigen_decide_budget_min:
+    default: 40
+    min: 10
+    max: 50
+    used_in: scheduled-publisher の判断のワーカーの上限（旧の1巡は24〜40分。旧の予算は50分）
+  u_eigen_send_budget_min:
+    default: 10
+    min: 2
+    max: 30
+    used_in: scheduled-publisher の送信ジョブの `budget_min`
+  u_eigen_run_send_max:
+    default: 12
+    min: 1
+    max: 100
+    used_in: scheduled-publisher の1巡の送信の総数の上限（設計者の提案値。旧の1巡の実績は最大5件）。超えた分は `rejected`（`run_cap`）になる
+  u_eigen_reply_cap_day:
+    default: 5
+    min: 0
+    max: 50
+    used_in: scheduled-publisher の reply の1日（JST）の上限。旧の現物（`outbox_send.py` の `DAILY_CAPS`）と同じ
+  prefix_ttl_min:
+    default: 60
+    min: 5
+    max: 60
+    used_in: 固定部分のキャッシュが残る時間の見込み（S-8.12）。現行の設定 `promptCacheTtl` が 1h であることに合わせた値（FACTS.md の F-22）
+  resume_max_context_tokens:
+    default: 60000
+    min: 10000
+    max: 200000
+    used_in: 続きから再開してよい文脈の大きさの上限（S-8.12）
+  resume_max_age_min:
+    default: 55
+    min: 5
+    max: 60
+    used_in: 続きから再開してよい、元のジョブの終了からの時間。`prefix_ttl_min` より小さくする（S-8.12）
+  resume_max_chain:
+    default: 3
+    min: 1
+    max: 5
+    used_in: 続きからの再開を重ねてよい回数（S-8.12）
+  prefix_hit_floor:
+    default: 0.5
+    min: 0.1
+    max: 0.9
+    used_in: 初回の読み込み比率の閾値。モデルへの適用の判定と点検の提案に使う。自動停止には使わない（S-8.12）
+  prefix_probe_gap_s:
+    default: 120
+    min: 30
+    max: 300
+    used_in: 計測の2回の作業の間隔の上限（S-8.12）
+  commander_exam_runs:
+    default: 3
+    min: 1
+    max: 5
+    used_in: 司令塔試験で、各ケースを走らせる回数（S-8.14）
+  commander_exam_max_turns:
+    default: 12
+    min: 6
+    max: 30
+    used_in: 司令塔試験の 1 回の実行の、道具を呼ぶ往復の上限
+  commander_exam_run_timeout_s:
+    default: 300
+    min: 60
+    max: 900
+    used_in: 司令塔試験の 1 回の実行の上限
+  commander_exam_total_min:
+    default: 90
+    min: 30
+    max: 240
+    used_in: 司令塔試験の全体の上限。超えたら不合格
+  commander_exam_normal_pass_cases:
+    default: 9
+    min: 8
+    max: 10
+    used_in: 通常 10 件のうち、合格が要るケース数
+  commander_exam_valid_days:
+    default: 90
+    min: 7
+    max: 365
+    used_in: 試験の結果が有効な日数
+  read_relay_timeout_s:
+    default: 5
+    min: 1
+    max: 30
+    used_in: '`ax` の照会で、intake が中継先の応答を待つ時間（S-6.7）'
+  seat_default_ttl_days:
+    default: 90
+    min: 1
+    max: 365
+    used_in: 席の期限の既定。期限を過ぎた席は拒否する。更新は HQ（S-6.8、S-6.11）
+  subloop_create_max_per_day:
+    default: 3
+    min: 1
+    max: 10
+    used_in: HQ 以外（司令塔の受け口）から受けた `subloop.create` の 1 日の上限（`env_use_day_tz` の日。S-6.21 の 5）
+  subloop_max_count:
+    default: 16
+    min: 4
+    max: 64
+    used_in: 登録されたサブループの総数の上限（S-6.21 の 5）
+  seat_max_sessions:
+    default: 4
+    min: 1
+    max: 8
+    used_in: 1 つの席の同時の SSH 接続の上限。sshd の `MaxSessions` より小さくする（S-6.13）
+  seat_idle_timeout_s:
+    default: 900
+    min: 60
+    max: 3600
+    used_in: SSH の対話モードで、入力が無いときに切るまでの時間（S-6.13）
+  seat_control_lease_min:
+    default: 30
+    min: 1
+    max: 240
+    used_in: 席の `ax control` の既定の期限（分）。`control_max_lease_min` 以下にする（S-16.8）
+  seat_stdin_max_kib:
+    default: 1024
+    min: 16
+    max: 8192
+    used_in: SSH のゲートが受ける標準入力の上限（S-6.13）
+  seat_revoke_sync_s:
+    default: 60
+    min: 10
+    max: 600
+    used_in: 失効から `authorized_keys` の更新とプロセスの停止までの目標（S-6.13）
+  seat_cache_s:
+    default: 5
+    min: 1
+    max: 60
+    used_in: 席の状態（失効、停止）を入口が反映するまでの上限（S-6.8、S-6.11）
+  ax_output_max_kib:
+    default: 256
+    min: 16
+    max: 4096
+    used_in: '`ax` と `gate` の 1 回の応答の上限。超えたら切って `next` を付ける（S-6.14、S-16.8）'
+  gate_body_max_kb:
+    default: 64
+    min: 8
+    max: 512
+    used_in: '`gate` の要求本文の上限（S-6.14）'
+  gate_read_per_s:
+    default: 10
+    min: 1
+    max: 50
+    used_in: 1 つの席あたりの読み取りの頻度（S-6.14）
+  gate_write_per_min:
+    default: 30
+    min: 5
+    max: 120
+    used_in: 1 つの席あたりの書き込みの頻度（S-6.14）
+  gate_inflight_max:
+    default: 8
+    min: 1
+    max: 32
+    used_in: 1 つの席あたりの同時の要求数（S-6.14）
+  gate_call_timeout_s:
+    default: 30
+    min: 5
+    max: 60
+    used_in: '`gate` の 1 回の呼び出しの打ち切り（S-6.14）'
+  gate_enroll_code_min:
+    default: 10
+    min: 2
+    max: 30
+    used_in: 登録コードの有効時間（S-6.14）
+  gate_enroll_fail_max:
+    default: 5
+    min: 3
+    max: 10
+    used_in: 登録の失敗の回数。超えると同じ送信元を止める（S-6.14）
+  gate_enroll_lock_min:
+    default: 15
+    min: 5
+    max: 120
+    used_in: 登録を受けない時間（S-6.14）
+  approval_ttl_min:
+    default: 60
+    min: 10
+    max: 1440
+    used_in: 承認待ちの期限（S-6.10）
+  go_md_max_bytes:
+    default: 8192
+    min: 1024
+    max: 32768
+    used_in: 追認する `GO.md` の全文の上限（バイト）。超えると 422（`bad_request`）。S-6.22
+  approval_wait_max_s:
+    default: 20
+    min: 1
+    max: 25
+    used_in: '`approvals?id=&wait_s=` と `ax approval wait`、`ax_approval_wait` の 1 回の待ちの上限（S-6.15）。`gate_call_timeout_s` から 5 を引いた値以下にする。超える設定は起動時に直す'
+  approval_code_fail_max:
+    default: 5
+    min: 3
+    max: 10
+    used_in: 第二要素のコードの失敗の上限（S-6.10）
+  approval_lock_min:
+    default: 15
+    min: 5
+    max: 120
+    used_in: 上限を超えたときに承認を受けない時間（S-6.10）
+  commander_rate_max:
+    default: 60
+    min: 10
+    max: 600
+    used_in: 1 つの席が `commander_rate_window_min` の間に出せる指示の数。超えたら `suspended`（S-6.11）
+  commander_rate_window_min:
+    default: 10
+    min: 1
+    max: 60
+    used_in: 上の数え上げの窓（S-6.11）
+  commander_reject_suspend:
+    default: 5
+    min: 3
+    max: 20
+    used_in: 拒否が続いたら `suspended` にする回数（S-6.11）
+  read_audit_interval_min:
+    default: 10
+    min: 1
+    max: 60
+    used_in: '`commander.read.summary` を書く間隔（S-6.20）'
+  audit_window_s:
+    default: 300
+    min: 60
+    max: 900
+    used_in: 同じ理由の `auth.failed` を 1 件にまとめる窓（S-6.20）
+  idempotency_retain_h:
+    default: 168
+    min: 24
+    max: 720
+    used_in: 依頼 ID を覚える時間（S-6.16）
+  claim_lease_min:
+    default: 30
+    min: 5
+    max: 240
+    used_in: 保持の期限。同じ持ち主の次の指示で延びる（S-6.17）
+  claim_max_hold_h:
+    default: 4
+    min: 1
+    max: 24
+    used_in: 更新を続けても保持が外れる通しの上限（S-6.17）
+  brief_since_h:
+    default: 24
+    min: 1
+    max: 168
+    used_in: '`ax brief` の既定の遡る時間（S-6.19）'
+  brief_max_items:
+    default: 5
+    min: 3
+    max: 10
+    used_in: '`ax brief` の 1 部の最大件数（S-6.19）'
+  retry_backoff:
+    default:
+      base_s: 30
+      factor: 2
+      max_s: 1800
+    used_in: S-2.3
+    note: S-17 の「再試行の待ち」（30秒 × 2^回数、最大 30分）。名前は実装者が決めた（docs/CHANGELOG.md）

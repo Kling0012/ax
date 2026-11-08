@@ -1,0 +1,30 @@
+# 新しいサブループの manifest の雛形（S-4.2）。`example` を自分の ID に直す。値の意味は S-4.2、S-4.3。
+# 秘密の値は書かない（secrets には名前だけ）。範囲（min・max・enum）を後から変えるのは利用者の指示（core.change）だけ（S-4.3）。
+schema_version: 1
+id: example                   # 英小文字・数字・ハイフン。compose の sl-<id>、plugins/subloop/<id>/ と同じにする
+version: 0.1.0
+kind: subloop                 # subloop | resource | timer
+project: multi                # 主に扱うプロジェクト。複数なら multi
+title: 雛形のサブループ（GitHub の Issue を実装する）   # 日本語の短い説明
+image: ax/runtime:1.0.0       # サブループは共通の ax/runtime（D-6.1）。サブループごとのビルドは無い
+execution: llm                # mechanical（LLM を使わない）| llm（ノードがワーカーを使う）
+schedule:
+  kind: interval              # interval | cron | event
+  every_s: 300
+  missed: record_only         # 固定。追いかけて実行しない
+graph: graph.yaml
+capabilities: [run, collect_only, poll_paused, draining]   # run と draining は必須（点検で全員を止められるように）
+knobs:                        # 調整項目。graph の {{knobs.名前}} は、ここで宣言した物だけ使える（S-7.7 の 7）
+  repo: {type: string, default: owner/repo, effective: next_run, title: 対象の GitHub リポジトリ（owner/repo）, who: [user]}
+  label: {type: string, default: ai-ready, effective: next_run, title: 拾う Issue のラベル, who: [user]}
+  every_s: {type: integer, default: 300, min: 60, max: 3600, effective: next_run, title: 巡回の間隔（秒）, who: [inspection, user]}
+  max_parallel_items: {type: integer, default: 1, min: 1, max: 2, effective: next_run, title: 同時に進める項目の数, who: [inspection, user]}
+  max_hops: {type: integer, default: 20, min: 2, max: 20, effective: next_run, title: 1 項目の再入場の合計の上限, who: [inspection, user]}
+  test_cases_max: {type: integer, default: 12, min: 3, max: 30, effective: next_run, title: テストの件数の上限, who: [inspection, user]}
+health:
+  heartbeat_s: 60
+sensitivity: private          # 扱う情報の最大区分（S-15.1）。public | private | sensitive
+roles: [test_design, impl, review]   # 使うワーカーの役割（graph の worker.run の役割はここに載せる）
+secrets: [github-token]       # 渡してほしい秘密の名前。値は書かない
+outputs: [git.push, github.comment]  # 外へ影響する操作の種類。graph の gh.comment などは、ここに載せる（S-7.7 の 8）
+depends_on_plugins: [worker-pool]

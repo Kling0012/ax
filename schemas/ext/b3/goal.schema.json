@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b3/goal.schema.json",
+  "title": "目標（S-9.4、S-9.5）",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "body": { "type": "string", "minLength": 1 },
+    "state": { "enum": ["active", "done", "dropped"] },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "required": ["id", "body", "state"],
+  "additionalProperties": true
+}

@@ -1,0 +1,18 @@
+# runner verify-dotnet（F-19.2、F-11.5 の 2。Dreamforge の repo 用）。
+# GameDir は /mnt/sod-gamedata/Shape of Dreams（登録簿 sod-gamedata の container_path の下。引用符は呼び出し側の verify で付ける）。
+# ModDeployDir を指定しないと、ゲームのフォルダへ配置しようとするので、必ずここで固定する。MSBuild は環境変数をプロパティとして読む。
+# 復元の許可先は api.nuget.org から始める（allow_hosts。足りない FQDN は B15 で実測して足す）。
+name: verify-dotnet
+kind: verify
+image: ax/verify-dotnet:${AX_TAG}
+command: sh -c '{verify}'
+env:
+  NUGET_PACKAGES: /tmp-hdd/nuget
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  DOTNET: /usr/bin/dotnet
+  DOTNET_ROLL_FORWARD: LatestMajor
+  GameDir: /mnt/sod-gamedata/Shape of Dreams
+  ModDeployDir: /tmp-hdd/moddeploy
+result:
+  source: exit_code

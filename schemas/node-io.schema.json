@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/node-io.schema.json",
+  "title": "ノードの入出力（S-7.3）",
+  "$defs": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "common.schema.json#/$defs/ulid"
+        },
+        "item": {
+          "type": "object"
+        },
+        "with": {
+          "type": "object"
+        },
+        "artifacts": {
+          "type": "object",
+          "properties": {
+            "workdir": {
+              "type": "string"
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "deadline": {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        }
+      },
+      "required": [
+        "run_id",
+        "item",
+        "with"
+      ],
+      "additionalProperties": false
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "common.schema.json#/$defs/node_status"
+        },
+        "data": {
+          "type": "object"
+        },
+        "artifacts": {
+          "type": "object"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "class": {
+              "$ref": "common.schema.json#/$defs/error_class"
+            },
+            "code": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "class",
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

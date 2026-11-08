@@ -1,0 +1,16 @@
+services:
+  timer-runner:
+    environment:
+      AX_DISCORD_TARGETS_FILE: ${AX_DISCORD_TARGETS_FILE:-/data/discord-forward/targets.yaml}
+      AX_DISCORD_SECRETS_DIR: /run/discord-webhooks
+    volumes:
+      - type: bind
+        source: ${AX_SECRETS_DIR}/discord-webhooks
+        target: /run/discord-webhooks
+        read_only: true
+    secrets:
+      - plugin-token-discord-forward
+
+secrets:
+  plugin-token-discord-forward:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/discord-forward

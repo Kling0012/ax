@@ -1,0 +1,42 @@
+services:
+  sl-release:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: [python, -m, runtime.subloop]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: release
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+      AX_WORK_ROOT: /work
+      AX_PRODUCTS_FILE: /ax/config/products.yaml
+      AX_MODEL_GATEWAY: "${AX_MODEL_GATEWAY}"
+      AX_PUBLISH_REVIEW_GRACE_S: "${AX_PUBLISH_REVIEW_GRACE_S:-60}"
+      AX_PUBLISH_SLOTS_URL: "${AX_PUBLISH_SLOTS_URL:-http://resources-review:8080}"
+      AX_PII_LIST: /run/secrets/pii-list
+      AX_PUBLISH_HOSTS_FILE: "${AX_PUBLISH_HOSTS_FILE:-/ax/config/publish-internal-hosts.txt}"
+      AX_PUBLISH_TERMS_FILE: "${AX_PUBLISH_TERMS_FILE:-/ax/config/publish-internal-terms.txt}"
+    volumes:
+      - sl-release-data:/data
+    networks:
+      - ax-work
+      - ax-publish-review
+    secrets:
+      - control-apply-token
+      - model-gateway-key
+      - core-token-release-review
+      - plugin-token-release
+      - plugin-token-change
+      - pii-list
+      - github-token
+volumes:
+  sl-release-data: {}
+secrets:
+  core-token-release-review:
+    file: ${AX_SECRETS_DIR}/core-tokens/release-review
+  plugin-token-change:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/change
+  plugin-token-release:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/release

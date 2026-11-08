@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/hibi-state.schema.json",
+  "title": "hibi-state の成果物 state.json（S-23.3）",
+  "type": "object",
+  "properties": {
+    "now": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "away",
+            "play",
+            "focus",
+            "break",
+            "shallow",
+            "unknown"
+          ]
+        },
+        "since": {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        },
+        "as_of": {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "additionalProperties": true
+    },
+    "day": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "$ref": "common.schema.json#/$defs/ts_any"
+              },
+              "end": {
+                "$ref": "common.schema.json#/$defs/ts_any"
+              },
+              "state": {
+                "enum": [
+                  "away",
+                  "play",
+                  "focus",
+                  "break",
+                  "shallow"
+                ]
+              },
+              "category": {
+                "enum": [
+                  "work",
+                  "research",
+                  "communication",
+                  "media",
+                  "play",
+                  "other"
+                ]
+              },
+              "session_title": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "start",
+              "end",
+              "state",
+              "category"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "fetched_at": {
+      "$ref": "common.schema.json#/$defs/ts_any"
+    }
+  },
+  "required": [
+    "now",
+    "day",
+    "fetched_at"
+  ],
+  "additionalProperties": false
+}

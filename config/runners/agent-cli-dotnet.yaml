@@ -1,0 +1,28 @@
+# runner agent-cli-dotnet（F-19.1）。agent-cli と同じ起動で、イメージだけ ax/agent-cli-dotnet（verify-dotnet に Claude Code を重ねた物）。
+# ジョブの対象 repo で選ぶ（変更処理の登録。F-6.2、S-16.6）。
+name: agent-cli-dotnet
+kind: agent-cli
+image: ax/agent-cli-dotnet:${AX_TAG}
+command: >-
+  sh -c 'P=""; if [ -f /work/.ax-prompt/system.md ]; then P="--append-system-prompt-file /work/.ax-prompt/system.md --exclude-dynamic-system-prompt-sections"; fi;
+  exec claude --model {model} -p --output-format json --dangerously-skip-permissions {session_arg} $P < /work/.ax-prompt/user.md'
+env:
+  ANTHROPIC_DEFAULT_OPUS_MODEL: "{model}"
+  ANTHROPIC_DEFAULT_SONNET_MODEL: "{model}"
+  ANTHROPIC_DEFAULT_HAIKU_MODEL: "{model}"
+  ANTHROPIC_SMALL_FAST_MODEL: "{model}"
+  CLAUDE_CODE_SUBAGENT_MODEL: "{model}"
+  DISABLE_AUTOUPDATER: "1"
+  CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+  NUGET_PACKAGES: /tmp-hdd/nuget
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  DOTNET: /usr/bin/dotnet
+  DOTNET_ROLL_FORWARD: LatestMajor
+  GameDir: /mnt/sod-gamedata/Shape of Dreams
+  ModDeployDir: /tmp-hdd/moddeploy
+result:
+  source: stdout_json
+  fields: [result, is_error, api_error_status]
+  rate_limited_when: {api_error_status: 429}
+# dotnet の repo（Dreamforge）は ro_mounts [sod-gamedata] を持つ。ビルドの GameDir と ModDeployDir は verify-dotnet と同じ値（F-11.5 の 2）。

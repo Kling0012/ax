@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/control-command-request.schema.json",
+  "title": "POST /v1/commands の本文（S-5.7。issued_by は資格から決まる。本文の値は照合だけに使う）",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string"
+    },
+    "op": {
+      "enum": [
+        "set_mode",
+        "set_knob",
+        "exclude_resource",
+        "include_resource",
+        "cancel",
+        "run_now"
+      ]
+    },
+    "args": {
+      "type": "object"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "issued_by": {
+      "$ref": "common.schema.json#/$defs/issued_by"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/ts"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "on_expiry": {
+      "enum": [
+        "ask_issuer",
+        "release"
+      ]
+    },
+    "corr": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/ulid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "target",
+    "op",
+    "args",
+    "reason"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "set_mode"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "common.schema.json#/$defs/mode"
+              },
+              "permission_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "set_knob"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "exclude_resource"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "until": {
+                "$ref": "common.schema.json#/$defs/ts_any"
+              }
+            },
+            "required": [
+              "resource_id",
+              "until"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "include_resource"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "cancel"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+              "run_id": {
+                "type": "string"
+              },
+              "item_id": {
+                "type": "string"
+              },
+              "job_id": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "run_now"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

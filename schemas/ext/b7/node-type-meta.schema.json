@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b7/node-type-meta.schema.json",
+  "title": "部品庫の型の META（plugins/nodes/<名前空間>/<型>.py。D-6.3、runtime/subloop/nodeapi.py の DEFAULT_META）",
+  "type": "object",
+  "properties": {
+    "statuses": {"type": "array", "items": {"enum": ["ok", "bug", "error", "skip"]}, "minItems": 1},
+    "outcomes": {"type": "array", "items": {"type": "string"}},
+    "output": {"type": ["string", "null"]},
+    "publishes": {"type": "boolean"},
+    "launching": {"type": "boolean"},
+    "llm": {"type": "boolean"},
+    "role_field": {"type": ["string", "null"]},
+    "writes_repo": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

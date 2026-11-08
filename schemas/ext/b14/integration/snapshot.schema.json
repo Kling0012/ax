@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/integration/snapshot.schema.json",
+  "title": "Trusted, fresh change snapshot (S-19.6)",
+  "type": "object",
+  "required": ["repo", "pr", "head_sha", "base_sha", "comments_complete", "unprocessed_comments", "input_revision", "requirements_revision", "required_ids", "requirements", "mergeable", "state", "draft", "can_merge", "publication_head", "outbound_checked", "ci_complete", "ci"],
+  "properties": {
+    "repo": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+    "pr": {"type": ["integer", "null"], "minimum": 1},
+    "head_sha": {"$ref": "#/$defs/sha"},
+    "base_sha": {"$ref": "#/$defs/sha"},
+    "publication_head": {"$ref": "#/$defs/sha"},
+    "collect_only_reviewed_head": {"$ref": "#/$defs/sha"},
+    "comments_complete": {"type": "boolean"},
+    "unprocessed_comments": {"type": "array", "items": {"type": "object"}},
+    "input_revision": {"type": "string", "minLength": 1},
+    "requirements_revision": {"type": "string", "minLength": 1},
+    "required_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "requirements": {
+      "type": "array", "items": {
+        "type": "object", "required": ["id", "source", "text", "status", "evidence"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1}, "source": {"type": "string", "minLength": 1},
+          "text": {"type": "string", "minLength": 1}, "status": {"type": "string"},
+          "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        }, "additionalProperties": false
+      }
+    },
+    "mergeable": {"type": ["boolean", "null"]},
+    "state": {"enum": ["open", "closed", "merged"]},
+    "draft": {"type": "boolean"}, "can_merge": {"type": "boolean"},
+    "outbound_checked": {"type": "boolean"}, "ci_complete": {"type": "boolean"},
+    "ci": {"type": "array", "items": {
+      "type": "object", "required": ["source", "head_sha", "status", "origin"],
+      "properties": {
+        "source": {"type": "string", "minLength": 1}, "head_sha": {"$ref": "#/$defs/sha"},
+        "status": {"type": "string"}, "origin": {"enum": ["configured", "pr_workflow", "unknown"]}
+      }, "additionalProperties": true
+    }}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"}},
+  "additionalProperties": true
+}

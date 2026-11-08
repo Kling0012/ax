@@ -1,0 +1,2 @@
+# B1/B2 の束はプラグインを登録しない（timeline、memory-connector、archiver は中核の部品。S-4.1）。
+plugins: []

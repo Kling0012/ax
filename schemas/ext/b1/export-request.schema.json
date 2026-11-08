@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b1/export-request.schema.json",
+  "title": "POST /v1/export の本文（S-3.5。範囲の指定）",
+  "type": "object",
+  "properties": {
+    "before_ts": {
+      "$ref": "../../common.schema.json#/$defs/ts"
+    },
+    "to_seq": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "days": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false,
+  "description": "どれも省くと timeline_hot_days より古い区間。before_ts は排他、to_seq は含む"
+}

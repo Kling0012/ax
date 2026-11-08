@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b10a/emergency-run.schema.json",
+  "title": "emergency サービスの POST /v1/emergency の応答（B10a。S-12.3 の 3 段の結果）",
+  "type": "object",
+  "properties": {
+    "ok": {"type": "boolean"},
+    "scope": {"type": "string"},
+    "request_id": {"type": ["string", "null"]},
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "path": {"type": ["string", "null"]},
+        "complete": {"type": "boolean"},
+        "sections": {"type": "object"}
+      },
+      "required": ["path", "complete", "sections"]
+    },
+    "reset": {
+      "type": "object",
+      "properties": {
+        "released": {"type": "array", "items": {"type": "string"}},
+        "release_failed": {"type": "array", "items": {"type": "string"}},
+        "kept": {"type": "object", "description": "解除しなかった命令の件数（出した者ごと。user、commander など）"},
+        "restart": {
+          "type": "object",
+          "properties": {
+            "requested": {"type": "array", "items": {"type": "string"}},
+            "skipped": {"type": ["string", "null"], "description": "起動し直しを行わなかった理由（sudo_unavailable、no_services など）"}
+          },
+          "required": ["requested", "skipped"]
+        }
+      },
+      "required": ["released", "release_failed", "kept", "restart"]
+    },
+    "resume": {
+      "type": "object",
+      "properties": {
+        "plugins": {"type": "object"},
+        "unavailable": {"type": "boolean"}
+      },
+      "required": ["plugins", "unavailable"]
+    },
+    "replayed": {"type": "boolean"}
+  },
+  "required": ["ok", "scope", "snapshot", "reset", "resume"]
+}

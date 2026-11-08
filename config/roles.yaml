@@ -1,0 +1,57 @@
+# 役割と候補の順（S-8.3）。適格候補は、登録モデルを状態・能力段階・情報区分・用途と必要な能力で
+# 判定して決める。順序付き一覧は適格候補を限定しない（同額時の既定候補）。
+# 予備役は例外として Sonnet 5.5 だけ（Opus は自動経路に入れない）。test_design の最後の手段にも Sonnet 5.5。
+# この表の役割は自動化とワーカー用で、司令塔の席に座るモデルの条件は S-8.13。
+roles:
+  eigen-decide:
+    description: Scheduled publisher decision
+    min_level: L1
+    preference: [free, flash]
+  summary:
+    description: 要約・整理
+    min_level: L1
+    preference: [free, flash]
+  research:
+    description: 読むだけの調査
+    min_level: L1
+    preference: [free, flash]
+  second_opinion:
+    description: 異なる系統の 2 モデルによる第二意見
+    min_level: L1
+    preference: [free, free]
+  screen:
+    description: 判定・分類
+    min_level: L1
+    preference: [free, flash]
+  assist:
+    description: 検証付きの軽い作業（読み取りと報告だけ。書き換えを伴う作業は impl として tdd-change を通す）
+    min_level: L2
+    preference: [flash, free/L2+]
+  test_design:
+    description: テスト設計
+    min_level: L3
+    preference: [flash, free/L3+, standard/GLM, last_resort/terra, last_resort/Sonnet 5.5]
+  impl:
+    description: 実装
+    min_level: L3
+    preference: [free/L3+, standard/GLM]
+  impl_hard:
+    description: 難しい実装
+    min_level: L4
+    preference: [standard/GLM, last_resort/sol]
+  review:
+    description: 審査
+    min_level: L3
+    preference: [flash, standard/GLM]
+  review_final:
+    description: 最終審査
+    min_level: L4
+    preference: [last_resort/terra]
+  manager:
+    description: 管理役の判断
+    min_level: L1  # 管理役は段階を選択条件にしない
+    preference: [standard/GLM, flash/DeepSeek, free]
+  backup_manager:
+    description: 予備役
+    min_level: L4
+    preference: [claude(Sonnet 5.5)]

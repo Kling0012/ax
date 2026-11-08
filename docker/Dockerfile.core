@@ -1,0 +1,35 @@
+# 全中核が共用する 1 つのイメージ（ax/core:<AX_TAG>）。サービスごとに compose の command を替える（PLAN.json、DECISIONS.md）。
+# 組み立てはホストの host/ax-deploy.sh が行う（B8）。B0 では実行していない（docker build を使わない）。
+#
+# ベースのダイジェスト固定は ci/base-image.lock と同じ手順で行う（B0 では未確認。PYTHON_REF を build-arg で渡す）。
+ARG PYTHON_REF=python:3.12-slim
+FROM ${PYTHON_REF}
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_PROJECT_ENVIRONMENT=/opt/venv \
+    UV_LINK_MODE=copy \
+    PATH=/opt/venv/bin:$PATH \
+    PYTHONPATH=/ax \
+    AX_SCHEMAS_DIR=/ax/schemas \
+    AX_CONFIG_DIR=/ax/config
+ARG UV_VERSION
+# SSH is used by the read-only environment and Tumu monitors.
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-client
+# worker-pool は AX_UID(1000) で動く。ssh が呼び出し元 uid の passwd 行を必要とするため置く
+RUN groupadd -g 1000 ax && useradd -u 1000 -g 1000 -M -s /bin/sh ax
+# 実行に要る依存だけ（dev グループなし）。uv.lock で固定する（F-14.1）
+RUN test -n "${UV_VERSION}" && pip install --no-cache-dir "uv==${UV_VERSION}"
+COPY pyproject.toml uv.lock /deps/
+WORKDIR /deps
+RUN uv sync --locked --no-install-project --no-dev
+
+# コードと設定。.dockerignore 相当は docker/Dockerfile.core.dockerignore（テスト、docs、profile、秘密を入れない）
+WORKDIR /ax
+COPY . /ax
+# ビルド文脈の umask に左右されず、AX_UID で動くサービスが /ax を読めるようにする
+RUN chmod -R a+rX /ax
+
+# 既定の command は自己点検。各サービスは compose の command で替える（例 ["python", "-m", "core.timeline"]）
+# ユーザーは compose の user:（AX_UID:AX_GID など）で決める
+CMD ["python", "-m", "axcommon.selfcheck"]

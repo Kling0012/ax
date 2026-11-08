@@ -1,0 +1,3 @@
+plugins:
+  - {id: security-watch, kind: timer, path: plugins/timer/security-watch/manifest.yaml}
+  - {id: tumu-watch, kind: timer, path: plugins/timer/tumu-watch/manifest.yaml}

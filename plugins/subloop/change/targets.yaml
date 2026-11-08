@@ -1,0 +1,258 @@
+{
+  "targets": [
+    {
+      "issue_repo": "example-owner/shape-of-dreams-rpg-plan",
+      "implementation_repo": "example-owner/shape-of-dreams-rpg-plan",
+      "merge_method": "merge",
+      "ci_sources": [
+        "ci/public"
+      ],
+      "test_recipe": "verification/recipes.yaml#dreamforge",
+      "priority_labels": [],
+      "execution_cap": 1,
+      "allowed_paths": [
+        "**"
+      ],
+      "untrusted_forbidden_paths": [
+        ".github/**",
+        "scripts/**",
+        "build.sh",
+        "*.bat",
+        "Dockerfile*",
+        "docker-compose*.yml",
+        "compose*.yaml",
+        "*.spec",
+        "pnpm-lock.yaml",
+        "uv.lock",
+        "package.json",
+        "pyproject.toml",
+        "*.csproj",
+        "*.dll",
+        "*.exe",
+        "*.so",
+        ".env*"
+      ],
+      "trusted_authors": [
+        "example-owner"
+      ],
+      "outbound_allowlist": [],
+      "state_labels": {
+        "planned": "ax-waiting",
+        "launching": "ax-running",
+        "submitted": "ax-running",
+        "running": "ax-running",
+        "waiting_external": "ax-information",
+        "retry": "ax-retry",
+        "completed": "ax-completed",
+        "parked": "ax-parked",
+        "waiting_user": "ax-user"
+      },
+      "contribution": {},
+      "verify_runner": "verify-dotnet"
+    },
+    {
+      "issue_repo": "example-owner/dreamforge-rpg",
+      "implementation_repo": "example-owner/shape-of-dreams-rpg-plan",
+      "merge_method": "merge",
+      "ci_sources": [
+        "ci/public"
+      ],
+      "test_recipe": "verification/recipes.yaml#dreamforge",
+      "priority_labels": [],
+      "execution_cap": 1,
+      "allowed_paths": [
+        "**"
+      ],
+      "untrusted_forbidden_paths": [
+        ".github/**",
+        "scripts/**",
+        "build.sh",
+        "*.bat",
+        "Dockerfile*",
+        "docker-compose*.yml",
+        "compose*.yaml",
+        "*.spec",
+        "pnpm-lock.yaml",
+        "uv.lock",
+        "package.json",
+        "pyproject.toml",
+        "*.csproj",
+        "*.dll",
+        "*.exe",
+        "*.so",
+        ".env*"
+      ],
+      "trusted_authors": [
+        "example-owner"
+      ],
+      "outbound_allowlist": [],
+      "state_labels": {
+        "planned": "ax-waiting",
+        "launching": "ax-running",
+        "submitted": "ax-running",
+        "running": "ax-running",
+        "waiting_external": "ax-information",
+        "retry": "ax-retry",
+        "completed": "ax-completed",
+        "parked": "ax-parked",
+        "waiting_user": "ax-user"
+      },
+      "contribution": {
+        "allowed_paths": [
+          "translations/*.json"
+        ],
+        "format": "json-english-keys",
+        "max_files": 3,
+        "max_bytes": 2000000,
+        "implementation_repo": "example-owner/shape-of-dreams-rpg-plan",
+        "sync_path": "src/SodRpg.Mod/lang/",
+        "automatic_merge": false
+      },
+      "verify_runner": "verify-dotnet"
+    },
+    {
+      "issue_repo": "example-owner/hibi",
+      "implementation_repo": "example-owner/hibi",
+      "merge_method": "squash",
+      "ci_sources": [],
+      "test_recipe": "verification/recipes.yaml#hibi",
+      "priority_labels": [],
+      "execution_cap": 1,
+      "allowed_paths": [
+        "**"
+      ],
+      "untrusted_forbidden_paths": [
+        ".github/**",
+        "scripts/**",
+        "build.sh",
+        "*.bat",
+        "Dockerfile*",
+        "docker-compose*.yml",
+        "compose*.yaml",
+        "*.spec",
+        "pnpm-lock.yaml",
+        "uv.lock",
+        "package.json",
+        "pyproject.toml",
+        "*.csproj",
+        "*.dll",
+        "*.exe",
+        "*.so",
+        ".env*"
+      ],
+      "trusted_authors": [
+        "example-owner"
+      ],
+      "outbound_allowlist": [],
+      "state_labels": {
+        "planned": "ax-waiting",
+        "launching": "ax-running",
+        "submitted": "ax-running",
+        "running": "ax-running",
+        "waiting_external": "ax-information",
+        "retry": "ax-retry",
+        "completed": "ax-completed",
+        "parked": "ax-parked",
+        "waiting_user": "ax-user"
+      },
+      "contribution": {},
+      "verify_runner": "verify-node"
+    },
+    {
+      "issue_repo": "example-owner/hibi-server",
+      "implementation_repo": "example-owner/hibi-server",
+      "merge_method": "squash",
+      "ci_sources": [],
+      "test_recipe": "verification/recipes.yaml#hibi-server",
+      "priority_labels": [],
+      "execution_cap": 1,
+      "allowed_paths": [
+        "**"
+      ],
+      "untrusted_forbidden_paths": [
+        ".github/**",
+        "scripts/**",
+        "build.sh",
+        "*.bat",
+        "Dockerfile*",
+        "docker-compose*.yml",
+        "compose*.yaml",
+        "*.spec",
+        "pnpm-lock.yaml",
+        "uv.lock",
+        "package.json",
+        "pyproject.toml",
+        "*.csproj",
+        "*.dll",
+        "*.exe",
+        "*.so",
+        ".env*"
+      ],
+      "trusted_authors": [
+        "example-owner"
+      ],
+      "outbound_allowlist": [],
+      "state_labels": {
+        "planned": "ax-waiting",
+        "launching": "ax-running",
+        "submitted": "ax-running",
+        "running": "ax-running",
+        "waiting_external": "ax-information",
+        "retry": "ax-retry",
+        "completed": "ax-completed",
+        "parked": "ax-parked",
+        "waiting_user": "ax-user"
+      },
+      "contribution": {},
+      "verify_runner": "env:example-local:hibi-server-e2e"
+    },
+    {
+      "issue_repo": "example-owner/hibi-memory",
+      "implementation_repo": "example-owner/hibi-memory",
+      "merge_method": "squash",
+      "ci_sources": [],
+      "test_recipe": "verification/recipes.yaml#hibi-memory",
+      "priority_labels": [],
+      "execution_cap": 1,
+      "allowed_paths": [
+        "**"
+      ],
+      "untrusted_forbidden_paths": [
+        ".github/**",
+        "scripts/**",
+        "build.sh",
+        "*.bat",
+        "Dockerfile*",
+        "docker-compose*.yml",
+        "compose*.yaml",
+        "*.spec",
+        "pnpm-lock.yaml",
+        "uv.lock",
+        "package.json",
+        "pyproject.toml",
+        "*.csproj",
+        "*.dll",
+        "*.exe",
+        "*.so",
+        ".env*"
+      ],
+      "trusted_authors": [
+        "example-owner"
+      ],
+      "outbound_allowlist": [],
+      "state_labels": {
+        "planned": "ax-waiting",
+        "launching": "ax-running",
+        "submitted": "ax-running",
+        "running": "ax-running",
+        "waiting_external": "ax-information",
+        "retry": "ax-retry",
+        "completed": "ax-completed",
+        "parked": "ax-parked",
+        "waiting_user": "ax-user"
+      },
+      "contribution": {},
+      "verify_runner": "verify-python"
+    }
+  ]
+}

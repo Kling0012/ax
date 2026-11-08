@@ -1,0 +1,10 @@
+{
+    admin off
+    auto_https off
+}
+http://:3465 {
+    bind 127.0.0.1
+    reverse_proxy unix//run/hq/hq.sock {
+        header_up X-Forwarded-For {$AX_PUBLIC_PROXY_IP}
+    }
+}

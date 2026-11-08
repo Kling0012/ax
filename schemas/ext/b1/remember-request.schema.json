@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b1/remember-request.schema.json",
+  "title": "POST /v1/remember の本文（D-13、S-14.2）",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subloop": {
+      "type": "string",
+      "minLength": 1,
+      "description": "無ければ core"
+    },
+    "host": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "事象 ID"
+    },
+    "kind": {
+      "enum": [
+        "decision",
+        "observation",
+        "issue",
+        "result",
+        "important_artifact",
+        "preference"
+      ]
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "supersedes": {
+      "type": "string",
+      "minLength": 1,
+      "description": "置き換える旧い記憶の ID"
+    },
+    "valid_from": {
+      "type": "string"
+    },
+    "refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(event|todo):[A-Za-z0-9_-]+$"
+      },
+      "maxItems": 20
+    }
+  },
+  "required": [
+    "project",
+    "host",
+    "source",
+    "kind",
+    "content"
+  ],
+  "additionalProperties": false
+}

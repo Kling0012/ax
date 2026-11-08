@@ -1,0 +1,9 @@
+{
+  "files": {
+    "storage": {
+      "replacement_line": "- 削除しない。古い実行記録・ログ・一時物は archive/ へ移す。退避は archive-host の /srv/archive/hub-host/ に運ぶ（AX の退避コネクタ。仕様は S-14.3）。\n",
+      "legacy_archive_marker": "archive-service",
+      "legacy_host_marker": "compute-host"
+    }
+  }
+}

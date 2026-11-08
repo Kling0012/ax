@@ -1,0 +1,15 @@
+schema_version: 1
+entry: take
+item_source: take
+max_parallel_items: 1
+nodes:
+  - {id: take, type: inbox.take, with: {max: 1}, limits: {timeout_s: 30, retries: 0}}
+  - id: publish
+    type: release.execute
+    needs_mode: [run]
+    with:
+      batch_id: "{{item.item_key}}"
+    limits: {timeout_s: 3600, retries: 0}
+    on_fail: eject
+edges:
+  - {from: take, to: publish, when: ok}

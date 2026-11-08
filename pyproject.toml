@@ -1,0 +1,33 @@
+[project]
+name = "ax"
+version = "0.1.0"
+license = {text = "MIT"}
+description = "AX: 自律運用基盤（compose の中核・サブループ・ホストのスクリプト）"
+requires-python = ">=3.12"
+# 依存は F-14.1 の一覧。版は uv.lock で固定する（uv lock は未実行。status/b0.md を見る）
+dependencies = [
+  "starlette",
+  "uvicorn",
+  "jsonschema",
+  "PyYAML",
+  "python-ulid",
+  "httpx",
+]
+
+[dependency-groups]
+dev = [
+  "pathspec>=1.1.1",
+  "pytest",
+  "pytest-asyncio",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider --import-mode=importlib"
+asyncio_mode = "auto"
+markers = [
+  "realenv: 実環境でしか通せない試験。CI では実行しない",
+]
+
+[tool.setuptools]
+packages = ["axcommon"]

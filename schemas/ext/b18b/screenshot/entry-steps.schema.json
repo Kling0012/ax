@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b18b/screenshot/entry-steps.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["screenshot"],
+  "properties": {
+    "screenshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps", "collect", "ignored_args"],
+      "properties": {
+        "steps": {
+          "type": "array", "minItems": 3, "maxItems": 3,
+          "prefixItems": [
+            {"const": {"tool": "browser_navigate", "args": {"url": "{url}"}}},
+            {"const": {"adapter": "wait", "seconds": "{wait_s}"}},
+            {"const": {"tool": "screenshot", "args": {}}}
+          ]
+        },
+        "collect": {"const": {"from_step": 3, "kind": "image", "name": "page.png"}},
+        "ignored_args": {"const": ["full_page", "width", "height", "headed"]}
+      }
+    }
+  }
+}

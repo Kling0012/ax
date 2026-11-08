@@ -1,0 +1,4 @@
+# B7 が登録するプラグイン（S-4.1）。標準のサブループ work-tdd と、タイマーを動かす timer-runner。
+plugins:
+  - {id: work-tdd, kind: subloop, path: plugins/subloop/work-tdd/manifest.yaml}
+  - {id: timer-runner, kind: timer, path: runtime/timer_runner/manifest.yaml}

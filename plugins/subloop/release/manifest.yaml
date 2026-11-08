@@ -1,0 +1,23 @@
+schema_version: 1
+id: release
+version: 1.0.0
+kind: subloop
+project: multi
+title: 公開待ちをまとめ、製品登録簿に従って公開する
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: interval, every_s: 300, missed: record_only}
+graph: graph.yaml
+capabilities: [run, collect_only, poll_paused, draining]
+knobs:
+  inbox_max: {type: integer, default: 50, min: 1, max: 200, effective: immediate, title: 受け取り待ちの上限, who: [inspection, user]}
+  dry_run: {type: boolean, default: true, effective: next_run, title: 外部操作を予定だけにする, who: [user]}
+  every_s: {type: integer, default: 300, min: 60, max: 3600, effective: next_run, title: 巡回の間隔, who: [inspection, user]}
+  release_retry_limit: {type: integer, default: 3, min: 1, max: 10, effective: next_run, title: 同じ理由の再試行上限, who: [inspection, user]}
+health: {heartbeat_s: 60}
+sensitivity: private
+roles: [manager]
+secrets: [github-token]
+outputs: [release.pending, github.release, github.post, env.run]
+depends_on_plugins: [resources, gate]
+accepts_items: true

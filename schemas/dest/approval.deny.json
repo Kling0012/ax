@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/approval.deny.json",
+  "title": "approval.deny",
+  "$comment": "SPEC.md:S-6.10; verified HQ identity and second-factor evidence belong to the authenticated transport",
+  "type": "object",
+  "properties": {
+    "approval_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason": {
+      "type": "string"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "approval_id"
+  ],
+  "additionalProperties": false
+}

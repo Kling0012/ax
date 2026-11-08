@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/seat.tier.json",
+  "title": "seat.tier",
+  "$comment": "SPEC.md:S-6.8,S-6.11; change tier or extend expiry",
+  "type": "object",
+  "properties": {
+    "seat_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,31}$"
+    },
+    "tier": {
+      "enum": [
+        "read",
+        "operate",
+        "irreversible"
+      ]
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "seat_id"
+  ],
+  "additionalProperties": false,
+  "anyOf": [
+    {
+      "required": [
+        "tier"
+      ]
+    },
+    {
+      "required": [
+        "expires_at"
+      ]
+    }
+  ]
+}

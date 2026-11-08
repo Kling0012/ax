@@ -1,0 +1,3 @@
+plugins:
+  - {id: x-posts, kind: subloop, path: plugins/timer/x-posts/manifest.yaml}
+  - {id: x-posts-draft, kind: subloop, path: plugins/timer/x-posts/draft.manifest.yaml}

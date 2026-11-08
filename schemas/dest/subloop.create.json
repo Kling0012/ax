@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/subloop.create.json",
+  "title": "subloop.create",
+  "$comment": "SPEC.md:S-6.21,S-7.10; normalized by the B12 subloop decoder",
+  "type": "object",
+  "properties": {
+    "plugin_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"},
+    "project": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "body": {"type": "string", "minLength": 1},
+    "acceptance": {
+      "type": "object",
+      "properties": {
+        "examples": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "boundaries": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1}
+      },
+      "required": ["examples", "boundaries"],
+      "additionalProperties": false
+    },
+    "spec": {
+      "type": "object",
+      "properties": {
+        "secrets": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "outputs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "sensitivity": {"enum": ["public", "private", "sensitive"]}
+      },
+      "required": ["secrets", "outputs", "sensitivity"],
+      "additionalProperties": false
+    },
+    "quote": {"type": "string", "minLength": 4, "maxLength": 2000}
+  },
+  "required": ["plugin_id", "project", "title", "body", "acceptance", "spec"],
+  "additionalProperties": false
+}

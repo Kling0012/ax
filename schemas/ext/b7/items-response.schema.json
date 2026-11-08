@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b7/items-response.schema.json",
+  "title": "POST /items の応答（S-7.10）。受付済みは 200、inbox_full は 429（error.code）、acceptance 欠けは 400（error.code=acceptance_required）",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "accepted": {"const": true},
+        "duplicate": {"type": "boolean"},
+        "item_key": {"type": "string"},
+        "state": {"enum": ["queued", "taken", null]}
+      },
+      "required": ["accepted", "duplicate", "item_key"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {"error": {"type": "object", "properties": {"code": {"type": "string"}, "message": {"type": "string"}}, "required": ["code"]}},
+      "required": ["error"]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b5/instruction-response.schema.json",
+  "title": "POST /v1/instructions の応答（B5。成功時の包み。S-6.2、S-6.16）",
+  "type": "object",
+  "properties": {
+    "ok": {
+      "type": "boolean"
+    },
+    "instruction_id": {
+      "$ref": "../../common.schema.json#/$defs/ulid"
+    },
+    "destination": {
+      "type": "string"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "const": "pending"
+        }
+      ]
+    },
+    "result": {},
+    "replayed": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string",
+      "description": "承認待ち（202、approval_required）のときだけ付く"
+    }
+  },
+  "required": [
+    "ok",
+    "instruction_id",
+    "destination",
+    "status",
+    "replayed"
+  ],
+  "additionalProperties": false
+}

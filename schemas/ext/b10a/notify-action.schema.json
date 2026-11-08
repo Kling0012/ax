@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b10a/notify-action.schema.json",
+  "title": "POST /v1/notify/actions の要求（B10a。通知からの完了・保留。S-22.4、T-54）",
+  "type": "object",
+  "properties": {
+    "todo_id": {"type": "string", "minLength": 1},
+    "action": {"enum": ["complete", "park"]},
+    "op_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "同じ操作の再送を同じ結果にするための ID（冪等キー）"},
+    "reason": {"type": "string"},
+    "check_at": {"$ref": "../../common.schema.json#/$defs/ts"}
+  },
+  "required": ["todo_id", "action", "op_id"],
+  "additionalProperties": false
+}

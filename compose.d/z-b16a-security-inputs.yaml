@@ -1,0 +1,6 @@
+# Loaded after b16a-t62 so these paths point to the read-only inputs.
+services:
+  timer-runner:
+    environment:
+      AX_TUMU_TARGETS_FILE: /run/ax-monitor-inputs/tumu-targets.json
+      AX_SECURITY_BASELINES_FILE: /run/ax-monitor-inputs/security-baselines.json

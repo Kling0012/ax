@@ -1,0 +1,3 @@
+x-b15-publication:
+  product_registry: /ax/config/products.yaml
+services: {}

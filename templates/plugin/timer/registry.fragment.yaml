@@ -1,0 +1,5 @@
+# Copy to plugins/registry.d/<bundle>.yaml and merge with the bundle's entries.
+plugins:
+  - id: example-timer
+    kind: timer
+    path: plugins/timer/example-timer/manifest.yaml

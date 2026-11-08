@@ -1,0 +1,14 @@
+# b10a の行き先（S-6.4 の `emergency`）。HQ の緊急ボタン（S-12.3）。
+# payload の Schema は schemas/dest/emergency.json。
+# tier は irreversible（S-6.9 の表）。HQ の画面が承認を同じ操作の中で行う（confirm_irreversible）。ack は async（記録に時間がかかるため）。
+# 衝突の検出の対象にしない（止める向きの操作。S-6.17）ので conflict_key は書かない。
+- name: emergency
+  title: 緊急ボタン
+  schema: schemas/dest/emergency.json
+  handler: http://emergency:8080/v1/emergency
+  allowed_from: [hq]
+  via: [hq]
+  tier: irreversible
+  irreversible: true
+  ack: async
+  default_expiry_min: 10

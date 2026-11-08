@@ -1,0 +1,40 @@
+# 環境ごとの値。例の profile/example.yaml だけを git に置く（S-16.3）
+profile/*
+!profile/example.yaml
+profile.env
+current.env
+!tools/ci-fixtures/ci.env
+
+# 秘密。値は git に置かない（F-14.1、T-119 の例外は tools/ci-fixtures/secrets/ のダミーだけ）
+.env
+*.key
+*.pem
+secrets/
+!tools/ci-fixtures/secrets/
+!tools/ci-fixtures/secrets/**
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# 実行時の生成物
+outbox/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+plugins/registry.generated.yaml.tmp
+
+# 開発・解析の道具の作業置き場（コードレビューのグラフ DB など）
+.serena/
+.code-review-graph/
+
+# 構築の作業置き場と担当の報告。公開の木には入れない（build/PUBLIC-SCOPE.md）
+build/
+archive/
+reports/
+
+/config/models.b17.yaml

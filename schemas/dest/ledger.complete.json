@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/ledger.complete.json",
+  "title": "ledger.complete",
+  "$comment": "SPEC.md:S-6.4,S-9.3,S-16.8; target state is fixed by destination",
+  "type": "object",
+  "properties": {
+    "todo_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "todo_id"
+  ],
+  "additionalProperties": false
+}

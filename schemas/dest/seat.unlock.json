@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/seat.unlock.json",
+  "title": "seat.unlock",
+  "$comment": "SPEC.md:S-6.11",
+  "type": "object",
+  "properties": {
+    "scope": {
+      "enum": [
+        "ssh",
+        "tailnet",
+        "all"
+      ]
+    }
+  },
+  "required": [
+    "scope"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,52 @@
+# Read-only sources registered for the HQ T-62 views.
+services:
+  archive-init:
+    volumes:
+      - {type: volume, source: entry-index-data, target: /v/entry-index-data}
+  timer-runner:
+    environment:
+      AX_ENTRY_STATE_FILE: /entry-index/state.json
+      AX_ENTRY_SITES_FILE: /run/ax-views/sites.json
+      AX_REDACT_INDEX: /redact/index
+      AX_SECURITY_BASELINES_FILE: "${AX_SECURITY_BASELINES_FILE:-/data/security-watch/baselines.json}"
+      AX_TUMU_TARGETS_FILE: "${AX_TUMU_TARGETS_FILE:-}"
+      AX_NTFY_ENDPOINT: "${AX_NTFY_ENDPOINT:-}"
+      AX_NTFY_TOPIC: "${AX_NTFY_TOPIC:-hub}"
+      AX_PII_LIST: /run/secrets/pii-list
+      AX_CONVERSATION_HISTORY_DIR: "${AX_CONVERSATION_HISTORY_DIR:-}"
+      AX_EMBEDDING_PROVIDER: "${AX_EMBEDDING_PROVIDER:-}"
+      AX_EMBEDDING_MODEL: "${AX_EMBEDDING_MODEL:-}"
+      AX_EMBEDDING_URL: "${AX_EMBEDDING_URL:-}"
+      AX_EMBEDDING_TOKEN_FILE: "${AX_EMBEDDING_TOKEN_FILE:-}"
+      AX_EMBEDDING_DIMENSIONS: "${AX_EMBEDDING_DIMENSIONS:-}"
+    volumes:
+      - {type: volume, source: entry-index-data, target: /entry-index}
+      - {type: bind, source: "${AX_ENTRY_SITES_SOURCE:-${AX_STATE_DIR}/views/sites.json}", target: /run/ax-views/sites.json, read_only: true}
+      - {type: bind, source: "${AX_STATE_DIR}/redact", target: /redact, read_only: true}
+    secrets:
+      - pii-list
+
+      - plugin-token-security-watch
+      - plugin-token-conversation-index
+      - plugin-token-memory-digest
+      - plugin-token-hibi-state
+  hq:
+    environment:
+      AX_ENTRY_STATE_FILE: /entry-index/state.json
+      AX_AUTOMATION_MAP_SOURCE: /run/ax-views/map.json
+    volumes:
+      - {type: volume, source: entry-index-data, target: /entry-index, read_only: true}
+      - {type: bind, source: "${AX_AUTOMATION_MAP_SOURCE:-${AX_STATE_DIR}/views/map.json}", target: /run/ax-views/map.json, read_only: true}
+
+secrets:
+  plugin-token-security-watch:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/security-watch
+  plugin-token-conversation-index:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/conversation-index
+  plugin-token-memory-digest:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/memory-digest
+  plugin-token-hibi-state:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/hibi-state
+
+volumes:
+  entry-index-data: {}

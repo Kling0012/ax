@@ -1,0 +1,22 @@
+# Merge into compose.d/<bundle>.yaml. Add only declared secret names.
+services:
+  example-resource:
+    extends:
+      file: docker/base.yaml
+      service: ax-both-base
+    command: ["python", "/ax/plugins/resource/example-resource/handler.py"]
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_HEALTH_PORT: "8080"
+    volumes:
+      - example-resource-data:/data
+    networks:
+      ax-core:
+        aliases: [example-resource]
+      ax-work:
+        aliases: [example-resource]
+    secrets:
+      - control-apply-token
+
+volumes:
+  example-resource-data: {}

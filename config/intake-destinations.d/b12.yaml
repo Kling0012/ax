@@ -1,0 +1,33 @@
+- name: work.request
+  title: 作業の依頼
+  schema: schemas/dest/work.request.json
+  handler: b12:work.request
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: async
+  default_expiry_min: 60
+  mcp_tool: ax_work
+- name: subloop.create
+  title: サブループの組み立て
+  schema: schemas/dest/subloop.create.json
+  handler: b12:subloop.create
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: async
+  default_expiry_min: 60
+  mcp_tool: ax_subloop_create
+- name: core.change
+  title: 中核の変更
+  schema: schemas/dest/core.change.json
+  handler: b12:core.change
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: irreversible
+  irreversible: true
+  ack: async
+  default_expiry_min: 60
+  mcp_tool: ax_core_change

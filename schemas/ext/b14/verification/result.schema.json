@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/verification/result.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["status", "reason", "evidence", "comparisons", "unperformed"],
+  "properties": {
+    "status": {"enum": ["passed", "failed", "parked"]},
+    "reason": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array", "items": {"$ref": "evidence.schema.json"}},
+    "comparisons": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["base_execution", "head_execution", "accepted", "reason", "base_derived_failures"],
+      "properties": {"base_execution": {"type": ["string", "null"]}, "head_execution": {"type": ["string", "null"]},
+        "accepted": {"type": "boolean"}, "reason": {"type": "string"},
+        "base_derived_failures": {"type": "array", "items": {"type": "string"}}}
+    }},
+    "unperformed": {"type": "array", "items": {"type": "string"}}
+  }
+}

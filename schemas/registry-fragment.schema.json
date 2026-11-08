@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/registry-fragment.schema.json",
+  "title": "plugins/registry.d/<pkg>.yaml（各束の登録の断片）",
+  "type": "object",
+  "properties": {
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/plugin_id"
+          },
+          "kind": {
+            "$ref": "common.schema.json#/$defs/plugin_kind"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "plugins"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,40 @@
+# 新しいサブループのグラフの雛形（D-6.5）。巡回 → 項目ごとの処理（tdd-change）→ 結果の記録。
+# 検査: python3 tools/ax_graph_check.py plugins/subloop/<id>
+#  - 実装（worker.run の impl / impl_hard）は tdd-change を通る（必須。S-7.6）。
+#  - 外へ公開する型（gh.comment など）の前に gate.secret_scan を置く（S-7.7 の 8）。
+#  - 内側の循環には max_loops、すべてのノードに limits.timeout_s。
+schema_version: 1
+entry: list
+item_source: list
+max_parallel_items: "{{knobs.max_parallel_items}}"
+nodes:
+  - id: list
+    type: gh.list_issues
+    with: {repo: "{{knobs.repo}}", label: "{{knobs.label}}"}
+    limits: {timeout_s: 120, retries: 2}
+    needs_mode: [run, collect_only]     # 巡回のノードは collect_only でも動く（見つけた項目は記録して待たせる）
+  - include: tdd-change
+    as: tdd-change
+    with: {base_ref: main, branch: "ai/{{item.number}}", test_cases_max: "{{knobs.test_cases_max}}"}
+  - id: push
+    type: git.push
+    with:
+      remote: work.git
+      branch: "{{nodes.tdd-change.worktree.data.branch}}"
+      workdir_id: "{{nodes.tdd-change.worktree.data.workdir_id}}"
+      commit_message: "ax: {{item.title}}"
+    limits: {timeout_s: 300, retries: 2}
+  - id: scan
+    type: gate.secret_scan
+    with: {texts: ["{{item.title}}"]}
+    limits: {timeout_s: 60, retries: 0}
+    on_fail: eject
+  - id: report
+    type: gh.comment
+    with: {repo: "{{item.repo}}", number: "{{item.number}}", body: "実装の準備ができた。ブランチ: {{nodes.push.data.branch}}"}
+    limits: {timeout_s: 120, retries: 2}
+edges:
+  - {from: list, to: tdd-change}
+  - {from: tdd-change, to: push, when: ok}
+  - {from: push, to: scan}
+  - {from: scan, to: report, when: ok}

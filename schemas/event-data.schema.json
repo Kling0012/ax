@@ -1,0 +1,564 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/event-data.schema.json",
+  "title": "事象の種類ごとの data（S-3.3）",
+  "description": "kind ごとの data の定義。$defs/<kind> を引く。表にない kind は自由な object。",
+  "$defs": {
+    "run.state": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "common.schema.json#/$defs/state_run"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state"
+      ]
+    },
+    "job.state": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "job_id",
+        "state"
+      ]
+    },
+    "item.state": {
+      "type": "object",
+      "properties": {
+        "item_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "todo_id": {
+          "type": "string"
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "item_id",
+        "state"
+      ]
+    },
+    "node.state": {
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "attempt": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "node",
+        "state"
+      ]
+    },
+    "task.state": {
+      "type": "object",
+      "properties": {
+        "todo_id": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "common.schema.json#/$defs/todo_state"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "todo_id",
+        "state"
+      ]
+    },
+    "state.recorded": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "focus",
+            "daily"
+          ]
+        },
+        "date": {
+          "type": "string"
+        },
+        "as_of": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "changed": {
+          "const": true
+        }
+      },
+      "required": [
+        "kind",
+        "as_of",
+        "issuer",
+        "changed"
+      ],
+      "additionalProperties": false
+    },
+    "resource.state": {
+      "type": "object",
+      "properties": {
+        "resource_id": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "degraded",
+            "excluded",
+            "retired"
+          ]
+        },
+        "until": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ts_any"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "resource_id",
+        "status"
+      ]
+    },
+    "resource.repeat_failure": {
+      "type": "object",
+      "properties": {
+        "resource_id": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "resource_id",
+        "code",
+        "count"
+      ]
+    },
+    "error.classified": {
+      "type": "object",
+      "properties": {
+        "class": {
+          "$ref": "common.schema.json#/$defs/error_class"
+        },
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "class",
+        "code"
+      ]
+    },
+    "health.beat": {
+      "type": "object",
+      "properties": {
+        "uptime_s": {
+          "type": "number"
+        },
+        "lag_s": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "uptime_s"
+      ]
+    },
+    "health.alert": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "check"
+      ]
+    },
+    "plugin.registered": {
+      "type": "object",
+      "properties": {
+        "manifest_version": {
+          "type": "string"
+        },
+        "mode": {
+          "$ref": "common.schema.json#/$defs/mode"
+        }
+      },
+      "required": [
+        "mode"
+      ]
+    },
+    "plugin.mode": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "common.schema.json#/$defs/mode"
+        }
+      },
+      "required": [
+        "mode"
+      ]
+    },
+    "control.issued": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "control-command.schema.json"
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    "control.applied": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "control-command.schema.json"
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    "control.expired_pending": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "control-command.schema.json"
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    "control.released": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "control-command.schema.json"
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    "control.renewed": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "control-command.schema.json"
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    "control.rejected": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "archive.moved": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "bytes": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ]
+    },
+    "secret.stored": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "decision.recorded": {
+      "type": "object",
+      "properties": {
+        "decision_id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "project": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "principal": {
+          "type": "string"
+        },
+        "attested": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "decision_id"
+      ]
+    },
+    "instruction.received": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "instruction.routed": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string"
+        }
+      }
+    },
+    "instruction.rejected": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "env.usage": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "env.job_usage": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "sandbox.call": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "sandbox.token": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "inspection.phase": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "type": "string"
+        },
+        "plan": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "manager.cycle": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "manager.decision": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "backup.activated": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "memory.distilled": {
+      "type": "object",
+      "properties": {
+        "memory_id": {
+          "type": "string"
+        },
+        "topic": {
+          "type": "string"
+        }
+      }
+    },
+    "change.cycle": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "enum": [
+            "started",
+            "completed",
+            "failed"
+          ]
+        }
+      }
+    },
+    "automation.observed": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "automation.delivery": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "automation.collect_checked": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "commander.denied": {
+      "type": "object",
+      "properties": {
+        "principal": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "auth.failed": {
+      "type": "object",
+      "properties": {
+        "via": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "removal.state": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "removal.check": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "cutover.state": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

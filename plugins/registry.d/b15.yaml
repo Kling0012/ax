@@ -1,0 +1,2 @@
+plugins:
+  - {id: release, kind: subloop, path: plugins/subloop/release/manifest.yaml}

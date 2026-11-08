@@ -1,0 +1,2 @@
+# claude の実体（host/ax-deploy.sh が cp -p する。F-19.1）。git に置かない
+vendor/

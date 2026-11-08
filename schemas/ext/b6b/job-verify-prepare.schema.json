@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/job-verify-prepare.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project",
+    "target",
+    "revision",
+    "run_id",
+    "attempt",
+    "recipe_id",
+    "stage",
+    "step",
+    "recipe_snapshot_id"
+  ],
+  "properties": {
+    "project": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "attempt": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "recipe_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "stage": {
+      "enum": [
+        "dependency",
+        "verify"
+      ]
+    },
+    "step": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "recipe_snapshot_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    }
+  }
+}

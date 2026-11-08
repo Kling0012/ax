@@ -1,0 +1,3 @@
+plugins:
+  - {id: conversation-index, kind: timer, path: plugins/timer/conversation-index/manifest.yaml}
+  - {id: memory-digest, kind: timer, path: plugins/timer/memory-digest/manifest.yaml}

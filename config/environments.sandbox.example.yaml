@@ -1,0 +1,63 @@
+# Example only; integrate after the sandbox policy and adapters are connected.
+contract_supported: "1.0"
+environments:
+  - id: instabox
+    adapter: cloud-sandbox
+    registered_at: "2026-10-27"                   # 提供元で使い始めた日（選び方の最後の決め手。S-25.4）
+    connect: {kind: api, name: instabox}        # 宛先は profile の instabox_api_base と instabox_machine_id（任意）
+    conn_credential: {name: instabox-key-ax, place: secrets_dir/hq-slots/instabox-key-ax, header: X-API-Key}   # 用途 ax。アダプタと probe が読む
+    gate_credential: {name: instabox-key-worker, place: secrets_dir/hq-slots/instabox-key-worker, header: X-API-Key}   # 用途 worker。ゲートだけが読む。conn_credential と別のスロット（S-25.18）
+    os: linux
+    capabilities: [linux-sandbox, web-screenshot, web-screenshot-full, web-gui, sandbox-desktop, scheduled-publisher-cli, docker]   # 宣言（候補。2つの箱で同じ7つ）。probe が確かめた物だけ ok、それ以外は unverified（S-25.16、S-25.28）
+    entrypoints:                                  # 名前 → 実装の一覧（優先順）。run: は箱の中の実行物（core/resources/envs/sandbox/entries/。2つの箱で同じ物）、expand: は展開表。どれが使えるかは probe が決める
+      selfcheck: ["run:entries/selfcheck"]
+      screenshot: ["run:entries/screenshot", "expand:config/sandbox-entry-steps.yaml#screenshot"]
+      eigen-collect: ["run:entries/eigen-collect"]
+      eigen-send: [{impl: "run:entries/eigen-send", irreversible_ok: true}]
+    free_command: true                            # command と steps を受ける。許可表と送信前の検査を必ず通す（S-25.19）
+    runner: {root: /data/workspace/ax, version: "ax-sbx 1"}
+    limits: {run_max_kind: hard, run_max_min: null, call_timeout_s: 600, ready_wait_s: 180, idle_suspend_s: 1800}   # null は probe が読む maxRunMinutes（走行中の値）。B18 で実測
+    data_classes: [public]
+    secrets_allowed: false
+    work_credentials:
+      - {slot: scheduled-publisher-identity, place: "instabox:/data/workspace/publisher/.config", vars: []}   # 箱の中の資格。AX は値を読まず、持ち出さない。箱に ID が無い間は scheduled-publisher-cli が unverified（S-25.31.12）
+    secret_targets: []
+    max_concurrent: 1                             # 無料分の1インスタンス（S-25.29、利用者決定 2026-11-07 (4)）
+    cost: {kind: free, note: "無料枠。費用が0を超えた、台数が1でない、無料でなくなったら止める（S-25.29）。POST /machines などを呼ばない"}
+    free_guard: {machines: 1, cost_max_usd: 0}    # 無料分の1インスタンス。読み込みで検査（S-25.2）
+    lifetime: ephemeral
+    owner_use: false
+    model_family: []                              # 箱の中で LLM を使わない
+    rank: 100                                     # 2つの箱で同じ。選び方は S-25.4
+    state: trial                                  # 経路 J の状態。試行の作業と probe を通してから core.change で available
+    gate_state: trial                             # 経路 G の状態。経路 J の state とは別（S-25.2）
+  - id: box
+    adapter: cloud-sandbox
+    registered_at: "2026-11-03"                   # 提供元で使い始めた日（最初のスナップショットの日。S-25.4）
+    connect: {kind: mcp, name: box, url: "https://mcp.box.simular.ai/mcp"}   # 宛先は S-25.17 の固定値（秘密ではない）。Streamable HTTP。使う箱の名前は profile の box_machine_name（既定 main）。ID は profile の box_machine_id（任意。空なら名前だけで照合する）
+    conn_credential: {name: box-key-ax, place: secrets_dir/hq-slots/box-key-ax, header: Authorization}   # 用途 ax。値は "Bearer <鍵>"。アダプタと probe が読む
+    gate_credential: {name: box-key-worker, place: secrets_dir/hq-slots/box-key-worker, header: Authorization}   # 用途 worker。ゲートだけが読む。値は "Bearer <鍵>"。conn_credential と別のスロット（S-25.18）
+    os: linux
+    capabilities: [linux-sandbox, web-screenshot, web-screenshot-full, web-gui, sandbox-desktop, scheduled-publisher-cli, docker]   # 宣言（候補。2つの箱で同じ7つ）。probe が確かめた物だけ ok、それ以外は unverified（S-25.16、S-25.28）
+    entrypoints:                                  # 名前 → 実装の一覧（優先順）。run: は箱の中の実行物（core/resources/envs/sandbox/entries/。2つの箱で同じ物）、expand: は展開表。どれが使えるかは probe が決める
+      selfcheck: ["run:entries/selfcheck"]
+      screenshot: ["run:entries/screenshot", "expand:config/sandbox-entry-steps.yaml#screenshot"]
+      eigen-collect: ["run:entries/eigen-collect"]
+      eigen-send: [{impl: "run:entries/eigen-send", irreversible_ok: true}]
+    free_command: true                            # command と steps を受ける。許可表と送信前の検査を必ず通す（S-25.19）
+    runner: {root: /workspace/ax, version: "ax-sbx 1"}
+    limits: {run_max_kind: soft, run_max_min: 30, call_timeout_s: 120, ready_wait_s: 120, idle_suspend_s: null}   # soft は仮置き。B18 で実測して hard の値に直す
+    data_classes: [public]
+    secrets_allowed: false
+    work_credentials:
+      - {slot: scheduled-publisher-identity, place: "box:/workspace/publisher/.config", vars: []}   # 箱の中の資格。AX は値を読まず、持ち出さない。箱に CLI と ID が無い間は scheduled-publisher-cli が unverified（BF §9。S-25.31.12）。place の実在は B18 で実測して確定する
+    secret_targets: []
+    max_concurrent: 1                             # 無料分の1インスタンス（S-25.29、利用者決定 2026-11-07 (4)）
+    cost: {kind: free, note: "無料の1台。probe が費用0・台数1を確かめ、外れたら excluded にしてカードを出す（S-25.29）。box_create・box_upgrade・box_ensure を呼ばず、billing は読み取りだけ"}
+    free_guard: {machines: 1, cost_max_usd: 0}    # 無料分の1インスタンス。読み込みで検査（S-25.2）
+    lifetime: ephemeral
+    owner_use: false
+    model_family: []                              # 箱の中で LLM を使わない
+    rank: 100                                     # 2つの箱で同じ。選び方は S-25.4
+    state: trial                                  # 経路 J の状態。試行の作業と probe を通してから core.change で available
+    gate_state: trial                             # 経路 G の状態。経路 J の state とは別（S-25.2）

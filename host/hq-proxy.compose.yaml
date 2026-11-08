@@ -1,0 +1,35 @@
+services:
+  hq-public-proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    network_mode: host
+    user: "${AX_HQ_UID:?required}:${AX_HQ_GID:?required}"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      AX_PUBLIC_PROXY_IP: ${AX_PUBLIC_PROXY_IP:?required}
+      HOME: /var/caddy
+      XDG_CONFIG_HOME: /var/caddy
+      XDG_DATA_HOME: /var/caddy
+    volumes:
+      - type: bind
+        source: ${TMPDIR:?required}/hq-proxy-caddy
+        target: /var/caddy
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${AX_STATE_DIR:?required}/hq
+        target: /run/hq
+        read_only: true
+      - type: bind
+        source: ./hq-proxy.Caddyfile
+        target: /etc/caddy/Caddyfile
+        read_only: true
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        case "$$AX_PUBLIC_PROXY_IP" in
+          ''|*[!0-9a-fA-F:.]*) echo 'AX_PUBLIC_PROXY_IP must be an IP address' >&2; exit 1 ;;
+        esac
+        exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile

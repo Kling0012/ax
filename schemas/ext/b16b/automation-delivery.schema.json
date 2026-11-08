@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b16b/automation-delivery.schema.json",
+  "type": "object",
+  "properties": {
+    "plugin_id": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "const": "*"
+      }
+    },
+    "destination": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "const": "*"
+      }
+    },
+    "source_item_id": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "const": "*"
+      }
+    },
+    "operation": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "const": "*"
+      }
+    },
+    "state": {
+      "enum": [
+        "collected",
+        "ready",
+        "launching",
+        "sent",
+        "failed",
+        "unknown"
+      ]
+    },
+    "external_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "checked_at": {
+      "$ref": "../../common.schema.json#/$defs/ts"
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "plugin_id",
+    "destination",
+    "source_item_id",
+    "operation",
+    "state",
+    "external_id",
+    "checked_at",
+    "reason"
+  ],
+  "additionalProperties": false
+}

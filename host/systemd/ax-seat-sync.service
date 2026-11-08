@@ -1,0 +1,15 @@
+[Unit]
+Description=AX SSH authorized keys synchronization
+# Install after rendering AX_PROFILE_FILE and AX_HOME in the host profile.
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+EnvironmentFile=/etc/ax/seat.env
+ExecStart=/bin/sh -c 'exec "${AX_HOME}/host/ax-seat.sh" sync --profile "${AX_PROFILE_FILE}"'
+PrivateTmp=no
+NoNewPrivileges=yes
+ProtectSystem=full
+ReadWritePaths=/var/lib/ax-seat/.ssh /srv/hddtmp
+# The timer is supplemental; the hostwatch seat-sync request remains primary.

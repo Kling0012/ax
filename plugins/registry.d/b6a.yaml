@@ -1,0 +1,4 @@
+plugins:
+  - id: worker-pool
+    kind: resource
+    path: plugins/resource/worker-pool/manifest.yaml

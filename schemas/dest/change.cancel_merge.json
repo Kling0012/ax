@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/change.cancel_merge.json",
+  "title": "change.cancel_merge",
+  "$comment": "SPEC.md:S-6.4,S-19",
+  "type": "object",
+  "properties": {
+    "issue_repo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "issue_repo",
+    "number",
+    "reason"
+  ],
+  "additionalProperties": false
+}

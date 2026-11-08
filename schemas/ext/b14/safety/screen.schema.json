@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14/safety/screen.schema.json",
+  "type": "object",
+  "required": ["safe"],
+  "properties": {"safe": {"type": "boolean"}},
+  "additionalProperties": false
+}

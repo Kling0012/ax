@@ -1,0 +1,28 @@
+# 行き先の登録簿（S-6.3）。行き先の追加と削除は、このファイル（と config/intake-destinations.d/*.yaml）の
+# 変更だけで済ませる。後続の束の行き先は .d/ の下に足す（PLAN.json の conventions）。
+# payload の Schema（schemas/dest/<name>.json）は B12b2 が作る（S-6.22）。それまでの間、入口は
+# 登録だけして payload の検査を緩く続ける（health.alert の payload_schema_missing で示す。DECISIONS.md）。
+- name: control.command
+  title: プラグインの制御
+  schema: schemas/dest/control.command.json
+  handler: http://control:8080/v1/commands
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  conflict_key: "control:{target}:{op}:{args.name}"
+  mcp_tool: ax_control
+- name: ledger.answer
+  title: ToDo カードへの回答
+  schema: schemas/dest/ledger.answer.json
+  handler: http://ledger:8080/v1/todos/{todo_id}/answer
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: operate
+  irreversible: false
+  ack: sync
+  default_expiry_min: 60
+  conflict_key: "card:{todo_id}"
+  mcp_tool: ax_answer

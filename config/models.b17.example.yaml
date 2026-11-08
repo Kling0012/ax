@@ -1,0 +1,10 @@
+# Illustrative entry only; use the resource ledger for caps.
+models:
+- id: provider.example/model-example
+  kind: model
+  family: example
+  tier: standard
+  billing: metered
+  level: L1
+  runner: agent-cli
+  status: excluded

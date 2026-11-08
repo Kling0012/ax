@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/job-verify-result.schema.json",
+  "type": "object",
+  "required": [
+    "job_id",
+    "project",
+    "target",
+    "revision",
+    "run_id",
+    "attempt",
+    "recipe_id",
+    "recipe_version",
+    "runner",
+    "stage",
+    "step",
+    "command",
+    "workdir_id",
+    "network_mode",
+    "allow_hosts",
+    "isolation_verified",
+    "started_at",
+    "ended_at",
+    "state",
+    "exit_code",
+    "oom_killed",
+    "timed_out",
+    "executed",
+    "log_complete",
+    "output_truncated",
+    "recipe_snapshot_id",
+    "home_absent",
+    "credentials_absent",
+    "host_config_absent",
+    "network_enforced"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "project": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "attempt": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "recipe_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "recipe_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage": {
+      "enum": [
+        "dependency",
+        "verify"
+      ]
+    },
+    "step": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "command": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workdir_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "network_mode": {
+      "enum": [
+        "none",
+        "allowlist",
+        "unknown"
+      ]
+    },
+    "allow_hosts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "isolation_verified": {
+      "type": "boolean"
+    },
+    "started_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ended_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "enum": [
+        "starting",
+        "running",
+        "exited",
+        "unknown"
+      ]
+    },
+    "exit_code": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "oom_killed": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "timed_out": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "executed": {
+      "type": "boolean"
+    },
+    "log_complete": {
+      "type": "boolean"
+    },
+    "output_truncated": {
+      "type": "boolean"
+    },
+    "log": {
+      "type": "string"
+    },
+    "recipe_snapshot_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "home_absent": {
+      "type": "boolean"
+    },
+    "credentials_absent": {
+      "type": "boolean"
+    },
+    "host_config_absent": {
+      "type": "boolean"
+    },
+    "network_enforced": {
+      "type": "boolean"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "log_complete": {
+            "const": true
+          }
+        },
+        "required": [
+          "log_complete"
+        ]
+      },
+      "then": {
+        "required": [
+          "log"
+        ],
+        "properties": {
+          "output_truncated": {
+            "const": false
+          }
+        }
+      }
+    }
+  ]
+}

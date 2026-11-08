@@ -1,0 +1,270 @@
+{
+  "tools": {
+    "shell": {
+      "box": "shell",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "POST /machines/{id}/exec",
+      "capability": "linux-sandbox"
+    },
+    "read_file": {
+      "box": "read_file",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "GET /files/content",
+      "capability": "linux-sandbox"
+    },
+    "write_file": {
+      "box": "write_file",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "PUT /files",
+      "capability": "linux-sandbox"
+    },
+    "edit_file": {
+      "box": "edit_file",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "PUT /files",
+      "capability": "linux-sandbox"
+    },
+    "list_dir": {
+      "box": "list_dir",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "GET /files",
+      "capability": "linux-sandbox"
+    },
+    "browser_navigate": {
+      "box": "browser_navigate",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "browser_fetch": {
+      "box": "browser_fetch",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "browser_read": {
+      "box": "browser_read",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "browser_snapshot": {
+      "box": "browser_snapshot",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "browser_tabs": {
+      "box": "browser_tabs",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "browser_click": {
+      "box": "browser_click",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "browser_type": {
+      "box": "browser_type",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "browser_fill": {
+      "box": "browser_fill",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-gui"
+    },
+    "screenshot": {
+      "box": "screenshot",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "web-screenshot"
+    },
+    "computer_state": {
+      "box": "computer_state",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "sandbox-desktop"
+    },
+    "computer_act": {
+      "box": "computer_act",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "arg_rules": {
+        "action_allow": [
+          "click",
+          "double_click",
+          "right_click",
+          "triple_click",
+          "type",
+          "key",
+          "hotkey",
+          "scroll",
+          "drag",
+          "launch_app",
+          "wait",
+          "locate"
+        ],
+        "deny_keys": [
+          "field",
+          "path"
+        ],
+        "actions_max": 50
+      },
+      "instabox": null,
+      "capability": "sandbox-desktop"
+    },
+    "gui_plan": {
+      "box": "gui_plan",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "sandbox-desktop"
+    },
+    "desk": {
+      "box": "desk",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "sandbox-desktop"
+    },
+    "script_run": {
+      "box": "script_run",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": null,
+      "capability": "sandbox-desktop"
+    },
+    "machine_state": {
+      "box": "box_status",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "GET /machines/{id}",
+      "capability": null
+    },
+    "machine_list": {
+      "box": "box_list",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "GET /machines",
+      "capability": null
+    },
+    "usage": {
+      "box": "usage",
+      "paths": [
+        "J",
+        "G"
+      ],
+      "instabox": "GET /usage",
+      "capability": null
+    },
+    "machine_view": {
+      "box": "box_view",
+      "paths": [
+        "J"
+      ],
+      "instabox": null,
+      "capability": "sandbox-desktop"
+    },
+    "plan_read": {
+      "box": "billing",
+      "paths": [
+        "probe"
+      ],
+      "instabox": null,
+      "capability": null
+    },
+    "machine_wake": {
+      "box": "box_wake",
+      "paths": [
+        "J"
+      ],
+      "instabox": "POST /machines/{id}/resume",
+      "capability": null
+    },
+    "machine_suspend": {
+      "box": "box_hibernate",
+      "paths": [
+        "J"
+      ],
+      "instabox": "POST /machines/{id}/suspend",
+      "capability": null
+    },
+    "runner": {
+      "box": "runner",
+      "paths": [
+        "J"
+      ],
+      "instabox": "POST /machines/{id}/exec",
+      "capability": "ax-runner"
+    }
+  },
+  "forbidden_patterns": [
+    "npx @simular-ai/box connect",
+    "box connect",
+    "@simular-ai/box",
+    "api.instabox.sh",
+    "mcp.box.simular.ai"
+  ]
+}

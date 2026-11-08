@@ -1,0 +1,11 @@
+- name: core.change
+  title: core.change
+  schema: schemas/dest/core.change.json
+  handler: b12:core.change
+  allowed_from: [commander, hq]
+  via: [local, ssh, tailnet, hq]
+  tier: irreversible
+  irreversible: true
+  ack: sync
+  default_expiry_min: 60
+  mcp_tool: ax_core_change

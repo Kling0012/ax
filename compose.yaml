@@ -1,0 +1,73 @@
+# AX の compose の骨組み（B0。F-18.1、F-18.6、D-14）。
+# このファイルは網と秘密の宣言だけを持つ。サービスは compose.d/<束の ID>.yaml に書く（拡張点）。
+# 変数は F-18.6 の対応表の AX_ の名前だけを使う。profile は読まない（host/ax-env.sh が profile.env に写す）。
+# 実行: docker compose -p ax --project-directory ${AX_HOME} --env-file profile.env --env-file current.env -f compose.yaml -f compose.d/*.yaml
+# 共通の設定（TMPDIR、/tmp-hdd の bind、healthcheck、ログ、権限の絞り込み）は docker/base.yaml の extends で各サービスが受ける。
+# （YAML のアンカーはファイルをまたげないため。docs/CHANGELOG.md を見る）
+name: ax
+
+x-ax-ports-rule: "ports は ${AX_BIND_ADDR}:<port>:<port> の形だけ。0.0.0.0 とアドレスなしは tools/compose_check.py が拒否する（D-14、T-119）"
+
+networks:
+  ax-core:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: ax-core
+    ipam:
+      driver: default
+      config:
+        - subnet: ${AX_CORE_SUBNET:-192.0.2.0/25}
+          gateway: ${AX_CORE_GATEWAY:-192.0.2.1}
+          ip_range: ${AX_CORE_IP_RANGE:-}
+  ax-work:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: ax-work
+    ipam:
+      driver: default
+      config:
+        - subnet: ${AX_WORK_SUBNET:-198.51.100.0/25}
+          gateway: ${AX_WORK_GATEWAY:-198.51.100.1}
+          ip_range: ${AX_WORK_IP_RANGE:-}
+  ax-publish-review:
+    driver: bridge
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: ax-publish
+    ipam:
+      driver: default
+      config:
+        - subnet: ${AX_PUBLISH_REVIEW_SUBNET:-192.0.2.128/26}
+          gateway: ${AX_PUBLISH_REVIEW_GATEWAY:-192.0.2.129}
+          ip_range: ${AX_PUBLISH_REVIEW_IP_RANGE:-}
+  ax-job:
+    driver: bridge
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: ax-job
+    ipam:
+      driver: default
+      config:
+        - subnet: ${AX_JOB_SUBNET:-203.0.113.0/25}
+          gateway: ${AX_JOB_GATEWAY:-203.0.113.1}
+          ip_range: ${AX_JOB_IP_RANGE:-}
+
+# 秘密。値は AX_SECRETS_DIR の下のファイル（権限600）。サービスごとに、必要な物だけを secrets: で渡す（S-15.2、D-14）。
+# プラグインごとの plugin-tokens/<id> と、core-tokens/<部品名> は、使う束が自分の compose.d/<束>.yaml に宣言する（F-18.4）。
+secrets:
+  model-gateway-key:
+    file: ${AX_SECRETS_DIR}/model-gateway-key
+  control-apply-token:
+    file: ${AX_SECRETS_DIR}/control-apply-token
+  control-token-manager:
+    file: ${AX_SECRETS_DIR}/control-tokens/manager
+  control-token-backup:
+    file: ${AX_SECRETS_DIR}/control-tokens/backup
+  control-token-inspection:
+    file: ${AX_SECRETS_DIR}/control-tokens/inspection
+  control-token-emergency:
+    file: ${AX_SECRETS_DIR}/control-tokens/emergency
+  github-token:
+    file: ${AX_SECRETS_DIR}/github-token
+  jev-key:
+    file: ${AX_SECRETS_DIR}/jev-key

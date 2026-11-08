@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b9/manager-decision.schema.json",
+  "title": "管理役の判断の返答（S-10.3）。合わなければ捨てて error.classified(artifact.bug, bad_output)",
+  "type": "object",
+  "properties": {
+    "actions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {"const": "control.issue"},
+              "command": {
+                "type": "object",
+                "properties": {
+                  "target": {"type": "string", "minLength": 1},
+                  "op": {"enum": ["set_mode", "set_knob", "exclude_resource", "include_resource", "cancel", "run_now"]},
+                  "args": {"type": "object"},
+                  "expires_at": {"type": "string", "minLength": 20},
+                  "on_expiry": {"enum": ["ask_issuer", "release"]},
+                  "reason": {"type": "string"}
+                },
+                "required": ["target", "op", "args", "expires_at"],
+                "additionalProperties": false
+              },
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "required": ["type", "command", "reason"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {"const": "control.release"},
+              "command_id": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "required": ["type", "command_id", "reason"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {"const": "control.renew"},
+              "command_id": {"type": "string", "minLength": 1},
+              "expires_at": {"type": "string", "minLength": 20},
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "required": ["type", "command_id", "expires_at", "reason"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {"const": "ledger.eject"},
+              "subject": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1},
+              "check_at": {"type": "string", "minLength": 20}
+            },
+            "required": ["type", "subject", "reason", "check_at"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {"const": "ledger.add"},
+              "todo": {"type": "object"},
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "required": ["type", "todo", "reason"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {"const": "timer.create"},
+              "timer": {"type": "object"},
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "required": ["type", "timer", "reason"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {"const": "noop"},
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "required": ["type", "reason"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": ["actions"],
+  "additionalProperties": false
+}

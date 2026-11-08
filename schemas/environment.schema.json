@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/environment.schema.json",
+  "title": "実行環境の台帳の項目（S-25.2）",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/plugin_id"
+    },
+    "adapter": {
+      "enum": [
+        "local",
+        "ssh-host",
+        "container",
+        "cloud-sandbox"
+      ]
+    },
+    "audit_transport": {"enum": ["ssh-readonly"]},
+    "connect": {
+      "type": "object"
+    },
+    "conn_credential": {
+      "$ref": "#/$defs/credential"
+    },
+    "gate_credential": {
+      "$ref": "#/$defs/credential"
+    },
+    "os": {
+      "enum": [
+        "linux",
+        "windows",
+        "macos"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9:-]*$"
+      }
+    },
+    "entrypoints": {
+      "type": "object"
+    },
+    "data_classes": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/sensitivity"
+      }
+    },
+    "secrets_allowed": {
+      "type": "boolean"
+    },
+    "work_credentials": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/credential"
+      }
+    },
+    "secret_targets": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "max_concurrent": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "free",
+            "fixed",
+            "metered"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ]
+    },
+    "lifetime": {
+      "enum": [
+        "permanent",
+        "rental",
+        "ephemeral"
+      ]
+    },
+    "owner_use": {
+      "type": "boolean"
+    },
+    "model_family": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "rank": {
+      "type": "integer"
+    },
+    "registered_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "free_guard": {
+      "type": "object",
+      "properties": {
+        "machines": {
+          "const": 1
+        },
+        "cost_max_usd": {
+          "const": 0
+        }
+      },
+      "required": [
+        "machines",
+        "cost_max_usd"
+      ],
+      "additionalProperties": false
+    },
+    "state": {
+      "enum": [
+        "trial",
+        "available",
+        "degraded",
+        "excluded",
+        "draining",
+        "retired"
+      ]
+    },
+    "gate_state": {
+      "enum": [
+        "trial",
+        "available",
+        "degraded",
+        "excluded",
+        "draining",
+        "retired"
+      ]
+    },
+    "module": {
+      "type": "object"
+    },
+    "probe": {
+      "type": "object"
+    },
+    "limits": {
+      "type": "object"
+    },
+    "runner": {
+      "type": "object"
+    },
+    "free_command": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "adapter",
+    "capabilities",
+    "data_classes",
+    "registered_at"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "adapter": {
+            "const": "cloud-sandbox"
+          }
+        },
+        "required": [
+          "adapter"
+        ]
+      },
+      "then": {
+        "required": [
+          "free_guard",
+          "cost",
+          "max_concurrent"
+        ],
+        "properties": {
+          "max_concurrent": {
+            "const": 1
+          },
+          "cost": {
+            "properties": {
+              "kind": {
+                "const": "free"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "free_command": {
+            "const": true
+          }
+        },
+        "required": [
+          "free_command"
+        ]
+      },
+      "then": {
+        "required": [
+          "adapter",
+          "lifetime",
+          "data_classes",
+          "secrets_allowed"
+        ],
+        "properties": {
+          "adapter": {
+            "const": "cloud-sandbox"
+          },
+          "lifetime": {
+            "const": "ephemeral"
+          },
+          "data_classes": {
+            "const": [
+              "public"
+            ]
+          },
+          "secrets_allowed": {
+            "const": false
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "credential": {
+      "type": "object",
+      "properties": {
+        "slot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "place": {
+          "type": "string",
+          "minLength": 1
+        },
+        "var": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "header": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vars": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+          }
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "slot"
+          ]
+        },
+        {
+          "required": [
+            "name"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    }
+  }
+}

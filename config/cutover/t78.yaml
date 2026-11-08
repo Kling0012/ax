@@ -1,0 +1,11 @@
+ax_profile: ~/.config/ax/profile/hub-host.yaml
+sources_file: ~/.config/ax/profile/archive-sources.yaml
+secrets_dir: ~/.config/ax/secrets
+private_key: ~/.config/ax/secrets/archive-ssh-key
+public_key: ~/.config/ax/secrets/archive-ssh-key.pub
+known_hosts: ~/.config/ax/secrets/archive-known-hosts
+key_check_host: archive-host.invalid
+authorized_keys: /root/.ssh/authorized_keys
+restricted_directory: /srv/archive/hub-host
+cutover_archive: ~/.local/share/ax/archive/cutover
+changelog: ~/dev/ax/docs/CHANGELOG.md

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/event-post.schema.json",
+  "title": "POST /v1/events の本文（S-3.5）",
+  "oneOf": [
+    {
+      "$ref": "event.schema.json"
+    },
+    {
+      "type": "array",
+      "items": {
+        "$ref": "event.schema.json"
+      },
+      "minItems": 1
+    }
+  ]
+}

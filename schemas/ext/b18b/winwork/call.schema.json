@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b18b/winwork/call.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tool_id",
+    "target",
+    "instruction",
+    "sensitivity"
+  ],
+  "properties": {
+    "tool_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "url",
+            "app"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "\\S"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "url"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "format": "uri",
+                "pattern": "^https?://[^\\s/?#]+(?:[/?#][^\\s]*)?$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "instruction": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536,
+      "pattern": "\\S"
+    },
+    "sensitivity": {
+      "enum": [
+        "public",
+        "private",
+        "sensitive"
+      ]
+    },
+    "user_requested": {
+      "type": "boolean"
+    }
+  }
+}

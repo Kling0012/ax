@@ -1,0 +1,19 @@
+schema_version: 1
+id: x-posts
+version: 1.0.0
+kind: subloop
+project: multi
+title: X の投稿キューを送信する
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: interval, every_s: 600, missed: record_only}
+graph: graph.yaml
+capabilities: [run, collect_only, poll_paused, draining]
+knobs:
+  every_s: {type: integer, default: 600, min: 1, effective: next_run, title: 投稿キューの確認間隔（秒）, who: [user]}
+  enabled: {type: boolean, default: true, effective: immediate, title: 自動実行, who: [user]}
+health: {heartbeat_s: 60}
+sensitivity: public
+roles: []
+secrets: []
+outputs: [x.post]

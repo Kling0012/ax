@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b12/subloop/declaration.schema.json",
+  "$comment": "Only S-6.21 declaration fields. This is not the unresolved destination payload schema.",
+  "type": "object",
+  "required": ["secrets", "outputs", "sensitivity"],
+  "properties": {
+    "secrets": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "outputs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "sensitivity": {"enum": ["public", "private", "sensitive"]}
+  }
+}

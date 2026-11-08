@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b15/deploy/deployment-result.schema.json",
+  "title": "B15 配備・復旧の結果（S-20.6）",
+  "type": "object",
+  "properties": {
+    "outcome": {"enum": ["succeeded", "failed", "blocked"]},
+    "reason": {"type": "string"},
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "env_id": {"type": ["string", "null"]},
+    "stages": {"type": "object", "additionalProperties": {"type": "string"}},
+    "recovery": {"type": "object"},
+    "card": {"type": ["object", "null"]}
+  },
+  "required": ["outcome", "reason", "sha", "env_id", "stages", "recovery", "card"],
+  "additionalProperties": false
+}

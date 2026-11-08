@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/subgraph.schema.json",
+  "title": "部分グラフ plugins/subloop/_lib/<名前>.yaml（S-7.1）",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "params": {
+      "type": "object"
+    },
+    "entry": {
+      "type": "string"
+    },
+    "exits": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(ok|bug|error|skip|outcome:.+)$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "graph.schema.json#/$defs/node"
+          },
+          {
+            "$ref": "graph.schema.json#/$defs/include"
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "when": {
+            "type": "string",
+            "pattern": "^(ok|bug|error|skip|outcome:.+)$"
+          },
+          "max_loops": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "entry",
+    "exits",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "scheduled-publisher",
+  "version": "1.0.0",
+  "kind": "subloop",
+  "project": "multi",
+  "title": "scheduled-publisher の巡回",
+  "image": "ax/runtime:1.0.0",
+  "execution": "llm",
+  "schedule": {"kind": "interval", "every_s": 3600, "missed": "record_only"},
+  "graph": "graph.yaml",
+  "capabilities": ["run", "collect_only", "draining"],
+  "default_mode": "collect_only",
+  "knobs": {
+    "u_eigen_interval_s": {"type": "integer", "default": 3600, "min": 1, "effective": "next_run", "title": "巡回の間隔"},
+    "u_eigen_collect_budget_min": {"type": "integer", "default": 15, "min": 5, "max": 40, "effective": "next_run", "title": "収集の上限時間"},
+    "u_eigen_decide_budget_min": {"type": "integer", "default": 40, "min": 10, "max": 50, "effective": "next_run", "title": "判断の上限時間"},
+    "u_eigen_send_budget_min": {"type": "integer", "default": 10, "min": 2, "max": 30, "effective": "next_run", "title": "送信の上限時間"},
+    "u_eigen_run_send_max": {"type": "integer", "default": 12, "min": 1, "max": 100, "effective": "next_run", "title": "1巡の送信の上限"},
+    "u_eigen_reply_cap_day": {"type": "integer", "default": 5, "min": 0, "max": 50, "effective": "next_run", "title": "1日の返信の上限"}
+  },
+  "health": {"heartbeat_s": 60},
+  "roles": ["eigen-decide"],
+  "sensitivity": "public",
+  "secrets": [],
+  "outputs": ["publish", "reply", "respond", "friend_request", "friend_accept", "feed_feedback"],
+  "depends_on_plugins": ["worker-pool", "resources"]
+}

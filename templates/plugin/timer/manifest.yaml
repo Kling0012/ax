@@ -1,0 +1,18 @@
+# Copy to plugins/timer/example-timer/manifest.yaml.
+schema_version: 1
+id: example-timer
+version: 0.1.0
+kind: timer
+project: multi
+title: 例の定期処理
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: interval, every_s: 300, missed: record_only}
+capabilities: [run, collect_only, poll_paused, draining]
+knobs: {}
+health: {heartbeat_s: 60}
+sensitivity: private
+roles: []
+secrets: []
+outputs: []
+depends_on_plugins: []

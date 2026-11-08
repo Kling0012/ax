@@ -1,0 +1,13 @@
+# Optional resources credentials: included by ax-up only when both files exist.
+services:
+  resources:
+    secrets:
+      - source: env-ssh-noded
+        target: env-ssh-noded
+      - source: env-ssh-noded-known-hosts
+        target: env-ssh-noded-known-hosts
+secrets:
+  env-ssh-noded:
+    file: ${AX_SECRETS_DIR}/env-ssh-noded
+  env-ssh-noded-known-hosts:
+    file: ${AX_SECRETS_DIR}/env-ssh-noded-known-hosts

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/permission-check.schema.json",
+  "title": "POST /v1/permissions/check（S-5.7）",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project",
+        "repo",
+        "destination",
+        "operation"
+      ],
+      "additionalProperties": false
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        },
+        "permission_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "allowed",
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

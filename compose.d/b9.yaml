@@ -1,0 +1,61 @@
+# B9/B11: manager と inspector（D-2.1、D-12、F-18.4）。ホストへポートを公開しない。
+services:
+  manager:
+    extends: {file: docker/base.yaml, service: ax-core-base}
+    command: ["python", "-m", "core.manager"]
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      archive-init: {condition: service_completed_successfully}
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_MANAGER_STATE_DIR: /data
+      AX_TIMELINE_URL: http://timeline:8080
+      AX_CONTROL_URL: http://control:8080
+      AX_LEDGER_URL: http://ledger:8080
+      AX_WORKER_POOL_URL: http://worker-pool:8080
+      AX_RESOURCES_URL: http://resources:8080
+      AX_MEMORY_CONNECTOR_URL: http://memory-connector:8080
+      AX_REDACT_INDEX: /redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+    volumes:
+      - {type: volume, source: manager-data, target: /data}
+      - {type: bind, source: "${AX_STATE_DIR}/redact", target: /redact, read_only: true}
+    secrets:
+      - control-token-manager
+      - core-token-manager  # ledger:8080 の ToDo 作成に使う中核資格（F-18.4）
+      - pii-list
+
+  inspector:
+    extends: {file: docker/base.yaml, service: ax-core-base}
+    command: ["python", "-m", "core.inspector"]
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      archive-init: {condition: service_completed_successfully}
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_INSPECTOR_STATE_DIR: /data
+      AX_TIMELINE_URL: http://timeline:8080
+      AX_CONTROL_URL: http://control:8080
+    volumes:
+      - {type: volume, source: inspector-data, target: /data}
+      - {type: bind, source: "${AX_HOME}/config/inspection.yaml", target: /ax/config/inspection.yaml, read_only: true}
+    secrets:
+      - control-token-inspection
+
+  # B1 の初期化と退避に、この束が所有するボリュームを追加する。
+  archive-init:
+    volumes:
+      - {type: volume, source: manager-data, target: /v/manager-data}
+      - {type: volume, source: inspector-data, target: /v/inspector-data}
+  archiver:
+    volumes:
+      - {type: volume, source: manager-data, target: /vol/manager-data, volume: {subpath: archive}}
+      - {type: volume, source: inspector-data, target: /vol/inspector-data, volume: {subpath: archive}}
+
+volumes:
+  manager-data: {}
+  inspector-data: {}
+
+secrets:
+  core-token-manager:
+    file: ${AX_SECRETS_DIR}/core-tokens/manager

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b1/events-post-response.schema.json",
+  "title": "POST /v1/events の応答（S-3.5。形は B1 が決めた）",
+  "type": "object",
+  "properties": {
+    "accepted": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "duplicates": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "../../common.schema.json#/$defs/ulid"
+          },
+          "seq": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "duplicate": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "seq",
+          "duplicate"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "accepted",
+    "duplicates",
+    "events"
+  ],
+  "additionalProperties": false
+}

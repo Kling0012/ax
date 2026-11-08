@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b9/inspection-state.schema.json",
+  "title": "点検係の状態（inspector-data の state.json。D-12）",
+  "type": "object",
+  "properties": {
+    "interval_h": {"type": "number", "exclusiveMinimum": 0},
+    "next_at": {"type": "string"},
+    "quiet_streak": {"type": "integer", "minimum": 0},
+    "phase": {"enum": ["idle", "notice", "draining", "wait", "review_request", "review", "resume"]},
+    "inspection_id": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+    "started_at": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+    "drain_started_at": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+    "command_ids": {"type": "array", "items": {"type": "string"}},
+    "review_requested_at": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+    "skip_review": {"type": "boolean"},
+    "changes": {"type": "array"},
+    "repairs": {"type": "integer", "minimum": 0},
+    "backup_activations": {"type": "integer", "minimum": 0},
+    "event_cursor": {"type": "integer", "minimum": 0},
+    "last_result": {"anyOf": [{"type": "object"}, {"type": "null"}]}
+  },
+  "required": ["interval_h", "next_at", "quiet_streak", "phase"],
+  "additionalProperties": true
+}

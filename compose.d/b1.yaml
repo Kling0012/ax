@@ -1,0 +1,147 @@
+# B1/B2 の束（時系列記録 timeline、記憶コネクタ memory-connector、退避コネクタ archiver と archive-init）。
+# 網は F-18.4 の表: timeline と memory-connector は ax-core と ax-work の両方、archiver は ax-core だけ（固定アドレス AX_FW_ARCHIVER_IP。F-18.1）。
+# ports は持たない（D-14）。timeline と memory-connector は 8080（ax-core）と 8081（ax-work）を、それぞれの網のアドレスだけに結び付ける
+# （core/timeline/netbind.py）。healthcheck は 127.0.0.1:8080（docker/base.yaml）。
+# 他の束のボリュームを退避の対象に加えるには、その束の compose.d/<束>.yaml で archive-init と archiver に自分のボリュームを足す（docs/b1/archive-volumes.md）。
+services:
+  archive-init:
+    # archiver の前に一回だけ動く（F-20）。各ボリュームの archive/ を作り、ボリュームの持ち主（AX_UID:AX_GID）に所有者を揃える。
+    # ホストの状態置き場の archive/verified/（archiver が書き、ホストの reap が読む）も作る。
+    image: ax/archiver:${AX_TAG}
+    build:
+      context: .
+      dockerfile: core/archiver/Dockerfile
+      args:
+        PYTHON_REF: ${AX_PYTHON_REF:-python:3.12-slim}
+        UV_VERSION: ${AX_UV_VERSION:-0.13.0}
+    restart: "no"
+    user: "0:0"
+    network_mode: none
+    cap_drop: [ALL]
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER]
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        for v in /v/*; do
+          mkdir -p "$$v/archive"
+          chown ${AX_UID}:${AX_GID} "$$v" "$$v/archive"
+          chmod 0770 "$$v/archive"
+        done
+        mkdir -p /hoststate/archive/verified
+        chown ${AX_UID}:${AX_GID} /hoststate/archive /hoststate/archive/verified
+        chmod 0755 /hoststate/archive /hoststate/archive/verified
+    volumes:
+      - {type: volume, source: timeline-data, target: /v/timeline-data}
+      - {type: volume, source: memory-connector-data, target: /v/memory-connector-data}
+      - {type: volume, source: archiver-data, target: /v/archiver-data}
+      - {type: bind, source: "${AX_STATE_DIR}", target: /hoststate}
+
+  timeline:
+    extends: {file: docker/base.yaml, service: ax-both-base}
+    command: ["python", "-m", "core.timeline"]
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      archive-init:
+        condition: service_completed_successfully
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_TIMELINE_DB: /data/timeline.sqlite
+      AX_TIMELINE_ARCHIVE: /data/archive
+      AX_REDACT_INDEX: /redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+    volumes:
+      - {type: volume, source: timeline-data, target: /data}
+      - {type: bind, source: "${AX_STATE_DIR}/redact", target: /redact, read_only: true}
+    secrets:
+      - source: pii-list
+        target: pii-list
+
+  memory-connector:
+    extends: {file: docker/base.yaml, service: ax-both-base}
+    command: ["python", "/ax/core/memory-connector/main.py"]
+    env_file:
+      - path: ${AX_HOME}/config/launcher.env
+        required: false
+    user: "${AX_UID}:${AX_GID}"
+    depends_on:
+      archive-init:
+        condition: service_completed_successfully
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_MEMORY_ENDPOINT: ${AX_MEMORY_ENDPOINT}
+      AX_REDACT_INDEX: /redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+      AX_PLUGIN_TOKENS_FILE: /state/plugin-tokens.sha256
+      AX_MEMORY_OUTBOX: /data/outbox
+      AX_EVENT_OUTBOX: /data/event-outbox
+    volumes:
+      - {type: volume, source: memory-connector-data, target: /data}
+      - {type: bind, source: "${AX_STATE_DIR}/redact", target: /redact, read_only: true}
+      - type: bind
+        source: ${AX_PLUGIN_TOKENS_FILE:-${AX_STATE_DIR}/plugin-tokens.sha256}
+        target: /state/plugin-tokens.sha256
+        read_only: true
+    secrets:
+      - source: pii-list
+        target: pii-list
+
+  archiver:
+    extends: {file: docker/base.yaml, service: ax-core-base}
+    image: ax/archiver:${AX_TAG}
+    build:
+      context: .
+      dockerfile: core/archiver/Dockerfile
+      args:
+        PYTHON_REF: ${AX_PYTHON_REF:-python:3.12-slim}
+        UV_VERSION: ${AX_UV_VERSION:-0.13.0}
+    command: ["python", "-m", "core.archiver"]
+    user: "0:0"
+    cap_add: [DAC_OVERRIDE, DAC_READ_SEARCH]
+    depends_on:
+      archive-init:
+        condition: service_completed_successfully
+    networks:
+      ax-core:
+        ipv4_address: ${AX_FW_ARCHIVER_IP:-192.0.2.12}
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_ARCHIVE_SOURCES: /profile/archive-sources.yaml
+      AX_ARCHIVER_DB: /data/archiver.sqlite
+      AX_SECRETS_DIR_HOST: ${AX_SECRETS_DIR}
+      AX_REDACT_INDEX: /redact/index
+      AX_PII_LIST: /run/secrets/pii-list
+    volumes:
+      - {type: bind, source: "${AX_STATE_DIR}/redact", target: /redact, read_only: true}
+      # AX の各ボリュームの archive/ だけを rw で渡す（全ボリューム一律の subpath。実機の判定は F-20、core/archiver/subpath_probe.py）
+      - {type: volume, source: timeline-data, target: /vol/timeline-data, volume: {subpath: archive}}
+      - {type: volume, source: memory-connector-data, target: /vol/memory-connector-data, volume: {subpath: archive}}
+      - {type: volume, source: archiver-data, target: /vol/archiver-data, volume: {subpath: archive}}
+      - {type: volume, source: archiver-data, target: /data}
+      # 照合済みの manifest（verified/）と、除去の印 reap-enabled の置き場。書けるのは archiver（verified/ の下）とホスト側の実施者だけ
+      - {type: bind, source: "${AX_STATE_DIR}/archive", target: /state/archive}
+      # 退避元の一覧と archive_dest（profile のファイル。秘密を含まない）。profile のディレクトリの変数が F-18.6 の表に無いため secrets_dir の隣を指す（OPEN.md）
+      - {type: bind, source: "${AX_SECRETS_DIR}/../profile", target: /profile, read_only: true}
+    secrets:
+      - source: pii-list
+        target: pii-list
+      - source: archive-ssh-key
+        target: archive-ssh-key
+      - source: archive-known-hosts
+        target: archive-known-hosts
+
+volumes:
+  timeline-data: {}
+  memory-connector-data: {}
+  archiver-data: {}
+
+secrets:
+  pii-list:
+    file: ${AX_SECRETS_DIR}/pii-list
+  archive-ssh-key:
+    file: ${AX_SECRETS_DIR}/archive-ssh-key
+  archive-known-hosts:
+    file: ${AX_SECRETS_DIR}/archive-known-hosts

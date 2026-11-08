@@ -1,0 +1,35 @@
+services:
+  sl-change:
+    extends:
+      file: docker/base.yaml
+      service: ax-work-base
+    image: ax/runtime:${AX_TAG}
+    command: [python, -m, plugins.subloop.change]
+    user: "${AX_UID}:${AX_GID}"
+    environment:
+      AX_PLUGIN_ID: change
+      AX_HOST: ${AX_HOST}
+      AX_DATA_DIR: /data
+      AX_WORK_ROOT: /work
+      AX_CHANGE_PORT_FACTORY: ${AX_CHANGE_PORT_FACTORY:-plugins.subloop.change.integration.factory:create_ports}
+      AX_CHANGE_HQ_URL: ${AX_CHANGE_HQ_URL:-http://hq:8083}
+      AX_CHANGE_RELEASE_URL: ${AX_CHANGE_RELEASE_URL:-http://sl-release:8080}
+      AX_CHANGE_TARGETS_FILE: /ax/plugins/subloop/change/targets.yaml
+      AX_REMOTE_WORK_GIT: /git/work.git
+    volumes:
+      - sl-change-data:/data
+      - type: bind
+        source: ${AX_HOME}/../work
+        target: /work
+      - type: bind
+        source: ${AX_HOME}/../work.git
+        target: /git/work.git
+    secrets:
+      - control-apply-token
+      - plugin-token-change
+      - github-token
+volumes:
+  sl-change-data: {}
+secrets:
+  plugin-token-change:
+    file: ${AX_SECRETS_DIR}/plugin-tokens/change

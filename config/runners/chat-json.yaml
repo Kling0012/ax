@@ -1,0 +1,12 @@
+# runner chat-json（F-7.2。管理役、予備役、decide.llm）。ジョブ用コンテナ（ax-job）で 1 回ごとに動く。
+# 入口は ANTHROPIC_BASE_URL（http://egress-proxy:3425）と ANTHROPIC_AUTH_TOKEN の 2 つだけ（launcher が固定で渡す）。
+# 入力 /work/request.json、出力 /work/response.json、終了コードで成否（axcommon/chat_json.py）。
+name: chat-json
+kind: chat-json
+image: ax/chat-json:${AX_TAG}
+command: python -m axcommon.chat_json
+env:
+  AX_CHAT_JSON_DIR: /work
+result:
+  source: response_json
+  file: /work/response.json

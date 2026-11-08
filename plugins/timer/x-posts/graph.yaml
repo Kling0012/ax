@@ -1,0 +1,17 @@
+schema_version: 1
+entry: targets
+item_source: targets
+max_parallel_items: 1
+nodes:
+  - id: targets
+    type: x.posts
+    with: {action: collect, phase: queue}
+    needs_mode: [run, collect_only]
+    limits: {timeout_s: 60, retries: 0}
+  - id: send
+    type: x.posts
+    with: {action: send}
+    needs_mode: [run]
+    limits: {timeout_s: 900, retries: 0}
+edges:
+  - {from: targets, to: send, when: ok}

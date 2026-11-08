@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/job.schema.json",
+  "title": "GET /v1/jobs/{id} の応答（S-8.6）",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "queued",
+        "launching",
+        "submitted",
+        "running",
+        "stalled",
+        "ok",
+        "failed",
+        "timed_out",
+        "cancelled",
+        "lost",
+        "rejected"
+      ]
+    },
+    "model": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "role": {
+      "$ref": "common.schema.json#/$defs/role"
+    },
+    "workdir_id": {
+      "$ref": "common.schema.json#/$defs/workdir_id"
+    },
+    "verify": {
+      "type": "object",
+      "properties": {
+        "rc": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "log_tail": {
+          "type": "string"
+        }
+      }
+    },
+    "report": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "ready",
+            "blocked",
+            "failed",
+            "dropped"
+          ]
+        },
+        "human_action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "ended_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/ts_any"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "state",
+    "role"
+  ]
+}

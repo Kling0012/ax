@@ -1,0 +1,11 @@
+# Copy to config/intake-destinations.d/<bundle>.yaml.
+- name: example.echo
+  title: 例の入力
+  schema: schemas/dest/example.echo.json
+  # The in-process package below must be installed with this entry.
+  handler: in-process
+  allowed_from: [commander]
+  via: [local]
+  tier: read
+  irreversible: false
+  ack: sync

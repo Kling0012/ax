@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b9/inspection-config.schema.json",
+  "title": "config/inspection.yaml（S-13.1）。間隔の初期値と範囲。範囲を変えるのは利用者だけ",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": 1},
+    "interval_h": {
+      "type": "object",
+      "properties": {
+        "initial": {"type": "number", "exclusiveMinimum": 0},
+        "min": {"type": "number", "exclusiveMinimum": 0},
+        "max": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "required": ["initial", "min", "max"],
+      "additionalProperties": false
+    },
+    "first_at": {"anyOf": [{"type": "string", "minLength": 20}, {"type": "null"}]}
+  },
+  "required": ["schema_version", "interval_h"],
+  "additionalProperties": false
+}

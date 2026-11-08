@@ -1,0 +1,69 @@
+schema_version: 1
+products:
+  - id: dreamforge
+    project: dreamforge
+    repo: example-owner/shape-of-dreams-rpg-plan
+    destination: steam-workshop
+    enabled: true
+    dry_run: true
+    operations:
+      - {operation: merge, destination: example-owner/shape-of-dreams-rpg-plan}
+      - {operation: release, destination: steam-workshop}
+      - {operation: publish, destination: github-prerelease}
+      - {operation: post, destination: discord}
+    publish_paths: ["src/**", "tools/**", "changelog.d/**", "CHANGELOG.md", "VERSION"]
+    quiet_min: 20
+    max_wait_min: 90
+    lock_wait_min: 40
+    build_wait_min: 40
+    version:
+      kind: semver
+      tag_pattern: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+      bump: {environment: major, feature: minor, fix: patch}
+    notes:
+      languages: [ja, en]
+      include: [environment, feature, fix]
+    entry:
+      kind: entrypoint
+      name: release-both
+      requires: [steam-workshop-upload]
+      credentials: [steam, discord, github]
+      timeout_min: 60
+      headline: Dreamforge
+    checks:
+      clean_main: true
+      dev_promotion: true
+      evidence: [game_dll_build, generated_artifacts, python_tests, slow_tests, full_ci]
+      distribution: true
+      description_max_bytes: 8000
+      prerelease_zip: true
+      zip_pattern: "DreamforgeRPG-{version}.zip"
+    post_publish: [main_to_dev]
+  - id: hibi
+    project: hibi
+    repo: example-owner/hibi
+    destination: github-prerelease
+    enabled: true
+    dry_run: true
+    operations:
+      - {operation: release, destination: github-prerelease}
+    publish_paths: ["app/**", "src/**", "package.json", "electron-builder.yml"]
+    quiet_min: 20
+    max_wait_min: 90
+    lock_wait_min: 40
+    build_wait_min: 40
+    version:
+      kind: increment_last
+      tag_pattern: "^v[0-9]+(?:\\.[0-9]+)+(?:-[A-Za-z0-9]+(?:\\.[0-9]+)*)?$"
+    notes:
+      languages: [en]
+      include: [feature, fix]
+    entry:
+      kind: unresolved
+      name: hibi-release
+      requires: []
+      reason: "S-25.6 に hibi の環境入口が未定義"
+    checks:
+      assets: true
+      evidence: [release_build]
+    post_publish: []

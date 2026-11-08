@@ -1,0 +1,13 @@
+# ホスト見張りの周期（S-17 host_watch_s の既定 60 秒）。置き場: ~/.config/systemd/user/ax-hostwatch.timer
+# host_watch_s を変えるときは OnUnitActiveSec を同じ値にする（範囲 30〜300）。unit は前の周期が終わるまで重ならない（oneshot）。
+[Unit]
+Description=AX host watch timer
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=60s
+AccuracySec=1s
+Unit=ax-hostwatch.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+# 追加の読み取り専用マウントの登録簿（F-11.5 の 1、S-8.11）。変更は core.change。コンテナは書けない（本番の ${AX_HOME} の中）。
+# 1 件の形: id（[a-z0-9-]{1,40}）、host_path（~ を展開した絶対パス）、container_path（コンテナ内の絶対パス）、sensitivity（private か public）。
+# 拒否（launcher の job-start、終了コード 2）: 登録簿にない id、host_path が secrets_dir・~/.ssh・~/.config・ax_state_dir・AX_HOME・/ と
+# 同じか、その中か、それを含む場合、container_path が /work・/tmp-hdd・/target・/tmp と重なる場合。
+# host_path が存在するディレクトリでないときは終了コード 3（mount_missing）。
+# sensitivity が private のマウントを持つジョブの結果は、公開の場所へ書かない（S-15.1）。
+- id: sod-gamedata
+  host_path: "~/dev/sod-gamedata"
+  container_path: /mnt/sod-gamedata
+  sensitivity: private

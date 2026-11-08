@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/graph.schema.json",
+  "title": "graph.yaml（S-7.1、S-7.2）",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "entry": {
+      "type": "string"
+    },
+    "item_source": {
+      "type": "string"
+    },
+    "max_parallel_items": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "string",
+          "pattern": "^\\{\\{knobs\\.[a-z_]+\\}\\}$"
+        }
+      ]
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/node"
+          },
+          {
+            "$ref": "#/$defs/include"
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "when": {
+            "type": "string",
+            "pattern": "^(ok|bug|error|skip|outcome:.+)$"
+          },
+          "max_loops": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "entry",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "node": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "with": {
+          "type": "object"
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "timeout_s": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "retries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "continuations": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "timeout_s"
+          ],
+          "additionalProperties": false
+        },
+        "on_fail": {
+          "type": "string",
+          "pattern": "^(eject|skip|goto:.+)$"
+        },
+        "needs_mode": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/mode"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "limits"
+      ],
+      "additionalProperties": false
+    },
+    "include": {
+      "type": "object",
+      "properties": {
+        "include": {
+          "type": "string"
+        },
+        "as": {
+          "type": "string"
+        },
+        "with": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "include"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

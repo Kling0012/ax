@@ -1,0 +1,88 @@
+{
+  "seat_id": "seat-exam",
+  "seats": {
+    "seat-exam": {
+      "max_tier": "operate",
+      "model": "exam-model"
+    },
+    "seat-other": {
+      "max_tier": "operate"
+    }
+  },
+  "project": "demo",
+  "claims": {
+    "hub:plugin:demo-loop": {
+      "seat_id": "seat-other",
+      "ttl_s": 600,
+      "acquired_s": 0
+    }
+  },
+  "todos": {
+    "t-demo-1": {
+      "id": "t-demo-1",
+      "state": "running",
+      "title": "README の整備",
+      "project": "demo"
+    },
+    "t-demo-2": {
+      "id": "t-demo-2",
+      "state": "todo",
+      "title": "依頼の処理",
+      "body": "",
+      "project": "demo"
+    },
+    "t-card-q": {
+      "id": "t-card-q",
+      "state": "waiting_user",
+      "title": "リリース名は何にするか",
+      "project": "demo"
+    },
+    "t-card-user": {
+      "id": "t-card-user",
+      "state": "waiting_user",
+      "user_only": true,
+      "title": "本番への公開を許可するか",
+      "project": "demo"
+    }
+  },
+  "approvals": {
+    "apr-001": {
+      "id": "apr-001",
+      "destination": "core.change",
+      "seat_id": "seat-other",
+      "state": "pending_user"
+    }
+  },
+  "decisions": {
+    "d-1": {
+      "id": "d-1",
+      "kind": "decision",
+      "attested": true,
+      "body": "テストを先に書く"
+    },
+    "d-2": {
+      "id": "d-2",
+      "kind": "decision",
+      "basis": "user_said",
+      "attested": false,
+      "body": ""
+    }
+  },
+  "handoffs": {
+    "h-1": {
+      "id": "h-1",
+      "kind": "handoff",
+      "body": "demo-loop の調整範囲の確認が残っている"
+    }
+  },
+  "plugins": {
+    "demo-loop": {
+      "mode": "run"
+    }
+  },
+  "outputs": {},
+  "events": [],
+  "next_todo": 1,
+  "next_approval": 1,
+  "now_s": 0
+}

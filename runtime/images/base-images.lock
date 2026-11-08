@@ -1,0 +1,39 @@
+# Runtime base image pins (F-19.2). Digests identify registry indexes containing linux/amd64.
+# Source: sudo -n docker buildx imagetools inspect <tag>; checked_at is UTC.
+# The image field is the original tag plus its immutable digest.
+
+[debian]
+image=debian:trixie-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2
+digest=sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2
+status=verified
+checked_at=2026-11-08T06:12:42Z
+
+[uv]
+image=ghcr.io/astral-sh/uv:latest@sha256:96f40d3904aad8d0bd010539001d36c8e2188b981e1334471a90c4a1d93bb490
+digest=sha256:96f40d3904aad8d0bd010539001d36c8e2188b981e1334471a90c4a1d93bb490
+status=verified
+checked_at=2026-11-08T06:12:42Z
+
+[node]
+image=node:22-trixie-slim@sha256:be1e2a3dc2c4fd68cdfadad2a696a280e0d2749098bee509230174d72fb768c6
+digest=sha256:be1e2a3dc2c4fd68cdfadad2a696a280e0d2749098bee509230174d72fb768c6
+status=verified
+checked_at=2026-11-08T06:12:42Z
+
+[python313]
+image=python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
+digest=sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
+status=verified
+checked_at=2026-11-08T06:12:42Z
+
+[python312]
+image=python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
+digest=sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
+status=verified
+checked_at=2026-11-08T06:12:42Z
+
+[dotnet]
+image=mcr.microsoft.com/dotnet/sdk:10.0@sha256:212fe4cb74627d5adf9817a4088906ae3edff1bd853bb27565d4b46731efe61e
+digest=sha256:212fe4cb74627d5adf9817a4088906ae3edff1bd853bb27565d4b46731efe61e
+status=verified
+checked_at=2026-11-08T06:12:42Z

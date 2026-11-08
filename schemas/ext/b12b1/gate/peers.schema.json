@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "gate peers.json",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": ["device", "device_id", "os", "user_login", "online"],
+    "additionalProperties": false,
+    "properties": {
+      "device": {"type": "string", "minLength": 1},
+      "device_id": {"type": "string", "minLength": 1},
+      "os": {"type": "string"},
+      "user_login": {"type": "string", "minLength": 1},
+      "online": {"type": "boolean"}
+    }
+  }
+}

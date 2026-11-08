@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b1/archive-manifest.schema.json",
+  "title": "退避の manifest（F-20。${ax_state_dir}/archive/verified/<name>/<日付>.json と 退避先の同名）",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "date": {
+      "type": "string"
+    },
+    "created_at": {
+      "$ref": "../../common.schema.json#/$defs/ts"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mtime_ns": {
+            "type": "integer"
+          },
+          "inode": {
+            "type": "integer"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "keep": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "path",
+          "size",
+          "mtime_ns",
+          "inode",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "version",
+    "name",
+    "date",
+    "files"
+  ],
+  "additionalProperties": false
+}

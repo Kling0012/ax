@@ -1,0 +1,34 @@
+# B5 の束のサービス（F-18.4 の表: intake は ax-core だけに入る。D-14: ports は持たない）。
+# commander ソケットはディレクトリごと bind する（F-9.2。ソケットのファイルではなくディレクトリ）。
+# ホスト側のディレクトリ（権限 0700、所有者は実行ユーザー）は host/ax-up.sh が compose の起動より前に作る。
+services:
+  intake:
+    env_file:
+      - path: ${AX_HOME}/config/launcher.env
+        required: false
+    extends:
+      file: docker/base.yaml
+      service: ax-core-base
+    user: "${AX_UID}:${AX_GID}"
+    command: ["python", "-m", "core.intake"]
+    group_add:
+      - "${AX_SEAT_GID:-${AX_GID}}"
+      - "${AX_HQ_GID:-${AX_GID}}"
+    environment:
+      AX_HOST: ${AX_HOST}
+      AX_UID: ${AX_UID}
+      AX_HQ_UID: ${AX_HQ_UID:-}
+      AX_SEAT_UID: ${AX_SEAT_UID:-}
+      AX_SEAT_GID: ${AX_SEAT_GID:-}
+      AX_PERFORMANCE_DB: ${AX_PERFORMANCE_DB:-}
+      AX_PERFORMANCE_TARGETS: ${AX_PERFORMANCE_TARGETS:-}
+    volumes:
+      - type: bind
+        source: ${AX_STATE_DIR}/seat
+        target: /run/seat
+      - type: bind
+        source: ${AX_STATE_DIR}
+        target: /state
+      - type: bind
+        source: ${AX_COMMANDER_DIR}
+        target: /run/commander

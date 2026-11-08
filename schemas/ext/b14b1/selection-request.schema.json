@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b14b1/selection-request.schema.json",
+  "title": "環境選択の入力（S-25.4）",
+  "type": "object",
+  "required": ["requires", "sensitivity"],
+  "properties": {
+    "requires": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9:-]*$"}},
+    "sensitivity": {"enum": ["public", "private", "sensitive"]},
+    "scope": {"enum": ["one", "each"]},
+    "trial_for": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
+  },
+  "additionalProperties": false
+}

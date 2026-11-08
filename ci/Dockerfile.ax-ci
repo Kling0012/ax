@@ -1,0 +1,51 @@
+# ax-ci イメージ（F-14.1。複数段のビルド）。CI（tools/ci.sh）を動かす。ジョブ用コンテナ（runner verify-ax-ci）はこのイメージを使うだけで、
+# 中で docker build もデーモンへの接続もしない。イメージの組み立てはホストで行う: ci/build-ax-ci.sh（B0 では未実行。ネットワークを使うため）。
+#
+# ベースは「ダイジェストで固定」する（F-14.1）。ダイジェストは ci/docker-cli.lock と ci/base-image.lock に記録する。
+# B0 では docker pull を実行していないため、ダイジェストは未確認（ロックの digest 欄が UNVERIFIED）。
+# ci/build-ax-ci.sh は UNVERIFIED が残っていたら、ビルドを始めずに失敗する（固定していないイメージを黙って使わない）。
+ARG DOCKERCLI_REF=docker:29.1.3-cli
+ARG PYTHON_REF=python:3.12-slim
+ARG GIT_REF=python:3.12-trixie
+ARG UV_VERSION
+ARG GITLEAKS_URL
+
+FROM ${DOCKERCLI_REF} AS dockercli
+
+FROM ${GIT_REF} AS git_source
+RUN mkdir -p /opt/ssh-libs && for lib in libgssapi_krb5.so.2 libkrb5.so.3 libk5crypto.so.3 libkrb5support.so.0 libkeyutils.so.1 libcom_err.so.2; do cp -L /usr/lib/*/${lib} /opt/ssh-libs/; done
+
+FROM ${PYTHON_REF} AS gitleaks_source
+ARG GITLEAKS_URL
+ADD ${GITLEAKS_URL} /gitleaks.tar.gz
+RUN mkdir /gitleaks && tar -xzf /gitleaks.tar.gz -C /gitleaks gitleaks
+
+FROM ${PYTHON_REF}
+ARG UV_VERSION
+COPY --from=gitleaks_source /gitleaks/gitleaks /usr/bin/gitleaks
+COPY --from=git_source /usr/bin/ssh /usr/bin/ssh
+COPY --from=git_source /etc/ssh/ /etc/ssh/
+COPY --from=git_source /opt/ssh-libs/ /usr/local/lib/
+RUN ldconfig
+# The remote Hibi reader invokes the system interpreter at this fixed path.
+RUN ln -s /usr/local/bin/python3 /usr/bin/python3
+COPY --from=git_source /usr/bin/git /usr/bin/git
+COPY --from=git_source /usr/lib/git-core/ /usr/lib/git-core/
+COPY --from=git_source /usr/share/git-core/ /usr/share/git-core/
+# docker の CLI と compose プラグイン。コピー元の 2 つの path は未確認（F-14.1）:
+# `sudo -n docker run --rm docker:29.1.3-cli sh -c 'ls /usr/local/libexec/docker/cli-plugins; command -v docker'` で確かめ、違えば直す。
+COPY --from=dockercli /usr/local/bin/docker /usr/local/bin/docker
+RUN ln -s /usr/local/bin/docker /usr/bin/docker
+COPY --from=dockercli /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-compose
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_PROJECT_ENVIRONMENT=/opt/venv \
+    UV_LINK_MODE=copy \
+    PATH=/opt/venv/bin:$PATH
+# 依存は pyproject.toml と uv.lock で固定する（F-14.1）。uv の版は ci/uv.version（B0 では未確認）。
+RUN test -n "${UV_VERSION}" && pip install --no-cache-dir "uv==${UV_VERSION}"
+COPY pyproject.toml uv.lock /deps/
+WORKDIR /deps
+RUN uv sync --locked --no-install-project --group dev
+WORKDIR /src

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/job-verify-recipe-result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project",
+    "target",
+    "recipe_id",
+    "request_id",
+    "recipe_snapshot_id",
+    "recipe_version",
+    "allow_hosts",
+    "prestart_isolation_enforced"
+  ],
+  "properties": {
+    "project": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "recipe_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "recipe_snapshot_id": {
+      "type": "string",
+      "pattern": "^vs-[0-9a-f]{32}$"
+    },
+    "recipe_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allow_hosts": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string"
+      }
+    },
+    "prestart_isolation_enforced": {
+      "type": "boolean"
+    }
+  }
+}

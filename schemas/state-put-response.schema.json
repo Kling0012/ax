@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/state-put-response.schema.json",
+  "title": "focus/daily の PUT の応答（S-9.5）",
+  "type": "object",
+  "properties": {
+    "stored": {
+      "type": "boolean"
+    },
+    "kind": {
+      "enum": [
+        "focus",
+        "daily"
+      ]
+    },
+    "as_of": {
+      "$ref": "common.schema.json#/$defs/ts_any"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "stored",
+    "kind",
+    "as_of",
+    "version"
+  ],
+  "additionalProperties": false
+}

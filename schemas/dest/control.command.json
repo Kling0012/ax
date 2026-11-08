@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/control.command.json",
+  "title": "control.command",
+  "$comment": "SPEC.md:S-5.3; identity fields are supplied by intake, never by payload",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string"
+    },
+    "op": {
+      "enum": [
+        "set_mode",
+        "set_knob",
+        "exclude_resource",
+        "include_resource",
+        "cancel",
+        "run_now"
+      ]
+    },
+    "args": {
+      "type": "object"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "S-2.1 UTC の RFC 3339（ミリ秒まで）"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "on_expiry": {
+      "enum": [
+        "ask_issuer",
+        "release"
+      ]
+    },
+    "corr": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+          "description": "S-2.1 ULID 26文字"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "target",
+    "op",
+    "args",
+    "reason"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "set_mode"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "enum": [
+                  "run",
+                  "collect_only",
+                  "poll_paused",
+                  "draining"
+                ],
+                "description": "S-5.2 動作モード"
+              },
+              "permission_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "set_knob"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "exclude_resource"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "until": {
+                "type": "string",
+                "format": "date-time",
+                "description": "RFC 3339（ミリ秒は任意。JST など他の時差も許す場面用）"
+              }
+            },
+            "required": [
+              "resource_id",
+              "until"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "include_resource"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "cancel"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+              "run_id": {
+                "type": "string"
+              },
+              "item_id": {
+                "type": "string"
+              },
+              "job_id": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "run_now"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

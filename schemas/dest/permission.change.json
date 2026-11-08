@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/dest/permission.change.json",
+  "title": "permission.change",
+  "$comment": "SPEC.md:S-20.3,D-21.1; same payload contract as the B16b control adapter",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string", "minLength": 1, "not": {"const": "*"}},
+    "project": {"type": "string", "minLength": 1, "not": {"const": "*"}},
+    "repo": {"type": "string", "minLength": 1, "not": {"const": "*"}},
+    "destination": {"type": "string", "minLength": 1, "not": {"const": "*"}},
+    "source_instruction": {"type": "string", "minLength": 1, "not": {"const": "*"}},
+    "operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "not": {"const": "*"}}},
+    "conditions": {"type": "object"},
+    "enabled": {"type": "boolean"},
+    "branch_cleanup": {}
+  },
+  "required": ["project", "repo", "destination", "operations", "source_instruction"],
+  "additionalProperties": false
+}

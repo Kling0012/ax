@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/job-request.schema.json",
+  "title": "POST /v1/jobs の本文（S-8.6、S-8.8）",
+  "type": "object",
+  "properties": {
+    "idempotency_key": {"type": "string", "pattern": "^[a-zA-Z0-9_-]{1,128}$"},
+    "prior_job_id": {"type": "string", "pattern": "^[a-z0-9-]{1,40}$"},
+    "role": {
+      "$ref": "common.schema.json#/$defs/role"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "workdir_id": {
+      "$ref": "common.schema.json#/$defs/workdir_id"
+    },
+    "verify": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cmd": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cmd"
+          ]
+        }
+      ]
+    },
+    "budget_min": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sensitivity": {
+      "$ref": "common.schema.json#/$defs/sensitivity"
+    },
+    "needs_vision": {
+      "type": "boolean"
+    },
+    "project": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "subloop": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "item_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "todo_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resume_from": {
+      "type": "string"
+    },
+    "resume_required": {
+      "type": "boolean"
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "sandbox-desktop",
+          "web-gui",
+          "web-screenshot",
+          "linux-sandbox"
+        ]
+      }
+    },
+    "placement": {
+      "enum": [
+        "local",
+        "env",
+        "any"
+      ]
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    "deadline": {
+      "$ref": "common.schema.json#/$defs/ts_any"
+    },
+    "read_input": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]{1,40}$"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+        }
+      },
+      "required": [
+        "target",
+        "revision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "role",
+    "prompt",
+    "sensitivity"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "tools"
+        ]
+      },
+      "then": {
+        "properties": {
+          "role": {
+            "enum": [
+              "research",
+              "screen",
+              "assist"
+            ]
+          },
+          "sensitivity": {
+            "const": "public"
+          }
+        }
+      }
+    }
+  ]
+}

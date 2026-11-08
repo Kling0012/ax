@@ -1,0 +1,22 @@
+# runner agent-cli（F-7.2、F-19.1、S-8.12）。イメージは ax/agent-cli（debian）。ほかの言語は agent-cli-{node,python,dotnet}。
+# ANTHROPIC_BASE_URL（http://egress-proxy:3425）、ANTHROPIC_AUTH_TOKEN、TMPDIR、HOME、プロキシの変数は launcher が固定で渡す（F-18.2）。
+# 依頼文は /work/.ax-prompt/user.md を標準入力に渡す。system.md があるとき（並び A。S-8.12 の 5）だけ、固定部分をファイルで渡す。
+# {session_arg} は launcher が置き換える（新しい会話は --session-id <UUID>、再開は --resume <UUID>。--fork-session は付けない）。
+name: agent-cli
+kind: agent-cli
+image: ax/agent-cli:${AX_TAG}
+command: >-
+  sh -c 'P=""; if [ -f /work/.ax-prompt/system.md ]; then P="--append-system-prompt-file /work/.ax-prompt/system.md --exclude-dynamic-system-prompt-sections"; fi;
+  exec claude --model {model} -p --output-format json --dangerously-skip-permissions {session_arg} $P < /work/.ax-prompt/user.md'
+env:
+  ANTHROPIC_DEFAULT_OPUS_MODEL: "{model}"
+  ANTHROPIC_DEFAULT_SONNET_MODEL: "{model}"
+  ANTHROPIC_DEFAULT_HAIKU_MODEL: "{model}"
+  ANTHROPIC_SMALL_FAST_MODEL: "{model}"
+  CLAUDE_CODE_SUBAGENT_MODEL: "{model}"
+  DISABLE_AUTOUPDATER: "1"
+  CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+result:
+  source: stdout_json
+  fields: [result, is_error, api_error_status]
+  rate_limited_when: {api_error_status: 429}

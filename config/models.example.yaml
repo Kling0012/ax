@@ -1,0 +1,4 @@
+# Populate from models registered by the user against the current gateway /v1/models at deployment (B17).
+# Start new registrations at L1; configure model and family caps in AX.
+# This empty registry is intentional until registration.
+models: []

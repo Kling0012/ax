@@ -1,0 +1,60 @@
+name: バグ報告 (Bug report)
+description: AX の不具合を報告する。日本語でも英語でも書けます。
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        報告の前に、次の文書で挙動の意図を確認してください。
+
+        - `docs/SPEC.md`（仕様）と `docs/DESIGN.md`（設計）
+        - `docs/manual/getting-started.md`（動かし方）
+
+        秘密・トークン・個人情報は書かないでください。ログを貼る前に、値が置き換えられているか確認してください。
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 何が起きたか
+      description: 期待した動作と、実際の動作を書いてください。
+      placeholder: |
+        期待: ...
+        実際: ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 再現手順
+      description: 最小の手順を書いてください。使ったコマンドも載せてください。
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 環境
+      description: OS、Python の版（3.12 系）、Docker と compose の版、AX の commit（git rev-parse --short HEAD）
+      placeholder: |
+        OS:
+        Python:
+        Docker:
+        compose:
+        AX commit:
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: ログと出力
+      description: 秘密を置き換えた上で貼ってください。該当する物が無ければ「無し」と書いてください。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 確認
+      options:
+        - label: 秘密・トークン・個人情報をこの報告に含めていない
+          required: true
+        - label: docs/SPEC.md の仕様として意図された挙動でないことを確認した
+          required: true

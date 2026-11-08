@@ -1,0 +1,28 @@
+# The history source is this host only; other hosts need a future extension.
+# Set AX_CONVERSATION_HISTORY_HOST_DIR and AX_EMBEDDING_TOKEN_HOST_FILE to
+# existing host paths. Missing settings bind /dev/null, leaving the job unavailable.
+# Set AX_CONVERSATION_HISTORY_DIR=/conversation-history and
+# AX_EMBEDDING_TOKEN_FILE=/run/ax-embedding/token along with the registered
+# AX_EMBEDDING_PROVIDER, AX_EMBEDDING_MODEL, AX_EMBEDDING_URL and dimensions.
+services:
+  timer-runner:
+    environment:
+      AX_CONVERSATION_HISTORY_DIR: "${AX_CONVERSATION_HISTORY_DIR:-}"
+      AX_EMBEDDING_PROVIDER: "${AX_EMBEDDING_PROVIDER:-}"
+      AX_EMBEDDING_MODEL: "${AX_EMBEDDING_MODEL:-}"
+      AX_EMBEDDING_URL: "${AX_EMBEDDING_URL:-}"
+      AX_EMBEDDING_TOKEN_FILE: "${AX_EMBEDDING_TOKEN_FILE:-}"
+      AX_EMBEDDING_DIMENSIONS: "${AX_EMBEDDING_DIMENSIONS:-}"
+    volumes:
+      - type: bind
+        source: "${AX_CONVERSATION_HISTORY_HOST_DIR:-/dev/null}"
+        target: /conversation-history
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: "${AX_EMBEDDING_TOKEN_HOST_FILE:-/dev/null}"
+        target: /run/ax-embedding/token
+        read_only: true
+        bind:
+          create_host_path: false

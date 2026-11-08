@@ -1,0 +1,18 @@
+schema_version: 1
+id: memory-digest
+version: 1.0.0
+kind: timer
+project: multi
+title: 記憶要約
+image: ax/runtime:1.0.0
+execution: mechanical
+schedule: {kind: cron, cron: "50 14 * * *", missed: record_only}
+capabilities: [run, collect_only, draining]
+knobs:
+  u_digest_time: {type: string, default: "23:50", effective: next_run, title: 要約時刻, who: [user]}
+  enabled: {type: boolean, default: true, effective: next_run, title: 自動実行, who: [user]}
+health: {heartbeat_s: 60}
+sensitivity: sensitive
+memory_capabilities: [memory.read]
+secrets: []
+outputs: []

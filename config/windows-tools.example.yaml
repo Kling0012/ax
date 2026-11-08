@@ -1,0 +1,15 @@
+# S-25.9. Candidate desktops; connection values live only in the profile.
+# The default executor performs no remote action until its contract is supplied.
+tools:
+  - id: remote-device-a
+    kind: windows-computer-use
+    location: windows_remote_device_a_target
+    max_concurrent: 1
+    owner_use: false
+    data_classes: [public]
+  - id: remote-device-b
+    kind: windows-computer-use
+    location: windows_remote_device_b_target
+    max_concurrent: 1
+    owner_use: true
+    data_classes: [public]

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.invalid/schemas/ext/b6b/runner-b6b.schema.json",
+  "title": "config/runners/<名前>.yaml の B6b 版（schemas/runner.schema.json の上位集合）。verify-* の kind と launcher 用の項目を足す",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "kind", "image", "command"],
+  "properties": {
+    "name": {"type": "string", "pattern": "^[a-z0-9-]{1,40}$"},
+    "kind": {"enum": ["agent-cli", "chat-json", "verify"]},
+    "image": {"type": "string", "description": "${AX_TAG} は current.env の値に置き換える"},
+    "command": {"type": "string", "description": "shlex で分けた各語の {model}・{job_id}・{session_arg}・{verify} を置き換える"},
+    "env": {"type": "object", "additionalProperties": {"type": "string"}, "description": "固定の環境変数。値は {model}・{job_id} を置き換える。秘密は書かない"},
+    "allowed_env_names": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$"}, "description": "依頼の env_names に書いてよい名前。値は ${secrets_dir}/job-env/<名前>"},
+    "timeout_s": {"type": "integer", "minimum": 1},
+    "idle_timeout_s": {"type": "integer", "minimum": 1},
+    "result": {"type": ["object", "string"]},
+    "memory": {"type": "string", "pattern": "^[0-9]+[mg]$", "description": "既定 4g"},
+    "cpus": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$", "description": "既定 2"},
+    "pids_limit": {"type": "integer", "minimum": 16, "maximum": 4096, "description": "既定 512"}
+  }
+}
